@@ -1,0 +1,44 @@
+@'
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Django
+db.sqlite3
+media/*
+!media/.gitkeep
+staticfiles/
+*.log
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# IDE
+.idea/
+.vscode/
+
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Whisper models and temporary audio
+models/
+temp/
+tmp/
+*.wav
+*.webm
+*.mp3
+'@ | Set-Content .gitignore

@@ -1,0 +1,30 @@
+[project]
+name = "german-albanian-learning-app"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "bkocii", email = "burimkoci@hotmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "django>=6.1.1",
+    "django-environ>=0.14.0",
+    "pillow>=12.3.0",
+    "psycopg[binary]>=3.3.6",
+]
+
+[project.scripts]
+german-albanian-learning-app = "german_albanian_learning_app:main"
+
+[build-system]
+requires = ["uv_build>=0.12.3,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "coverage>=7.16.1",
+    "pytest>=9.1.1",
+    "pytest-django>=4.14.0",
+    "ruff>=0.16.8",
+]

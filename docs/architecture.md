@@ -31,7 +31,10 @@
 - Learning records reference the configured custom user model and published course content.
 - The learner catalog and player exclude unpublished course records and draft exercises.
 - Exercise attempts are append-only learner answers; administrators can inspect but not edit them.
-- A lesson is completed after the learner submits its final published exercise.
+- A lesson is completed only after the learner has attempted every published exercise.
+- Picture and translation exercises accept only an option belonging to that exercise.
+- Missing-word answers use whitespace- and case-normalized comparison.
+- Word-order exercises shuffle server-provided tokens and grade the reconstructed sentence.
 - Speech processing returns feedback to the learning flow without storing raw audio by default.
 - Provider-specific speech code must stay behind a small service interface.
 - Production throttling must use a shared cache when more than one application process runs.

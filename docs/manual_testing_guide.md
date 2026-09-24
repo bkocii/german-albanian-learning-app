@@ -96,3 +96,51 @@ Create a small published example in the administration site:
 Expected result: only published content appears, both attempts remain recorded, feedback appears
 after each answer, and the final exercise completes the lesson. Draft exercises return 404 if their
 address is entered directly.
+
+## Four core exercise interactions
+
+Add the following exercises to the published test lesson. Positions must be unique.
+
+### Picture selection — position 2
+
+First create two **Media assets** with kind **Image**. Upload one greeting image and one unrelated
+image. For each asset, enter creator, license name, acquisition date, and Albanian alternative text.
+
+Create an exercise with type **Picture selection**, instruction `Zgjidh figurën që tregon një
+përshëndetje.` and position 2. Add two image options and mark exactly one correct. Set reviewer,
+review time, and status **Published**.
+
+### Missing word — position 3
+
+Create an exercise with type **Missing word**:
+
+- Instruction: `Plotëso fjalën që mungon.`
+- German prompt: `Guten ____!`
+- Expected answer: `Morgen`
+- Position: 3
+- Review status: **Published**, with reviewer and review time
+
+No answer options are required.
+
+### Word ordering — position 4
+
+Create an exercise with type **Word ordering**:
+
+- Instruction: `Vendosi fjalët në rendin e saktë.`
+- Expected answer: `Ich heiße Arta`
+- Position: 4
+- Review status: **Published**, with reviewer and review time
+
+No answer options are required.
+
+Open the lesson as a learner and verify:
+
+1. Picture selection displays image cards and grades the chosen image.
+2. Translation choice displays text options and rejects an option from another exercise.
+3. Missing word accepts `morgen` with different capitalization and surrounding spaces.
+4. Word ordering displays shuffled word buttons, supports **Fillo përsëri**, and reconstructs the
+   selected sentence.
+5. The lesson becomes **Përfunduar** only after every published exercise has an attempt.
+
+Publishing checks: a picture option without an image, a published text exercise without its
+expected answer, or a published choice exercise without exactly one correct option must be rejected.

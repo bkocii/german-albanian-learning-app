@@ -4,7 +4,7 @@ Last updated: 24 September 2026
 
 ## Current milestone
 
-Milestone 2 — Course and learning engine.
+Milestone 3 — Audio and speech.
 
 ## Implemented
 
@@ -24,12 +24,13 @@ Milestone 2 — Course and learning engine.
 - Learner course catalog showing only published levels, units, and lessons
 - Exercise-by-exercise lesson player with immediate answer feedback
 - Learner lesson progress, completion time, and immutable exercise attempts
-- Six automated course-model and six learning-flow tests (23 project tests total)
+- Dedicated picture selection, translation choice, missing-word, and word-order interactions
+- Publishing validation for expected text, picture options, and exactly one correct choice
+- Eight automated course-model and eight learning-flow tests (27 project tests total)
 
 ## Next task
 
-Implement the dedicated picture choice, translation choice, missing word, and word ordering
-exercise interactions.
+Add approved German lesson audio and the dedicated listening-exercise interaction.
 
 ## Constraints
 

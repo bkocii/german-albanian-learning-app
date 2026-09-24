@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.core.exceptions import ValidationError
+from django.forms.models import BaseInlineFormSet
 
 from .models import (
     CEFRLevel,
@@ -21,8 +23,31 @@ class VocabularyInline(admin.TabularInline):
     extra = 0
 
 
+class ExerciseOptionInlineFormSet(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        if any(self.errors) or self.instance.review_status == Exercise.ReviewStatus.DRAFT:
+            return
+        choice_types = {
+            Exercise.Type.PICTURE_CHOICE,
+            Exercise.Type.TRANSLATION_CHOICE,
+        }
+        if self.instance.exercise_type not in choice_types:
+            return
+        active_forms = [
+            form
+            for form in self.forms
+            if form.cleaned_data and not form.cleaned_data.get("DELETE", False)
+        ]
+        if len(active_forms) < 2:
+            raise ValidationError("Published choice exercises require at least two options.")
+        if sum(bool(form.cleaned_data.get("is_correct")) for form in active_forms) != 1:
+            raise ValidationError("Published choice exercises require exactly one correct option.")
+
+
 class ExerciseOptionInline(admin.TabularInline):
     model = ExerciseOption
+    formset = ExerciseOptionInlineFormSet
     extra = 0
 
 

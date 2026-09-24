@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ exercise.lesson.title_sq }}{% endblock %}
 
@@ -45,22 +46,45 @@
                 {% endif %}
             </div>
         {% else %}
-            <form method="post" class="exercise-form">
+            <form method="post" class="exercise-form"{% if exercise.exercise_type == 'word_order' %} data-word-order-form{% endif %}>
                 {% csrf_token %}
-                {% if exercise.options.all %}
+                {% if exercise.exercise_type == 'picture_choice' %}
+                    <fieldset class="option-list picture-options">
+                        <legend class="sr-only">Zgjidhni figurën e saktë</legend>
+                        {% for option in exercise.options.all %}
+                            <label class="option-card picture-option">
+                                <input type="radio" name="option" value="{{ option.pk }}" required>
+                                <img src="{{ option.image.file.url }}" alt="{{ option.image.alt_text_sq }}">
+                                {% if option.text_de %}<span lang="de">{{ option.text_de }}</span>{% endif %}
+                                {% if option.text_sq %}<small>{{ option.text_sq }}</small>{% endif %}
+                            </label>
+                        {% endfor %}
+                    </fieldset>
+                {% elif exercise.exercise_type == 'translation_choice' %}
                     <fieldset class="option-list">
                         <legend class="sr-only">Zgjidhni një përgjigje</legend>
                         {% for option in exercise.options.all %}
                             <label class="option-card">
                                 <input type="radio" name="option" value="{{ option.pk }}" required>
-                                {% if option.image %}
-                                    <img src="{{ option.image.file.url }}" alt="{{ option.image.alt_text_sq }}">
-                                {% endif %}
                                 <span lang="de">{{ option.text_de }}</span>
                                 {% if option.text_sq %}<small>{{ option.text_sq }}</small>{% endif %}
                             </label>
                         {% endfor %}
                     </fieldset>
+                {% elif exercise.exercise_type == 'missing_word' %}
+                    <label for="answer">Përgjigjja juaj</label>
+                    <input id="answer" name="answer" type="text" autocomplete="off" required>
+                {% elif exercise.exercise_type == 'word_order' %}
+                    <div class="word-answer" data-word-answer aria-live="polite">
+                        <span class="muted">Zgjidhni fjalët sipas radhës.</span>
+                    </div>
+                    <div class="word-bank" data-word-bank>
+                        {% for token in word_tokens %}
+                            <button class="word-token" type="button" data-word-token value="{{ token }}">{{ token }}</button>
+                        {% endfor %}
+                    </div>
+                    <input data-word-order-input name="answer" type="hidden" required>
+                    <button class="link-button word-reset" type="button" data-word-reset>Fillo përsëri</button>
                 {% else %}
                     <label for="answer">Përgjigjja juaj</label>
                     <input id="answer" name="answer" type="text" autocomplete="off" required>
@@ -70,4 +94,10 @@
         {% endif %}
     </article>
 </section>
+{% endblock %}
+
+{% block scripts %}
+    {% if exercise.exercise_type == 'word_order' %}
+        <script src="{% static 'js/exercise-player.js' %}" defer></script>
+    {% endif %}
 {% endblock %}

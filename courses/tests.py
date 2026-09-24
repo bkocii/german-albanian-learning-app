@@ -110,3 +110,28 @@ class CourseModelTests(TestCase):
         option = ExerciseOption(exercise=exercise, position=1)
         with self.assertRaises(ValidationError):
             option.full_clean()
+
+    def test_published_word_order_requires_expected_answer(self):
+        reviewer = get_user_model().objects.create_user(
+            email="word-reviewer@example.com", password="secure-test-password"
+        )
+        exercise = Exercise(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.WORD_ORDER,
+            instructions_sq="Vendosi fjalët në radhë.",
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=reviewer,
+            reviewed_at=timezone.now(),
+        )
+        with self.assertRaisesMessage(ValidationError, "requires an expected answer"):
+            exercise.full_clean()
+
+    def test_picture_option_requires_image(self):
+        exercise = Exercise.objects.create(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.PICTURE_CHOICE,
+            instructions_sq="Zgjidh figurën.",
+        )
+        option = ExerciseOption(exercise=exercise, text_de="Hallo", position=1)
+        with self.assertRaisesMessage(ValidationError, "require an image"):
+            option.full_clean()

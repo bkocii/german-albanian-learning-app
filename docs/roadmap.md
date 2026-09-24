@@ -14,7 +14,7 @@
 - [x] Model levels, units, lessons, vocabulary, and licensed assets
 - [x] Model reviewed exercises and answer options
 - [x] Implement the lesson player and progress tracking
-- [ ] Implement picture choice, translation choice, missing word, and word ordering
+- [x] Implement picture choice, translation choice, missing word, and word ordering
 
 ## M3 — Audio and speech
 

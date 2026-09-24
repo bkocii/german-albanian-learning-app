@@ -142,3 +142,38 @@ class LessonPlayerTests(TestCase):
         self.client.logout()
         response = self.client.get(reverse("learning:catalog"))
         self.assertRedirects(response, f"{reverse('accounts:login')}?next=/learn/")
+
+    def test_missing_word_accepts_normalized_text_answer(self):
+        exercise = Exercise.objects.create(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.MISSING_WORD,
+            instructions_sq="Plotëso fjalën.",
+            prompt_de="Guten ____!",
+            expected_answer="Morgen",
+            position=2,
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=self.reviewer,
+            reviewed_at=timezone.now(),
+        )
+        self.client.post(
+            reverse("learning:exercise", args=(exercise.pk,)), {"answer": "  morgen  "}
+        )
+        self.assertTrue(ExerciseAttempt.objects.get(exercise=exercise).is_correct)
+
+    def test_word_order_renders_tokens_and_records_ordered_answer(self):
+        exercise = Exercise.objects.create(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.WORD_ORDER,
+            instructions_sq="Vendosi fjalët në radhë.",
+            expected_answer="Ich heiße Arta",
+            position=2,
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=self.reviewer,
+            reviewed_at=timezone.now(),
+        )
+        url = reverse("learning:exercise", args=(exercise.pk,))
+        response = self.client.get(url)
+        self.assertContains(response, "data-word-order-form")
+        self.assertContains(response, "data-word-token", count=3)
+        self.client.post(url, {"answer": "Ich heiße Arta"})
+        self.assertTrue(ExerciseAttempt.objects.get(exercise=exercise).is_correct)

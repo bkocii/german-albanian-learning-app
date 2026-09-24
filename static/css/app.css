@@ -63,6 +63,16 @@ input[type="text"], input[type="email"], input[type="password"] { width: 100%; p
 .option-card:has(input:checked) { border-color: #2457d6; background: #f0f4ff; }
 .option-card img { grid-column: 1 / -1; width: 100%; max-height: 13rem; object-fit: contain; }
 .option-card small { grid-column: 2; color: #667085; }
+.picture-options { grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
+.picture-option { display: flex; flex-direction: column; align-items: stretch; }
+.picture-option input { align-self: flex-start; }
+.picture-option img { aspect-ratio: 4 / 3; border-radius: 0.5rem; object-fit: cover; }
+.word-answer { min-height: 3.5rem; padding: 1rem; border: 2px dashed #b9c2d3; border-radius: 0.75rem; font-size: 1.15rem; }
+.word-bank { display: flex; flex-wrap: wrap; gap: 0.65rem; }
+.word-token { padding: 0.65rem 0.85rem; border: 1px solid #9ca8bc; border-radius: 0.55rem; background: #ffffff; color: #172033; cursor: pointer; font: inherit; font-weight: 700; }
+.word-token:hover { border-color: #2457d6; }
+.word-token:disabled { opacity: 0.35; cursor: default; }
+.word-reset { justify-self: start; }
 .answer-feedback { display: grid; gap: 0.3rem; margin-top: 1.5rem; padding: 1rem; border-radius: 0.7rem; }
 .answer-feedback.correct { background: #def7e8; color: #17653a; }
 .answer-feedback.incorrect { background: #fff1cc; color: #714b00; }

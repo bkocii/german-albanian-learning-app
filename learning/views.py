@@ -1,3 +1,5 @@
+import random
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, OuterRef, Prefetch
@@ -21,6 +23,15 @@ def _published_exercises(lesson):
 
 def _normalize_answer(value):
     return " ".join(value.casefold().split())
+
+
+def _word_tokens(exercise, learner):
+    tokens = exercise.expected_answer.split()
+    original = tokens.copy()
+    random.Random(f"{learner.pk}:{exercise.pk}").shuffle(tokens)
+    if len(tokens) > 1 and tokens == original:
+        tokens = tokens[1:] + tokens[:1]
+    return tokens
 
 
 @login_required
@@ -86,10 +97,14 @@ def exercise_player(request, exercise_id):
         option = None
         answer_text = request.POST.get("answer", "").strip()
         option_id = request.POST.get("option")
-        if option_id:
+        choice_types = {
+            Exercise.Type.PICTURE_CHOICE,
+            Exercise.Type.TRANSLATION_CHOICE,
+        }
+        if exercise.exercise_type in choice_types and option_id:
             option = get_object_or_404(ExerciseOption, pk=option_id, exercise=exercise)
             is_correct = option.is_correct
-        elif answer_text:
+        elif exercise.exercise_type not in choice_types and answer_text:
             is_correct = _normalize_answer(answer_text) == _normalize_answer(
                 exercise.expected_answer
             )
@@ -105,7 +120,16 @@ def exercise_player(request, exercise_id):
             is_correct=is_correct,
         )
         progress.save(update_fields=["last_activity_at"])
-        if index == len(exercises) - 1:
+        attempted_exercise_count = (
+            ExerciseAttempt.objects.filter(
+                learner=request.user,
+                exercise_id__in=exercise_ids,
+            )
+            .values("exercise_id")
+            .distinct()
+            .count()
+        )
+        if attempted_exercise_count == len(exercises):
             progress.completed_at = timezone.now()
             progress.save(update_fields=["completed_at", "last_activity_at"])
         result_url = reverse("learning:exercise", kwargs={"exercise_id": exercise.pk})
@@ -126,5 +150,10 @@ def exercise_player(request, exercise_id):
         "progress": progress,
         "step_number": index + 1,
         "step_total": len(exercises),
+        "word_tokens": (
+            _word_tokens(exercise, request.user)
+            if exercise.exercise_type == Exercise.Type.WORD_ORDER
+            else []
+        ),
     }
     return render(request, "learning/exercise_player.html", context)

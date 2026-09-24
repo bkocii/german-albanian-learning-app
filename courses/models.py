@@ -197,6 +197,13 @@ class Exercise(OrderedModel):
                 errors["review_status"] = "A draft cannot contain review details."
         elif not self.reviewed_by_id or not self.reviewed_at:
             errors["review_status"] = "Reviewed and published exercises need a reviewer and time."
+        text_answer_types = {self.Type.MISSING_WORD, self.Type.WORD_ORDER}
+        if (
+            self.review_status == self.ReviewStatus.PUBLISHED
+            and self.exercise_type in text_answer_types
+            and not self.expected_answer.strip()
+        ):
+            errors["expected_answer"] = "This published exercise requires an expected answer."
         if errors:
             raise ValidationError(errors)
 
@@ -232,6 +239,12 @@ class ExerciseOption(OrderedModel):
     def clean(self):
         if self.image and self.image.kind != MediaAsset.Kind.IMAGE:
             raise ValidationError({"image": "The selected asset must be an image."})
+        if (
+            self.exercise_id
+            and self.exercise.exercise_type == Exercise.Type.PICTURE_CHOICE
+            and not self.image_id
+        ):
+            raise ValidationError({"image": "Picture-selection options require an image."})
 
     def __str__(self):
         return self.text_de or self.text_sq or f"Image option {self.position}"

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Krijo llogari{% endblock %}
+
+{% block content %}
+<section class="card auth-card">
+    <h1>Krijo llogari</h1>
+    <p>Pas regjistrimit do të dërgojmë një lidhje për verifikimin e emailit.</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="button" type="submit">Regjistrohu</button>
+    </form>
+    <p class="muted">Keni llogari? <a href="{% url 'accounts:login' %}">Hyni këtu</a>.</p>
+</section>
+{% endblock %}

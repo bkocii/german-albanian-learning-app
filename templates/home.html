@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Mëso gjermanisht{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <p class="eyebrow">Gjermanisht për shqipfolës</p>
+    <h1>Mëso me hapa të vegjël dhe ushtrime praktike.</h1>
+    <p>Fjalor, dëgjim, shkrim dhe të folur—duke filluar nga niveli A1.</p>
+    <div class="actions">
+        <a class="button" href="{% url 'accounts:register' %}">Fillo tani</a>
+        <a class="button secondary" href="{% url 'accounts:login' %}">Kam llogari</a>
+    </div>
+</section>
+{% endblock %}

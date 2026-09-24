@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Lidhja nuk vlen{% endblock %}
+
+{% block content %}
+<section class="card auth-card">
+    <h1>Lidhja nuk vlen më</h1>
+    <p>Lidhja është e pasaktë ose ka skaduar.</p>
+    <a class="button" href="{% url 'accounts:resend-verification' %}">Kërko lidhje të re</a>
+</section>
+{% endblock %}

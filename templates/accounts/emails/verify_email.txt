@@ -1,0 +1,7 @@
+Përshëndetje {{ user.first_name|default:user.email }},
+
+Hapeni lidhjen më poshtë për të verifikuar emailin dhe aktivizuar llogarinë:
+
+{{ verification_url }}
+
+Nëse nuk e keni krijuar këtë llogari, mund ta injoroni këtë mesazh.

@@ -1,3 +1,1 @@
-from django.db import models
-
-# Create your models here.
+"""Course-domain models will be introduced in the next milestone."""

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Kontrolloni emailin{% endblock %}
+
+{% block content %}
+<section class="card auth-card">
+    <h1>Kontrolloni emailin</h1>
+    <p>
+        Nëse adresa është e vlefshme, lidhja e verifikimit është dërguar
+        {% if verification_email %}te <strong>{{ verification_email }}</strong>{% endif %}.
+    </p>
+    <p>Lidhja duhet hapur para se të hyni në llogari.</p>
+    <a href="{% url 'accounts:resend-verification' %}">Dërgoje përsëri lidhjen</a>
+</section>
+{% endblock %}

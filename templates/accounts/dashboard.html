@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Paneli{% endblock %}
+
+{% block content %}
+<section class="card">
+    <p class="eyebrow">Mirë se erdhët</p>
+    <h1>{{ request.user.first_name|default:request.user.email }}</h1>
+    <p>Llogaria është gati. Kursi i parë A1 do të shtohet në hapin tjetër.</p>
+</section>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Hyr{% endblock %}
+
+{% block content %}
+<section class="card auth-card">
+    <h1>Hyr në llogari</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+        <button class="button" type="submit">Hyr</button>
+    </form>
+    <p><a href="{% url 'accounts:password-reset' %}">Keni harruar fjalëkalimin?</a></p>
+    <p><a href="{% url 'accounts:resend-verification' %}">Nuk e morët emailin e verifikimit?</a></p>
+</section>
+{% endblock %}

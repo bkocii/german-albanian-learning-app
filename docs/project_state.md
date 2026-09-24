@@ -4,7 +4,7 @@ Last updated: 24 September 2026
 
 ## Current milestone
 
-Milestone 1 — Foundation.
+Milestone 2 — Course and learning engine.
 
 ## Implemented
 
@@ -17,11 +17,15 @@ Milestone 1 — Foundation.
 - One simultaneous active browser session per account
 - Short-window throttling for account submission endpoints
 - Eleven automated account tests
+- Ordered CEFR level, unit, lesson, and vocabulary models
+- Licensed image/audio asset records with source and attribution metadata
+- Six exercise types with review state, reviewer audit data, and answer options
+- Django administration screens for managing course content
+- Six automated course-model tests (17 project tests total)
 
 ## Next task
 
-Build the course-domain data model for CEFR levels, units, lessons, vocabulary,
-licensed assets, reviewed exercises, and answer options.
+Build the lesson player and learner progress model around published course content.
 
 ## Constraints
 

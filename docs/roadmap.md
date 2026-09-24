@@ -11,8 +11,8 @@
 
 ## M2 — Course and learning engine
 
-- [ ] Model levels, units, lessons, vocabulary, and licensed assets
-- [ ] Model reviewed exercises and answer options
+- [x] Model levels, units, lessons, vocabulary, and licensed assets
+- [x] Model reviewed exercises and answer options
 - [ ] Implement the lesson player and progress tracking
 - [ ] Implement picture choice, translation choice, missing word, and word ordering
 

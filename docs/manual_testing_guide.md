@@ -63,3 +63,20 @@ on another device; the second browser remains signed in.
 Repeated account-form submissions from one address are temporarily blocked after the configured
 limit. Development defaults are 10 submissions in 300 seconds. Restarting the local server clears
 the in-memory development counter.
+
+## Course content administration
+
+After applying migrations, sign in at `http://127.0.0.1:8000/admin/` and confirm that the
+**Courses** section contains CEFR levels, units, lessons, vocabulary entries, media assets,
+exercises, and exercise options.
+
+Create content in this order:
+
+1. Create level A1.
+2. Create Unit 1, then add its lessons.
+3. Add vocabulary entries and licensed media records.
+4. Create exercises as drafts and add answer options where required.
+5. Change an exercise to reviewed or published only after selecting a reviewer and review time.
+
+Expected result: duplicate positions inside the same parent are rejected, media fields accept only
+the appropriate image/audio asset type, and reviewed content retains its reviewer audit data.

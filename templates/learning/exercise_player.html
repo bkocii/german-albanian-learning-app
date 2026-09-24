@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}{{ exercise.lesson.title_sq }}{% endblock %}
+
+{% block content %}
+<section class="lesson-player">
+    <div class="player-header">
+        <a href="{% url 'learning:catalog' %}">← Kurset</a>
+        <span>Ushtrimi {{ step_number }} nga {{ step_total }}</span>
+    </div>
+    <div class="progress-track" aria-label="Përparimi i mësimit">
+        <span style="width: {% widthratio step_number step_total 100 %}%"></span>
+    </div>
+
+    <article class="card exercise-card">
+        <p class="eyebrow">{{ exercise.lesson.title_sq }}</p>
+        <h1>{{ exercise.instructions_sq }}</h1>
+
+        {% if exercise.image %}
+            <img class="exercise-image" src="{{ exercise.image.file.url }}" alt="{{ exercise.image.alt_text_sq }}">
+        {% endif %}
+        {% if exercise.audio %}
+            <audio controls preload="metadata" src="{{ exercise.audio.file.url }}">
+                Shfletuesi juaj nuk e mbështet audion.
+            </audio>
+        {% endif %}
+        {% if exercise.prompt_de %}<p class="exercise-prompt" lang="de">{{ exercise.prompt_de }}</p>{% endif %}
+        {% if exercise.prompt_sq %}<p>{{ exercise.prompt_sq }}</p>{% endif %}
+
+        {% if attempt %}
+            <div class="answer-feedback{% if attempt.is_correct %} correct{% else %} incorrect{% endif %}" aria-live="polite">
+                <strong>{% if attempt.is_correct %}Saktë!{% else %}Jo ende.{% endif %}</strong>
+                {% if not attempt.is_correct and exercise.expected_answer %}
+                    <span>Përgjigjja: {{ exercise.expected_answer }}</span>
+                {% endif %}
+            </div>
+            <div class="actions">
+                {% if next_exercise %}
+                    <a class="button" href="{% url 'learning:exercise' next_exercise.pk %}">Vazhdo</a>
+                {% else %}
+                    <a class="button" href="{% url 'learning:catalog' %}">Përfundo mësimin</a>
+                {% endif %}
+                {% if not attempt.is_correct %}
+                    <a class="button secondary" href="{% url 'learning:exercise' exercise.pk %}">Provo përsëri</a>
+                {% endif %}
+            </div>
+        {% else %}
+            <form method="post" class="exercise-form">
+                {% csrf_token %}
+                {% if exercise.options.all %}
+                    <fieldset class="option-list">
+                        <legend class="sr-only">Zgjidhni një përgjigje</legend>
+                        {% for option in exercise.options.all %}
+                            <label class="option-card">
+                                <input type="radio" name="option" value="{{ option.pk }}" required>
+                                {% if option.image %}
+                                    <img src="{{ option.image.file.url }}" alt="{{ option.image.alt_text_sq }}">
+                                {% endif %}
+                                <span lang="de">{{ option.text_de }}</span>
+                                {% if option.text_sq %}<small>{{ option.text_sq }}</small>{% endif %}
+                            </label>
+                        {% endfor %}
+                    </fieldset>
+                {% else %}
+                    <label for="answer">Përgjigjja juaj</label>
+                    <input id="answer" name="answer" type="text" autocomplete="off" required>
+                {% endif %}
+                <button class="button" type="submit">Kontrollo</button>
+            </form>
+        {% endif %}
+    </article>
+</section>
+{% endblock %}

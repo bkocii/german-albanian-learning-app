@@ -6,6 +6,9 @@
 <section class="card">
     <p class="eyebrow">Mirë se erdhët</p>
     <h1>{{ request.user.first_name|default:request.user.email }}</h1>
-    <p>Llogaria është gati. Kursi i parë A1 do të shtohet në hapin tjetër.</p>
+    <p>Llogaria është gati. Hapni kursin për të parë mësimet e publikuara.</p>
+    <div class="actions">
+        <a class="button" href="{% url 'learning:catalog' %}">Hap kurset</a>
+    </div>
 </section>
 {% endblock %}

@@ -80,3 +80,19 @@ Create content in this order:
 
 Expected result: duplicate positions inside the same parent are rejected, media fields accept only
 the appropriate image/audio asset type, and reviewed content retains its reviewer audit data.
+
+## Lesson player and progress
+
+Create a small published example in the administration site:
+
+1. Publish level **A1**, Unit 1, and Lesson 1.
+2. Add a translation-choice exercise with status **Published**, a reviewer, and review time.
+3. Add two options: `Përshëndetje` marked correct and `Mirupafshim` marked incorrect.
+4. Sign in as a learner, open **Paneli**, select **Hap kurset**, and start the lesson.
+5. Submit the incorrect answer, retry, and then submit the correct answer.
+6. Return to the catalog and confirm the lesson shows **Përfunduar**.
+7. In the administration site, inspect **Lesson progress** and **Exercise attempts**.
+
+Expected result: only published content appears, both attempts remain recorded, feedback appears
+after each answer, and the final exercise completes the lesson. Draft exercises return 404 if their
+address is entered directly.

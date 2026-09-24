@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Kurset{% endblock %}
+
+{% block content %}
+<section class="page-heading">
+    <p class="eyebrow">Mësimi juaj</p>
+    <h1>Kurset e gjermanishtes</h1>
+    <p>Zgjidhni një mësim të publikuar dhe vazhdoni me ritmin tuaj.</p>
+</section>
+
+{% for level in levels %}
+    <section class="course-level">
+        <h2>{{ level.code }} — {{ level.title_sq }}</h2>
+        {% for unit in level.units.all %}
+            <article class="card course-unit">
+                <p class="eyebrow">Njësia {{ unit.position }}</p>
+                <h3>{{ unit.title_sq }}</h3>
+                {% if unit.summary_sq %}<p>{{ unit.summary_sq }}</p>{% endif %}
+                <div class="lesson-list">
+                    {% for lesson in unit.lessons.all %}
+                        <a class="lesson-row" href="{% url 'learning:lesson-start' level.code unit.slug lesson.slug %}">
+                            <span>
+                                <strong>{{ lesson.position }}. {{ lesson.title_sq }}</strong>
+                                <small>{{ lesson.title_de }}</small>
+                            </span>
+                            <span class="status-pill{% if lesson.learner_completed %} complete{% endif %}">
+                                {% if lesson.learner_completed %}Përfunduar{% else %}Fillo{% endif %}
+                            </span>
+                        </a>
+                    {% empty %}
+                        <p class="muted">Nuk ka mësime të publikuara.</p>
+                    {% endfor %}
+                </div>
+            </article>
+        {% empty %}
+            <p class="muted">Nuk ka njësi të publikuara.</p>
+        {% endfor %}
+    </section>
+{% empty %}
+    <section class="card">
+        <h2>Kursi po përgatitet</h2>
+        <p>Nuk ka ende nivele të publikuara.</p>
+    </section>
+{% endfor %}
+{% endblock %}

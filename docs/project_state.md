@@ -21,11 +21,15 @@ Milestone 2 — Course and learning engine.
 - Licensed image/audio asset records with source and attribution metadata
 - Six exercise types with review state, reviewer audit data, and answer options
 - Django administration screens for managing course content
-- Six automated course-model tests (17 project tests total)
+- Learner course catalog showing only published levels, units, and lessons
+- Exercise-by-exercise lesson player with immediate answer feedback
+- Learner lesson progress, completion time, and immutable exercise attempts
+- Six automated course-model and six learning-flow tests (23 project tests total)
 
 ## Next task
 
-Build the lesson player and learner progress model around published course content.
+Implement the dedicated picture choice, translation choice, missing word, and word ordering
+exercise interactions.
 
 ## Constraints
 

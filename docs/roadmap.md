@@ -20,7 +20,7 @@
 
 - [x] Add approved German lesson audio
 - [x] Add listening exercises
-- [ ] Record browser microphone input safely
+- [x] Record browser microphone input safely
 - [ ] Add `faster-whisper` transcription and expected-word feedback
 
 ## M4 — First complete unit

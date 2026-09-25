@@ -38,6 +38,10 @@
 - Audio assets record their spoken language and require approver audit data before use.
 - Published listening exercises require approved German audio and an expected text answer.
 - Listening audio uses native browser playback and can be replayed without creating new records.
+- Microphone permission is requested only after an explicit learner action.
+- The microphone check limits recording time, releases device tracks, and keeps audio in browser
+  memory only; refreshing or leaving the page discards it.
+- Server upload and transcription are intentionally deferred to the speech-processing service.
 - Speech processing returns feedback to the learning flow without storing raw audio by default.
 - Provider-specific speech code must stay behind a small service interface.
 - Production throttling must use a shared cache when more than one application process runs.

@@ -28,11 +28,13 @@ Milestone 3 — Audio and speech.
 - Publishing validation for expected text, picture options, and exactly one correct choice
 - German audio approval metadata with approver and timestamp audit data
 - Dedicated listening interaction with repeatable browser playback and typed German answers
-- Ten automated course-model and nine learning-flow tests (30 project tests total)
+- Click-triggered, 15-second browser microphone check with local playback and deletion
+- Browser-only microphone audio that is never uploaded or stored during the check
+- Ten automated course-model, nine learning-flow, and three microphone tests (33 total)
 
 ## Next task
 
-Record browser microphone input safely for speaking exercises.
+Add temporary server processing and `faster-whisper` German transcription for speaking exercises.
 
 ## Constraints
 

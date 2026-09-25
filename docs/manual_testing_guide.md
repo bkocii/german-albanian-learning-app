@@ -182,3 +182,21 @@ Validation checks:
 2. A listening exercise cannot be published with an unapproved audio asset.
 3. A listening exercise cannot be published with Albanian or language-neutral audio.
 4. A published listening exercise requires both an audio asset and expected answer.
+
+## Browser microphone check
+
+Sign in as a learner and open **Paneli → Testo mikrofonin**. Use Chrome or Edge at
+`http://127.0.0.1:8000/`; browsers permit microphone access on localhost during development.
+
+1. Confirm the browser does not request microphone permission when the page first opens.
+2. Select **Fillo regjistrimin** and allow microphone access when prompted.
+3. Speak for a few seconds and select **Ndalo**.
+4. Play the recording under **Dëgjo regjistrimin** and confirm your voice is audible.
+5. Select **Fshi regjistrimin** and confirm the playback control disappears.
+6. Record again and leave or refresh the page; confirm the old recording is no longer available.
+7. Start another recording without selecting **Ndalo**; confirm it stops automatically after 15
+   seconds.
+
+Permission-denial test: block microphone access in the browser and try again. The page should show
+an Albanian explanation and remain usable. No recording from this check is uploaded to Django or
+written to disk.

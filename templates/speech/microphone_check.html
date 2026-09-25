@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Testo mikrofonin{% endblock %}
+
+{% block content %}
+<section class="card microphone-card" data-microphone-check data-max-seconds="{{ max_recording_seconds }}">
+    <p class="eyebrow">Kontrolli i mikrofonit</p>
+    <h1>Testo regjistrimin e zërit</h1>
+    <p>
+        Regjistrimi zgjat deri në {{ max_recording_seconds }} sekonda. Në këtë hap audioja qëndron
+        vetëm në këtë shfletues dhe nuk dërgohet në server.
+    </p>
+    <p class="muted">Mikrofoni aktivizohet vetëm pasi të klikoni butonin më poshtë.</p>
+
+    <div class="microphone-status" data-microphone-status role="status" aria-live="polite">
+        Gati për testim.
+    </div>
+
+    <div class="actions">
+        <button class="button" type="button" data-record-start>Fillo regjistrimin</button>
+        <button class="button secondary" type="button" data-record-stop disabled>Ndalo</button>
+        <button class="link-button" type="button" data-record-delete hidden>Fshi regjistrimin</button>
+    </div>
+
+    <div class="recording-preview" data-recording-preview hidden>
+        <h2>Dëgjo regjistrimin</h2>
+        <audio controls data-recording-audio></audio>
+        <p class="muted">Rifreskimi ose mbyllja e faqes e heq këtë regjistrim.</p>
+    </div>
+
+    <noscript>JavaScript duhet të jetë aktiv për regjistrimin e mikrofonit.</noscript>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/microphone-check.js' %}" defer></script>
+{% endblock %}

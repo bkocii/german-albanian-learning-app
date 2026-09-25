@@ -33,14 +33,18 @@ class CourseModelTests(TestCase):
             position=1,
         )
 
-    def create_asset(self, kind):
+    def create_asset(self, kind, **overrides):
+        values = {
+            "title": f"Test {kind}",
+            "kind": kind,
+            "file": SimpleUploadedFile(f"test.{kind}", b"test"),
+            "creator": "Course team",
+            "license_name": "Original work",
+            "acquired_on": date.today(),
+        }
+        values.update(overrides)
         return MediaAsset.objects.create(
-            title=f"Test {kind}",
-            kind=kind,
-            file=SimpleUploadedFile(f"test.{kind}", b"test"),
-            creator="Course team",
-            license_name="Original work",
-            acquired_on=date.today(),
+            **values,
         )
 
     def test_course_structure_orders_content(self):
@@ -135,3 +139,38 @@ class CourseModelTests(TestCase):
         option = ExerciseOption(exercise=exercise, text_de="Hallo", position=1)
         with self.assertRaisesMessage(ValidationError, "require an image"):
             option.full_clean()
+
+    def test_approved_audio_requires_approval_metadata(self):
+        asset = MediaAsset(
+            title="German greeting",
+            kind=MediaAsset.Kind.AUDIO,
+            language_code=MediaAsset.Language.GERMAN,
+            file=SimpleUploadedFile("hallo.mp3", b"test"),
+            creator="Course team",
+            license_name="Original work",
+            acquired_on=date.today(),
+            is_approved=True,
+        )
+        with self.assertRaisesMessage(ValidationError, "require an approver"):
+            asset.full_clean()
+
+    def test_published_listening_requires_approved_german_audio(self):
+        reviewer = get_user_model().objects.create_user(
+            email="audio-reviewer@example.com", password="secure-test-password"
+        )
+        audio = self.create_asset(
+            MediaAsset.Kind.AUDIO,
+            language_code=MediaAsset.Language.GERMAN,
+        )
+        exercise = Exercise(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.LISTENING,
+            instructions_sq="Dëgjo dhe shkruaj.",
+            expected_answer="Guten Morgen",
+            audio=audio,
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=reviewer,
+            reviewed_at=timezone.now(),
+        )
+        with self.assertRaisesMessage(ValidationError, "must be approved"):
+            exercise.full_clean()

@@ -82,9 +82,18 @@ class VocabularyEntryAdmin(admin.ModelAdmin):
 
 @admin.register(MediaAsset)
 class MediaAssetAdmin(admin.ModelAdmin):
-    list_display = ("title", "kind", "creator", "license_name", "acquired_on")
-    list_filter = ("kind", "license_name")
+    list_display = (
+        "title",
+        "kind",
+        "language_code",
+        "creator",
+        "license_name",
+        "is_approved",
+        "approved_by",
+    )
+    list_filter = ("kind", "language_code", "is_approved", "license_name")
     search_fields = ("title", "creator", "attribution_text")
+    autocomplete_fields = ("approved_by",)
 
 
 @admin.register(Exercise)

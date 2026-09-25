@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from courses.models import CEFRLevel, Exercise, ExerciseOption, Lesson, Unit
+from courses.models import CEFRLevel, Exercise, ExerciseOption, Lesson, MediaAsset, Unit
 
 from .models import ExerciseAttempt, LessonProgress
 
@@ -176,4 +176,35 @@ class LessonPlayerTests(TestCase):
         self.assertContains(response, "data-word-order-form")
         self.assertContains(response, "data-word-token", count=3)
         self.client.post(url, {"answer": "Ich heiße Arta"})
+        self.assertTrue(ExerciseAttempt.objects.get(exercise=exercise).is_correct)
+
+    def test_listening_exercise_plays_audio_and_records_text_answer(self):
+        audio = MediaAsset.objects.create(
+            title="Guten Morgen audio",
+            kind=MediaAsset.Kind.AUDIO,
+            language_code=MediaAsset.Language.GERMAN,
+            file="course-assets/guten-morgen.mp3",
+            creator="Course team",
+            license_name="Original work",
+            acquired_on=timezone.localdate(),
+            is_approved=True,
+            approved_by=self.reviewer,
+            approved_at=timezone.now(),
+        )
+        exercise = Exercise.objects.create(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.LISTENING,
+            instructions_sq="Dëgjo dhe shkruaj.",
+            expected_answer="Guten Morgen",
+            audio=audio,
+            position=2,
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=self.reviewer,
+            reviewed_at=timezone.now(),
+        )
+        url = reverse("learning:exercise", args=(exercise.pk,))
+        response = self.client.get(url)
+        self.assertContains(response, "Dëgjoni audion")
+        self.assertContains(response, "guten-morgen.mp3")
+        self.client.post(url, {"answer": "guten morgen"})
         self.assertTrue(ExerciseAttempt.objects.get(exercise=exercise).is_correct)

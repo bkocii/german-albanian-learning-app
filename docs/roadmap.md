@@ -18,8 +18,8 @@
 
 ## M3 — Audio and speech
 
-- [ ] Add approved German lesson audio
-- [ ] Add listening exercises
+- [x] Add approved German lesson audio
+- [x] Add listening exercises
 - [ ] Record browser microphone input safely
 - [ ] Add `faster-whisper` transcription and expected-word feedback
 

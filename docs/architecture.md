@@ -35,6 +35,9 @@
 - Picture and translation exercises accept only an option belonging to that exercise.
 - Missing-word answers use whitespace- and case-normalized comparison.
 - Word-order exercises shuffle server-provided tokens and grade the reconstructed sentence.
+- Audio assets record their spoken language and require approver audit data before use.
+- Published listening exercises require approved German audio and an expected text answer.
+- Listening audio uses native browser playback and can be replayed without creating new records.
 - Speech processing returns feedback to the learning flow without storing raw audio by default.
 - Provider-specific speech code must stay behind a small service interface.
 - Production throttling must use a shared cache when more than one application process runs.

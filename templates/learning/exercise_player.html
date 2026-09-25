@@ -21,9 +21,14 @@
             <img class="exercise-image" src="{{ exercise.image.file.url }}" alt="{{ exercise.image.alt_text_sq }}">
         {% endif %}
         {% if exercise.audio %}
-            <audio controls preload="metadata" src="{{ exercise.audio.file.url }}">
-                Shfletuesi juaj nuk e mbështet audion.
-            </audio>
+            <div class="listening-panel">
+                {% if exercise.exercise_type == 'listening' %}
+                    <strong>Dëgjoni audion. Mund ta përsëritni sa herë të nevojitet.</strong>
+                {% endif %}
+                <audio controls preload="metadata" src="{{ exercise.audio.file.url }}">
+                    Shfletuesi juaj nuk e mbështet audion.
+                </audio>
+            </div>
         {% endif %}
         {% if exercise.prompt_de %}<p class="exercise-prompt" lang="de">{{ exercise.prompt_de }}</p>{% endif %}
         {% if exercise.prompt_sq %}<p>{{ exercise.prompt_sq }}</p>{% endif %}
@@ -85,6 +90,9 @@
                     </div>
                     <input data-word-order-input name="answer" type="hidden" required>
                     <button class="link-button word-reset" type="button" data-word-reset>Fillo përsëri</button>
+                {% elif exercise.exercise_type == 'listening' %}
+                    <label for="answer">Shkruani atë që dëgjoni në gjermanisht</label>
+                    <input id="answer" name="answer" type="text" lang="de" autocomplete="off" required>
                 {% else %}
                     <label for="answer">Përgjigjja juaj</label>
                     <input id="answer" name="answer" type="text" autocomplete="off" required>

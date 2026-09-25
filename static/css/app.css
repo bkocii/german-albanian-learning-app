@@ -57,6 +57,8 @@ input[type="text"], input[type="email"], input[type="password"] { width: 100%; p
 .progress-track span { display: block; height: 100%; background: #2457d6; }
 .exercise-image { display: block; width: min(100%, 32rem); max-height: 22rem; margin: 1rem auto; border-radius: 0.8rem; object-fit: contain; }
 .exercise-prompt { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 750; }
+.listening-panel { display: grid; gap: 0.8rem; margin: 1.25rem 0; padding: 1rem; border-radius: 0.75rem; background: #f0f4ff; }
+.listening-panel audio { width: 100%; }
 .exercise-form { display: grid; gap: 1rem; margin-top: 1.5rem; }
 .option-list { display: grid; gap: 0.75rem; padding: 0; border: 0; }
 .option-card { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 0.75rem; padding: 1rem; border: 1px solid #b9c2d3; border-radius: 0.75rem; cursor: pointer; }

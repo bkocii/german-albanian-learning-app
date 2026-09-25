@@ -144,3 +144,41 @@ Open the lesson as a learner and verify:
 
 Publishing checks: a picture option without an image, a published text exercise without its
 expected answer, or a published choice exercise without exactly one correct option must be rejected.
+
+## Approved audio and listening exercise
+
+For local testing, record yourself saying `Guten Morgen` using Windows Sound Recorder. Production
+course audio should later be reviewed for clear native or near-native German pronunciation.
+
+Create **Courses → Media assets → Add**:
+
+- Title: `Guten Morgen audio`
+- Kind: **Audio**
+- Language code: **German**
+- File: the recorded audio file
+- Creator: your name or `Course team`
+- License name: `Original work`
+- Acquired on: today's date
+- Is approved: checked
+- Approved by: your administrator account
+- Approved at: **Today / Now**
+
+Create a new exercise using the next available position:
+
+- Exercise type: **Listening**
+- Instructions sq: `Dëgjo dhe shkruaj atë që dëgjon.`
+- Expected answer: `Guten Morgen`
+- Audio: **Guten Morgen audio**
+- Review status: **Published**
+- Reviewed by: your administrator account
+- Reviewed at: **Today / Now**
+
+As a learner, open the lesson and confirm that the audio controls appear, playback can be repeated,
+and `guten morgen` is accepted as correct. The attempt must appear under **Exercise attempts**.
+
+Validation checks:
+
+1. An approved asset without **Approved by** or **Approved at** is rejected.
+2. A listening exercise cannot be published with an unapproved audio asset.
+3. A listening exercise cannot be published with Albanian or language-neutral audio.
+4. A published listening exercise requires both an audio asset and expected answer.

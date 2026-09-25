@@ -26,11 +26,13 @@ Milestone 3 — Audio and speech.
 - Learner lesson progress, completion time, and immutable exercise attempts
 - Dedicated picture selection, translation choice, missing-word, and word-order interactions
 - Publishing validation for expected text, picture options, and exactly one correct choice
-- Eight automated course-model and eight learning-flow tests (27 project tests total)
+- German audio approval metadata with approver and timestamp audit data
+- Dedicated listening interaction with repeatable browser playback and typed German answers
+- Ten automated course-model and nine learning-flow tests (30 project tests total)
 
 ## Next task
 
-Add approved German lesson audio and the dedicated listening-exercise interaction.
+Record browser microphone input safely for speaking exercises.
 
 ## Constraints
 

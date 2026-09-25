@@ -174,3 +174,18 @@ class CourseModelTests(TestCase):
         )
         with self.assertRaisesMessage(ValidationError, "must be approved"):
             exercise.full_clean()
+
+    def test_published_speaking_requires_expected_answer(self):
+        reviewer = get_user_model().objects.create_user(
+            email="speech-content-reviewer@example.com", password="secure-test-password"
+        )
+        exercise = Exercise(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.SPEAKING,
+            instructions_sq="Thuaj fjalinë.",
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=reviewer,
+            reviewed_at=timezone.now(),
+        )
+        with self.assertRaisesMessage(ValidationError, "requires an expected answer"):
+            exercise.full_clean()

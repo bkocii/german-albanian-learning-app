@@ -234,7 +234,12 @@ class Exercise(OrderedModel):
                 errors["review_status"] = "A draft cannot contain review details."
         elif not self.reviewed_by_id or not self.reviewed_at:
             errors["review_status"] = "Reviewed and published exercises need a reviewer and time."
-        text_answer_types = {self.Type.MISSING_WORD, self.Type.WORD_ORDER, self.Type.LISTENING}
+        text_answer_types = {
+            self.Type.MISSING_WORD,
+            self.Type.WORD_ORDER,
+            self.Type.LISTENING,
+            self.Type.SPEAKING,
+        }
         if (
             self.review_status == self.ReviewStatus.PUBLISHED
             and self.exercise_type in text_answer_types

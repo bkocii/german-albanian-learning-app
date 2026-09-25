@@ -1,5 +1,6 @@
 import random
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Exists, OuterRef, Prefetch
@@ -94,6 +95,9 @@ def exercise_player(request, exercise_id):
         raise Http404 from error
 
     if request.method == "POST":
+        if exercise.exercise_type == Exercise.Type.SPEAKING:
+            messages.warning(request, "Përdorni butonin e mikrofonit për këtë ushtrim.")
+            return redirect("learning:exercise", exercise_id=exercise.pk)
         option = None
         answer_text = request.POST.get("answer", "").strip()
         option_id = request.POST.get("option")
@@ -155,5 +159,6 @@ def exercise_player(request, exercise_id):
             if exercise.exercise_type == Exercise.Type.WORD_ORDER
             else []
         ),
+        "speech_max_recording_seconds": settings.SPEECH_MAX_RECORDING_SECONDS,
     }
     return render(request, "learning/exercise_player.html", context)

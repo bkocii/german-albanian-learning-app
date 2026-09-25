@@ -200,3 +200,35 @@ Sign in as a learner and open **Paneli → Testo mikrofonin**. Use Chrome or Edg
 Permission-denial test: block microphone access in the browser and try again. The page should show
 an Albanian explanation and remain usable. No recording from this check is uploaded to Django or
 written to disk.
+
+## Speaking transcription with faster-whisper
+
+Run `uv sync` after installing this change. The first real transcription downloads the configured
+`base` Whisper model and can take several minutes; later requests reuse the local model cache.
+
+Create a published exercise using the next available lesson position:
+
+- Exercise type: **Speaking**
+- Instructions sq: `Thuaje fjalinë në gjermanisht.`
+- German prompt: `Guten Morgen`
+- Expected answer: `Guten Morgen`
+- Review status: **Published**
+- Reviewed by: your administrator account
+- Reviewed at: **Today / Now**
+
+No options or course audio are required. As a learner:
+
+1. Open the speaking exercise and select **Fillo regjistrimin**.
+2. Say `Guten Morgen`, stop, and play the local preview.
+3. Select **Dërgo për kontroll** and wait for the first model download/transcription.
+4. Confirm the result shows the recognized text, matched words, and any missing words.
+5. Confirm the page says this is recognition feedback rather than a pronunciation score.
+6. Open **Admin → Learning → Exercise attempts** and confirm the recognized text was recorded.
+7. Record a different phrase and confirm missing/unexpected word feedback is shown.
+
+Safety checks:
+
+- Files larger than 5 MiB or outside WebM, Ogg, WAV, and MP4 audio are rejected.
+- Empty transcription asks the learner to retry and creates no attempt.
+- Temporary audio is deleted after both successful and failed transcription.
+- More than 10 transcription requests in 5 minutes from one learner returns a temporary limit.

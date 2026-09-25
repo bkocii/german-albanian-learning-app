@@ -4,7 +4,7 @@ Last updated: 24 September 2026
 
 ## Current milestone
 
-Milestone 3 — Audio and speech.
+Milestone 4 — First complete unit.
 
 ## Implemented
 
@@ -30,11 +30,15 @@ Milestone 3 — Audio and speech.
 - Dedicated listening interaction with repeatable browser playback and typed German answers
 - Click-triggered, 15-second browser microphone check with local playback and deletion
 - Browser-only microphone audio that is never uploaded or stored during the check
-- Ten automated course-model, nine learning-flow, and three microphone tests (33 total)
+- Temporary speaking-audio upload with format and 5 MiB size limits
+- German `faster-whisper` transcription using the CPU-friendly base/int8 defaults
+- Expected, recognized, matched, and missing-word feedback without pronunciation scoring
+- Guaranteed temporary-file deletion and per-user transcription throttling
+- Thirty-nine automated project tests
 
 ## Next task
 
-Add temporary server processing and `faster-whisper` German transcription for speaking exercises.
+Build and publish the reviewed A1 Unit 1: Greetings and Introductions content set.
 
 ## Constraints
 

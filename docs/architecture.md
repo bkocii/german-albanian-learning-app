@@ -41,7 +41,14 @@
 - Microphone permission is requested only after an explicit learner action.
 - The microphone check limits recording time, releases device tracks, and keeps audio in browser
   memory only; refreshing or leaving the page discards it.
-- Server upload and transcription are intentionally deferred to the speech-processing service.
+- Speaking recordings are limited by content type and size, written to a private temporary file,
+  transcribed in German, and deleted in a `finally` cleanup path.
+- `faster-whisper` loads one process-local model lazily; the default `base` model uses CPU `int8`
+  for an 8 GB development laptop.
+- Speech feedback compares recognized and expected words and explicitly does not claim to score
+  pronunciation quality.
+- Transcription requests are throttled per authenticated learner; multi-process production must
+  use a shared cache for consistent throttling.
 - Speech processing returns feedback to the learning flow without storing raw audio by default.
 - Provider-specific speech code must stay behind a small service interface.
 - Production throttling must use a shared cache when more than one application process runs.

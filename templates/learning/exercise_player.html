@@ -93,11 +93,42 @@
                 {% elif exercise.exercise_type == 'listening' %}
                     <label for="answer">Shkruani atë që dëgjoni në gjermanisht</label>
                     <input id="answer" name="answer" type="text" lang="de" autocomplete="off" required>
+                {% elif exercise.exercise_type == 'speaking' %}
+                    <div
+                        class="speaking-panel"
+                        data-speaking-exercise
+                        data-endpoint="{% url 'speech:transcribe-exercise' exercise.pk %}"
+                        data-max-seconds="{{ speech_max_recording_seconds }}"
+                    >
+                        <p>Thuaj në gjermanisht: <strong lang="de">{{ exercise.expected_answer }}</strong></p>
+                        <p class="muted">
+                            Rezultati tregon fjalët e njohura nga sistemi; nuk është vlerësim i shqiptimit.
+                        </p>
+                        <div class="microphone-status" data-speaking-status role="status" aria-live="polite">
+                            Gati për regjistrim.
+                        </div>
+                        <div class="actions">
+                            <button class="button" type="button" data-speaking-start>Fillo regjistrimin</button>
+                            <button class="button secondary" type="button" data-speaking-stop disabled>Ndalo</button>
+                            <button class="button secondary" type="button" data-speaking-submit disabled>Dërgo për kontroll</button>
+                        </div>
+                        <audio controls data-speaking-preview hidden></audio>
+                        <div class="speech-feedback" data-speaking-feedback hidden>
+                            <p><strong>Sistemi njohu:</strong> <span data-speaking-transcript></span></p>
+                            <p><strong>Fjalët e gjetura:</strong> <span data-speaking-matched></span></p>
+                            <p><strong>Fjalët që mungojnë:</strong> <span data-speaking-missing></span></p>
+                            <p><strong>Fjalë të tjera të njohura:</strong> <span data-speaking-unexpected></span></p>
+                            <p data-speaking-result></p>
+                            <a class="button" data-speaking-next href="{% url 'learning:catalog' %}">Vazhdo</a>
+                        </div>
+                    </div>
                 {% else %}
                     <label for="answer">Përgjigjja juaj</label>
                     <input id="answer" name="answer" type="text" autocomplete="off" required>
                 {% endif %}
-                <button class="button" type="submit">Kontrollo</button>
+                {% if exercise.exercise_type != 'speaking' %}
+                    <button class="button" type="submit">Kontrollo</button>
+                {% endif %}
             </form>
         {% endif %}
     </article>
@@ -107,5 +138,7 @@
 {% block scripts %}
     {% if exercise.exercise_type == 'word_order' %}
         <script src="{% static 'js/exercise-player.js' %}" defer></script>
+    {% elif exercise.exercise_type == 'speaking' %}
+        <script src="{% static 'js/speaking-exercise.js' %}" defer></script>
     {% endif %}
 {% endblock %}

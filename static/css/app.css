@@ -78,6 +78,19 @@ input[type="text"], input[type="email"], input[type="password"] { width: 100%; p
 .answer-feedback { display: grid; gap: 0.3rem; margin-top: 1.5rem; padding: 1rem; border-radius: 0.7rem; }
 .answer-feedback.correct { background: #def7e8; color: #17653a; }
 .answer-feedback.incorrect { background: #fff1cc; color: #714b00; }
+.correct-answer-reveal { margin-top: 0.4rem; }
+.correct-answer-reveal summary { cursor: pointer; font-weight: 700; }
+.correct-answer-reveal span { display: block; margin-top: 0.65rem; }
+.correct-answer-reveal img { display: block; width: min(100%, 18rem); margin-top: 0.75rem; border-radius: 0.6rem; }
+.success-burst { animation: success-pop 450ms ease-out; }
+@keyframes success-pop {
+    0% { opacity: 0; transform: scale(0.94); }
+    70% { transform: scale(1.025); }
+    100% { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .success-burst { animation: none; }
+}
 .microphone-card { max-width: 44rem; margin: 0 auto; }
 .microphone-status { margin-top: 1.25rem; padding: 1rem; border-radius: 0.7rem; background: #f0f4ff; font-weight: 700; }
 .recording-preview { margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid #e4e8f0; }

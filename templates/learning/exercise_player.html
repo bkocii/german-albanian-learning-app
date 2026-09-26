@@ -34,19 +34,39 @@
         {% if exercise.prompt_sq %}<p>{{ exercise.prompt_sq }}</p>{% endif %}
 
         {% if attempt %}
-            <div class="answer-feedback{% if attempt.is_correct %} correct{% else %} incorrect{% endif %}" aria-live="polite">
-                <strong>{% if attempt.is_correct %}Saktë!{% else %}Jo ende.{% endif %}</strong>
-                {% if not attempt.is_correct and exercise.expected_answer %}
-                    <span>Përgjigjja: {{ exercise.expected_answer }}</span>
+            <div
+                class="answer-feedback{% if attempt.is_correct %} correct success-burst{% else %} incorrect{% endif %}"
+                aria-live="polite"
+                {% if attempt.is_correct %}
+                    data-auto-next="{% if next_exercise %}{% url 'learning:exercise' next_exercise.pk %}{% else %}{% url 'learning:catalog' %}{% endif %}"
+                {% endif %}
+            >
+                <strong>{% if attempt.is_correct %}Saktë!{% else %}Jo e saktë.{% endif %}</strong>
+                {% if attempt.is_correct %}
+                    <span>Po vazhdojmë te ushtrimi tjetër…</span>
+                {% else %}
+                    <details class="correct-answer-reveal">
+                        <summary>Shiko përgjigjen e saktë</summary>
+                        {% if correct_option %}
+                            {% if correct_option.image %}
+                                <img src="{{ correct_option.image.file.url }}" alt="{{ correct_option.image.alt_text_sq }}">
+                            {% endif %}
+                            {% if correct_option.text_de %}<span lang="de">{{ correct_option.text_de }}</span>{% endif %}
+                            {% if correct_option.text_sq %}<span>{{ correct_option.text_sq }}</span>{% endif %}
+                        {% elif exercise.expected_answer %}
+                            <span lang="de">{{ exercise.expected_answer }}</span>
+                        {% endif %}
+                    </details>
                 {% endif %}
             </div>
             <div class="actions">
-                {% if next_exercise %}
-                    <a class="button" href="{% url 'learning:exercise' next_exercise.pk %}">Vazhdo</a>
+                {% if attempt.is_correct %}
+                    {% if next_exercise %}
+                        <a class="link-button" href="{% url 'learning:exercise' next_exercise.pk %}">Vazhdo tani</a>
+                    {% else %}
+                        <a class="link-button" href="{% url 'learning:catalog' %}">Përfundo tani</a>
+                    {% endif %}
                 {% else %}
-                    <a class="button" href="{% url 'learning:catalog' %}">Përfundo mësimin</a>
-                {% endif %}
-                {% if not attempt.is_correct %}
                     <a class="button secondary" href="{% url 'learning:exercise' exercise.pk %}">Provo përsëri</a>
                 {% endif %}
             </div>
@@ -140,5 +160,8 @@
         <script src="{% static 'js/exercise-player.js' %}" defer></script>
     {% elif exercise.exercise_type == 'speaking' %}
         <script src="{% static 'js/speaking-exercise.js' %}" defer></script>
+    {% endif %}
+    {% if attempt.is_correct %}
+        <script src="{% static 'js/answer-feedback.js' %}" defer></script>
     {% endif %}
 {% endblock %}

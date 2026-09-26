@@ -232,3 +232,21 @@ Safety checks:
 - Empty transcription asks the learner to retry and creates no attempt.
 - Temporary audio is deleted after both successful and failed transcription.
 - More than 10 transcription requests in 5 minutes from one learner returns a temporary limit.
+
+## Answer feedback and automatic progression
+
+Use a lesson containing at least two published exercises.
+
+1. Submit an incorrect answer and confirm the message says **Jo e saktë.**
+2. Confirm the correct answer is not immediately visible.
+3. Open **Shiko përgjigjen e saktë** and confirm the correct text or image appears.
+4. Close the section, select **Provo përsëri**, and submit the correct answer.
+5. Confirm **Saktë!** appears with a short animation.
+6. Do not click anything; confirm the next exercise opens automatically after about 1.4 seconds.
+7. On the final exercise, confirm a correct answer automatically returns to the course catalog.
+8. Confirm **Vazhdo tani** or **Përfundo tani** still works if selected before the automatic move.
+9. Repeat with a speaking exercise: exact recognized text should automatically advance, while a
+   non-matching transcription should remain on the feedback screen.
+
+With the operating-system reduced-motion setting enabled, the animation should be disabled while
+automatic progression continues to work.

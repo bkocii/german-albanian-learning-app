@@ -114,11 +114,15 @@ if (speakingExercise) {
             speakingExercise.querySelector("[data-speaking-unexpected]").textContent =
                 result.unexpected_words.join(", ") || "—";
             speakingExercise.querySelector("[data-speaking-result]").textContent = result.is_match
-                ? "Të gjitha fjalët u njohën në rendin e pritur."
-                : "Provoni përsëri nëse dëshironi ta përmirësoni përputhjen.";
+                ? "Saktë! Të gjitha fjalët u njohën në rendin e pritur."
+                : "Jo e saktë. Provoni përsëri nëse dëshironi ta përmirësoni përputhjen.";
             speakingExercise.querySelector("[data-speaking-next]").href = result.next_url;
             feedback.hidden = false;
             status.textContent = "Transkriptimi përfundoi.";
+            if (result.is_match) {
+                feedback.classList.add("success-burst");
+                window.setTimeout(() => window.location.assign(result.next_url), 1800);
+            }
         } catch (error) {
             status.textContent = error.message;
             submitButton.disabled = false;

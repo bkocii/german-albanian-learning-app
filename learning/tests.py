@@ -104,6 +104,24 @@ class LessonPlayerTests(TestCase):
         progress = LessonProgress.objects.get(learner=self.learner, lesson=self.lesson)
         self.assertIsNotNone(progress.completed_at)
 
+        result_page = self.client.get(
+            f"{reverse('learning:exercise', args=(self.exercise.pk,))}?attempt={attempt.pk}"
+        )
+        self.assertContains(result_page, "Saktë!")
+        self.assertContains(result_page, 'data-auto-next="/learn/"')
+
+    def test_wrong_answer_hides_correct_answer_in_optional_reveal(self):
+        response = self.client.post(
+            reverse("learning:exercise", args=(self.exercise.pk,)),
+            {"option": self.wrong_option.pk},
+            follow=True,
+        )
+        self.assertContains(response, "Jo e saktë.")
+        self.assertContains(response, "Shiko përgjigjen e saktë")
+        self.assertContains(response, self.correct_option.text_sq)
+        self.assertNotContains(response, "<details open")
+        self.assertNotContains(response, "data-auto-next")
+
     def test_option_from_another_exercise_is_rejected(self):
         other_exercise = Exercise.objects.create(
             lesson=self.lesson,

@@ -34,7 +34,9 @@ Milestone 4 — First complete unit.
 - German `faster-whisper` transcription using the CPU-friendly base/int8 defaults
 - Expected, recognized, matched, and missing-word feedback without pronunciation scoring
 - Guaranteed temporary-file deletion and per-user transcription throttling
-- Thirty-nine automated project tests
+- Optional collapsed correct-answer reveal after mistakes
+- Animated correct feedback with automatic movement to the next exercise
+- Forty automated project tests
 
 ## Next task
 

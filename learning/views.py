@@ -140,16 +140,20 @@ def exercise_player(request, exercise_id):
         return redirect(f"{result_url}?attempt={attempt.pk}")
 
     attempt = None
+    correct_option = None
     attempt_id = request.GET.get("attempt")
     if attempt_id:
         attempt = ExerciseAttempt.objects.filter(
             pk=attempt_id, learner=request.user, exercise=exercise
         ).first()
+        if attempt and not attempt.is_correct:
+            correct_option = exercise.options.filter(is_correct=True).first()
 
     next_exercise = exercises[index + 1] if index + 1 < len(exercises) else None
     context = {
         "exercise": exercise,
         "attempt": attempt,
+        "correct_option": correct_option,
         "next_exercise": next_exercise,
         "progress": progress,
         "step_number": index + 1,

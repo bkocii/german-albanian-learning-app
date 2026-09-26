@@ -25,6 +25,7 @@
 
 ## M4 — First complete unit
 
+- [x] Refine incorrect-answer reveal and automatic correct-answer progression
 - [ ] Publish A1 Unit 1: Greetings and Introductions
 - [ ] Add unit review and completion test
 - [ ] Complete mobile usability and accessibility review

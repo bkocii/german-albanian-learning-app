@@ -269,3 +269,35 @@ select.
 
 This step adds the data foundation only. These five new types must remain drafts until their learner
 interfaces are delivered in the following changes.
+
+## JSON course import preview and draft import
+
+Make a copy of `course_content/examples/a1-unit-import-example.json`. If A1 already contains a unit
+at position 1, change the copied unit's slug to `import-test`, its titles to `Import test`, and its
+position to an unused value such as 99. This avoids deliberately colliding with existing content.
+
+1. Sign in as a staff administrator and open **Courses → Exercises**.
+2. Select **Import course JSON** in the upper-right object tools.
+3. Upload the copied JSON and select **Validate and preview**.
+4. Confirm the preview reports 1 unit, 1 lesson, 1 vocabulary entry, 3 exercises, 2 options, 2
+   accepted answers, and 2 matching pairs.
+5. Before confirming, open Exercises in another tab and verify no imported external IDs exist.
+6. Return to the preview and select **Import as drafts** once.
+7. Confirm the success message says 3 draft exercises were imported.
+8. Open the imported unit, lesson, vocabulary, exercises, options, accepted answers, and matching
+   pairs. Confirm every exercise status is **Draft** and the hierarchy is unpublished.
+9. Upload the same file again. Preview must report existing exercise external IDs or occupied
+   positions and must not create duplicates.
+
+Validation tests:
+
+- Remove a required `external_id`: preview shows its exact JSON path and writes nothing.
+- Change `schema_version` to 2: preview rejects it.
+- Give two exercises the same position: preview reports the duplicate.
+- Add `"image_ref": "missing-image"`: preview reports the missing media asset.
+- Upload malformed JSON: the form reports that valid UTF-8 JSON is required.
+- Sign in as a non-staff learner and enter the importer address directly: access is denied.
+- Leave a valid preview unused for more than 15 minutes: confirmation requires a new preview.
+
+The file limit defaults to 1 MiB. Media binaries are not embedded in JSON; upload them separately
+and reference their external IDs.

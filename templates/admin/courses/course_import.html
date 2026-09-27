@@ -1,0 +1,49 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div id="content-main">
+    <p>
+        Upload a UTF-8 JSON file using schema version 1. Validation and preview do not write to the
+        database. Confirmed exercises are always imported as drafts.
+    </p>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        {{ upload_form.as_p }}
+        <button class="button" type="submit" name="action" value="preview">Validate and preview</button>
+        <a href="{{ exercise_list_url }}">Cancel</a>
+    </form>
+
+    {% if validation %}
+        <hr>
+        <h2>Validation result</h2>
+        {% if validation.errors %}
+            <p class="errornote">Fix these errors and upload the file again. Nothing was imported.</p>
+            <ul class="errorlist">
+                {% for error in validation.errors %}<li>{{ error }}</li>{% endfor %}
+            </ul>
+        {% else %}
+            <p class="success">The file is valid. Nothing has been written yet.</p>
+            <table>
+                <thead><tr><th>Content</th><th>Count</th></tr></thead>
+                <tbody>
+                    {% for label, count in validation.summary.items %}
+                        <tr><td>{{ label|capfirst }}</td><td>{{ count }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% if validation.warnings %}
+                <h3>Warnings</h3>
+                <ul>{% for warning in validation.warnings %}<li>{{ warning }}</li>{% endfor %}</ul>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                {{ confirm_form.as_p }}
+                <button class="button default" type="submit" name="action" value="import">
+                    Import as drafts
+                </button>
+            </form>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

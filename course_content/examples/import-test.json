@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "level": {
+    "code": "A1",
+    "title_de": "Anfänger",
+    "title_sq": "Fillestar",
+    "description_sq": "Hapat e parë në gjuhën gjermane.",
+    "position": 1
+  },
+  "units": [
+    {
+      "slug": "import-test",
+      "title_de": "Import test",
+      "title_sq": "Testi i importimit",
+      "summary_sq": "Mëso të përshëndetesh dhe të prezantohesh.",
+      "position": 99,
+      "lessons": [
+        {
+          "slug": "pershendetjet-baze",
+          "title_de": "Grundbegrüßungen",
+          "title_sq": "Përshëndetjet bazë",
+          "objective_sq": "Përdor Hallo, Guten Morgen dhe Guten Tag.",
+          "position": 1,
+          "vocabulary": [
+            {
+              "position": 1,
+              "german": "Hallo",
+              "albanian": "Përshëndetje",
+              "part_of_speech": "Interjektion",
+              "example_de": "Hallo, Arta!",
+              "example_sq": "Përshëndetje, Arta!"
+            }
+          ],
+          "exercises": [
+            {
+              "external_id": "a1-u1-l1-translation-001",
+              "type": "translation_choice",
+              "position": 1,
+              "instructions_sq": "Zgjidh përkthimin e saktë.",
+              "prompt_de": "Hallo",
+              "options": [
+                {
+                  "position": 1,
+                  "text_sq": "Përshëndetje",
+                  "is_correct": true
+                },
+                {
+                  "position": 2,
+                  "text_sq": "Mirupafshim",
+                  "is_correct": false
+                }
+              ]
+            },
+            {
+              "external_id": "a1-u1-l1-free-text-001",
+              "type": "free_text",
+              "position": 2,
+              "instructions_sq": "Përkthe në gjermanisht.",
+              "prompt_sq": "Mirëdita",
+              "expected_answer": "Guten Tag",
+              "accepted_answers": [
+                {"position": 1, "text": "Guten Tag"},
+                {"position": 2, "text": "Guten Tag!"}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l1-matching-001",
+              "type": "matching",
+              "position": 3,
+              "instructions_sq": "Bashko fjalët me përkthimet.",
+              "matching_pairs": [
+                {"position": 1, "left_text": "Hallo", "right_text": "Përshëndetje"},
+                {"position": 2, "left_text": "Danke", "right_text": "Faleminderit"}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

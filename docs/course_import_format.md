@@ -73,5 +73,6 @@ Use `options` for choice exercises, `accepted_answers` for free-text variants, a
 `matching_pairs` for matching exercises. `image_ref` and `audio_ref` contain an existing media
 asset's `external_id`.
 
-See `course_content/examples/a1-unit-import-example.json` for a ready-to-copy example. The first
-bulk importer will support preview and validation before anything is written.
+See `course_content/examples/a1-unit-import-example.json` for a ready-to-copy example. Staff users
+can open **Admin → Courses → Exercises → Import course JSON**, validate the file, inspect counts and
+warnings, and then confirm one transactional draft import.

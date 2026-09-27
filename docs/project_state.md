@@ -40,11 +40,14 @@ Milestone 4 — First complete unit.
 - Stable external IDs for safe media and exercise import references
 - Accepted-answer and matching-pair data models
 - Versioned nested JSON format and an A1 import example
-- Forty-three automated project tests
+- Staff-only JSON upload with size and UTF-8 validation
+- No-write validation preview with counts, warnings, and duplicate/media checks
+- Single-use confirmation token and transactional draft import
+- Forty-nine automated project tests
 
 ## Next task
 
-Build the staff-only JSON validation preview and transactional draft importer.
+Implement true/false and dialogue-response learner interactions using the existing choice engine.
 
 ## Constraints
 

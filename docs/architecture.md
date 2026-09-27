@@ -53,6 +53,9 @@
   nested options, accepted answers, matching pairs, and media references.
 - Imported exercises use stable external IDs, remain drafts, and cannot overwrite reviewed content.
 - Exercise types without a completed learner engine are blocked from publication.
+- Import preview data is stored temporarily in cache and tied to the staff user; confirmation tokens
+  are single-use and expire after 15 minutes.
+- Confirmed imports run inside one database transaction, so partial course imports are not retained.
 - Speech processing returns feedback to the learning flow without storing raw audio by default.
 - Provider-specific speech code must stay behind a small service interface.
 - Production throttling must use a shared cache when more than one application process runs.

@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.forms.models import BaseInlineFormSet
+from django.urls import path
 
+from .import_views import course_import
 from .models import (
     CEFRLevel,
     Exercise,
@@ -120,6 +122,7 @@ class MediaAssetAdmin(admin.ModelAdmin):
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
+    change_list_template = "admin/courses/exercise/change_list.html"
     list_display = (
         "external_id",
         "lesson",
@@ -132,6 +135,16 @@ class ExerciseAdmin(admin.ModelAdmin):
     search_fields = ("external_id", "prompt_de", "prompt_sq", "expected_answer")
     autocomplete_fields = ("image", "audio", "reviewed_by")
     inlines = (ExerciseOptionInline, ExerciseAcceptedAnswerInline, MatchingPairInline)
+
+    def get_urls(self):
+        custom_urls = [
+            path(
+                "import-json/",
+                self.admin_site.admin_view(course_import),
+                name="courses_exercise_import_json",
+            )
+        ]
+        return custom_urls + super().get_urls()
 
 
 @admin.register(ExerciseOption)

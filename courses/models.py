@@ -275,8 +275,6 @@ class Exercise(OrderedModel):
             elif self.audio.language_code != MediaAsset.Language.GERMAN:
                 errors["audio"] = "Listening exercises require German-language audio."
         future_types = {
-            self.Type.TRUE_FALSE,
-            self.Type.DIALOGUE_CHOICE,
             self.Type.FREE_TEXT,
             self.Type.MATCHING,
             self.Type.MULTIPLE_SELECT,

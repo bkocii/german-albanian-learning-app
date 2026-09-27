@@ -259,16 +259,53 @@ select.
 
 1. Create a new dialogue-response exercise as a draft and give it external ID
    `a1-u1-dialogue-001`. Confirm it saves.
-2. Try to change it directly to **Published**, with reviewer and review time. Confirm publication is
-   rejected because its learner engine is not enabled yet.
+2. Keep it as a draft until you add at least two options with exactly one marked correct. Dialogue
+   and true/false exercises can now be published; the other three new types remain draft-only.
 3. Create a free-text draft and add two accepted answers, for example `Guten Tag` and `Guten Tag!`.
 4. Create a matching draft and add `Hallo — Përshëndetje` and `Danke — Faleminderit` pairs.
 5. Try to reuse the same exercise external ID inside the same lesson. Confirm it is rejected.
 6. Open `course_content/examples/a1-unit-import-example.json` and confirm it is valid JSON and uses
    nested vocabulary, options, accepted answers, and matching pairs.
 
-This step adds the data foundation only. These five new types must remain drafts until their learner
-interfaces are delivered in the following changes.
+This step adds the shared data foundation. Free text, matching, and multiple select must remain
+drafts until their learner interfaces are delivered.
+
+## True/false and dialogue-response interactions
+
+Test the two types separately in an existing published lesson. Use unique positions.
+
+### True/false
+
+1. In **Admin → Courses → Exercises**, create an exercise with type **True or false**.
+2. Enter instruction `Zgjidh e vërtetë ose e gabuar.` and German prompt
+   `Hallo do të thotë Përshëndetje.`
+3. Add exactly two options: `Richtig / E vërtetë` marked correct and `Falsch / E gabuar`
+   unmarked.
+4. Set a reviewer, review time, and status **Published**, then save.
+5. As a learner, open the lesson and confirm two large option cards appear.
+6. Select **Falsch** and submit. Confirm **Jo e saktë.** appears and the correct answer remains
+   collapsed until **Shiko përgjigjen e saktë** is opened.
+7. Select **Provo përsëri**, choose **Richtig**, and submit. Confirm **Saktë!** appears and the
+   player advances automatically.
+8. In **Admin → Learning → Exercise attempts**, confirm both attempts and their selected options
+   were recorded.
+
+### Dialogue response
+
+1. Create another exercise with type **Dialogue response**.
+2. Enter instruction `Zgjidh përgjigjen e duhur.` and German prompt
+   `Guten Morgen! Wie heißen Sie?`
+3. Add `Ich heiße Arta.` marked correct and `Gute Nacht.` unmarked.
+4. Set a reviewer, review time, and status **Published**, then save.
+5. As a learner, confirm the German prompt appears as a dialogue bubble and both responses appear
+   as selectable response cards.
+6. Submit `Gute Nacht.` and confirm the collapsed correct-answer reveal contains
+   `Ich heiße Arta.`
+7. Retry with `Ich heiße Arta.` and confirm automatic progression.
+8. Confirm the incorrect and correct attempts are both retained in the administration site.
+
+Validation checks: publishing either type with fewer than two active options or with zero/multiple
+correct options must be rejected. A draft may still be saved while options are being prepared.
 
 ## JSON course import preview and draft import
 

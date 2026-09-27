@@ -28,7 +28,7 @@
 - [x] Refine incorrect-answer reveal and automatic correct-answer progression
 - [x] Define extensible exercise models and versioned JSON course format
 - [x] Add staff-only JSON validation preview and draft import
-- [ ] Add true/false and dialogue-response learner interactions
+- [x] Add true/false and dialogue-response learner interactions
 - [ ] Add free-text accepted-answer and matching-pair interactions
 - [ ] Add multiple-select learner interaction
 - [ ] Publish A1 Unit 1: Greetings and Introductions

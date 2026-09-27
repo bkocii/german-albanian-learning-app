@@ -199,12 +199,32 @@ class CourseModelTests(TestCase):
         with self.assertRaisesMessage(ValidationError, "requires an expected answer"):
             exercise.full_clean()
 
+    def test_enabled_choice_types_can_be_published(self):
+        reviewer = get_user_model().objects.create_user(
+            email="choice-reviewer@example.com", password="secure-test-password"
+        )
+        for exercise_type in (
+            Exercise.Type.TRUE_FALSE,
+            Exercise.Type.DIALOGUE_CHOICE,
+        ):
+            with self.subTest(exercise_type=exercise_type):
+                exercise = Exercise(
+                    lesson=self.lesson,
+                    exercise_type=exercise_type,
+                    instructions_sq="Zgjidh përgjigjen.",
+                    review_status=Exercise.ReviewStatus.PUBLISHED,
+                    reviewed_by=reviewer,
+                    reviewed_at=timezone.now(),
+                )
+                exercise.full_clean()
+
     def test_future_exercise_type_can_be_drafted_but_not_published(self):
         exercise = Exercise(
             lesson=self.lesson,
-            external_id="greeting-dialogue-1",
-            exercise_type=Exercise.Type.DIALOGUE_CHOICE,
-            instructions_sq="Zgjidh përgjigjen.",
+            external_id="greeting-free-text-1",
+            exercise_type=Exercise.Type.FREE_TEXT,
+            instructions_sq="Përkthe fjalinë.",
+            expected_answer="Guten Tag",
         )
         exercise.full_clean()
 

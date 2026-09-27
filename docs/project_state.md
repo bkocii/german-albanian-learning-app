@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 24 September 2026
+Last updated: 27 September 2026
 
 ## Current milestone
 
@@ -43,11 +43,13 @@ Milestone 4 — First complete unit.
 - Staff-only JSON upload with size and UTF-8 validation
 - No-write validation preview with counts, warnings, and duplicate/media checks
 - Single-use confirmation token and transactional draft import
-- Forty-nine automated project tests
+- Dedicated true/false and dialogue-response learner interactions
+- Choice grading, retry feedback, collapsed answer reveal, and automatic progression for both types
+- Fifty-two automated project tests
 
 ## Next task
 
-Implement true/false and dialogue-response learner interactions using the existing choice engine.
+Implement free-text accepted-answer and matching-pair learner interactions.
 
 ## Constraints
 

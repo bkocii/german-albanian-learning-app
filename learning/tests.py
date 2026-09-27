@@ -122,6 +122,78 @@ class LessonPlayerTests(TestCase):
         self.assertNotContains(response, "<details open")
         self.assertNotContains(response, "data-auto-next")
 
+    def test_true_false_renders_and_records_selected_option(self):
+        exercise = Exercise.objects.create(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.TRUE_FALSE,
+            instructions_sq="Zgjidh e vërtetë ose e gabuar.",
+            prompt_de="Hallo do të thotë Përshëndetje.",
+            position=2,
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=self.reviewer,
+            reviewed_at=timezone.now(),
+        )
+        correct = ExerciseOption.objects.create(
+            exercise=exercise,
+            text_de="Richtig",
+            text_sq="E vërtetë",
+            position=1,
+            is_correct=True,
+        )
+        ExerciseOption.objects.create(
+            exercise=exercise,
+            text_de="Falsch",
+            text_sq="E gabuar",
+            position=2,
+        )
+        url = reverse("learning:exercise", args=(exercise.pk,))
+
+        response = self.client.get(url)
+        self.assertContains(response, "data-true-false-exercise")
+        self.assertContains(response, "Richtig")
+        self.assertContains(response, "Falsch")
+
+        self.client.post(url, {"option": correct.pk})
+        attempt = ExerciseAttempt.objects.get(exercise=exercise)
+        self.assertTrue(attempt.is_correct)
+        self.assertEqual(attempt.selected_option, correct)
+
+    def test_dialogue_choice_renders_and_records_selected_option(self):
+        exercise = Exercise.objects.create(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.DIALOGUE_CHOICE,
+            instructions_sq="Zgjidh përgjigjen e duhur.",
+            prompt_de="Guten Morgen! Wie heißen Sie?",
+            position=2,
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=self.reviewer,
+            reviewed_at=timezone.now(),
+        )
+        correct = ExerciseOption.objects.create(
+            exercise=exercise,
+            text_de="Ich heiße Arta.",
+            position=1,
+            is_correct=True,
+        )
+        wrong = ExerciseOption.objects.create(
+            exercise=exercise,
+            text_de="Gute Nacht.",
+            position=2,
+        )
+        url = reverse("learning:exercise", args=(exercise.pk,))
+
+        response = self.client.get(url)
+        self.assertContains(response, "data-dialogue-exercise")
+        self.assertContains(response, "dialogue-prompt")
+        self.assertContains(response, "Ich heiße Arta.")
+
+        response = self.client.post(url, {"option": wrong.pk}, follow=True)
+        attempt = ExerciseAttempt.objects.get(exercise=exercise)
+        self.assertFalse(attempt.is_correct)
+        self.assertEqual(attempt.selected_option, wrong)
+        self.assertContains(response, "Shiko përgjigjen e saktë")
+        self.assertContains(response, correct.text_de)
+
     def test_option_from_another_exercise_is_rejected(self):
         other_exercise = Exercise.objects.create(
             lesson=self.lesson,

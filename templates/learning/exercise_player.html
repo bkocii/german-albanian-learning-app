@@ -30,7 +30,11 @@
                 </audio>
             </div>
         {% endif %}
-        {% if exercise.prompt_de %}<p class="exercise-prompt" lang="de">{{ exercise.prompt_de }}</p>{% endif %}
+        {% if exercise.prompt_de %}
+            <p class="exercise-prompt{% if exercise.exercise_type == 'dialogue_choice' %} dialogue-prompt{% endif %}" lang="de">
+                {{ exercise.prompt_de }}
+            </p>
+        {% endif %}
         {% if exercise.prompt_sq %}<p>{{ exercise.prompt_sq }}</p>{% endif %}
 
         {% if attempt %}
@@ -90,6 +94,28 @@
                         <legend class="sr-only">Zgjidhni një përgjigje</legend>
                         {% for option in exercise.options.all %}
                             <label class="option-card">
+                                <input type="radio" name="option" value="{{ option.pk }}" required>
+                                <span lang="de">{{ option.text_de }}</span>
+                                {% if option.text_sq %}<small>{{ option.text_sq }}</small>{% endif %}
+                            </label>
+                        {% endfor %}
+                    </fieldset>
+                {% elif exercise.exercise_type == 'true_false' %}
+                    <fieldset class="option-list binary-options" data-true-false-exercise>
+                        <legend class="sr-only">Zgjidhni e vërtetë ose e gabuar</legend>
+                        {% for option in exercise.options.all %}
+                            <label class="option-card binary-option">
+                                <input type="radio" name="option" value="{{ option.pk }}" required>
+                                <span lang="de">{{ option.text_de }}</span>
+                                {% if option.text_sq %}<small>{{ option.text_sq }}</small>{% endif %}
+                            </label>
+                        {% endfor %}
+                    </fieldset>
+                {% elif exercise.exercise_type == 'dialogue_choice' %}
+                    <fieldset class="option-list dialogue-options" data-dialogue-exercise>
+                        <legend class="sr-only">Zgjidhni përgjigjen e duhur në dialog</legend>
+                        {% for option in exercise.options.all %}
+                            <label class="option-card dialogue-option">
                                 <input type="radio" name="option" value="{{ option.pk }}" required>
                                 <span lang="de">{{ option.text_de }}</span>
                                 {% if option.text_sq %}<small>{{ option.text_sq }}</small>{% endif %}

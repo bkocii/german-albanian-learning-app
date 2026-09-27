@@ -104,6 +104,8 @@ def exercise_player(request, exercise_id):
         choice_types = {
             Exercise.Type.PICTURE_CHOICE,
             Exercise.Type.TRANSLATION_CHOICE,
+            Exercise.Type.TRUE_FALSE,
+            Exercise.Type.DIALOGUE_CHOICE,
         }
         if exercise.exercise_type in choice_types and option_id:
             option = get_object_or_404(ExerciseOption, pk=option_id, exercise=exercise)

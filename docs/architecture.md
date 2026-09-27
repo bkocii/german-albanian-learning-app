@@ -35,6 +35,10 @@
 - Picture and translation exercises accept only an option belonging to that exercise.
 - Missing-word answers use whitespace- and case-normalized comparison.
 - Word-order exercises shuffle server-provided tokens and grade the reconstructed sentence.
+- Free-text exercises normalize case and whitespace before checking the primary answer and reviewed
+  accepted variants.
+- Matching exercises shuffle the right-side answers deterministically per learner, require every
+  pair, and retain the submitted pair mapping in the immutable attempt.
 - Audio assets record their spoken language and require approver audit data before use.
 - Published listening exercises require approved German audio and an expected text answer.
 - Listening audio uses native browser playback and can be replayed without creating new records.
@@ -52,7 +56,8 @@
 - Bulk course content uses versioned UTF-8 JSON because relational CSV rows cannot safely represent
   nested options, accepted answers, matching pairs, and media references.
 - Imported exercises use stable external IDs, remain drafts, and cannot overwrite reviewed content.
-- Exercise types without a completed learner engine are blocked from publication.
+- Exercise types without a completed learner engine are blocked from publication; multiple select
+  is the only currently reserved learner interaction.
 - Import preview data is stored temporarily in cache and tied to the staff user; confirmation tokens
   are single-use and expire after 15 minutes.
 - Confirmed imports run inside one database transaction, so partial course imports are not retained.

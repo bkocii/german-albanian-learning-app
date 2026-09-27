@@ -218,13 +218,37 @@ class CourseModelTests(TestCase):
                 )
                 exercise.full_clean()
 
+    def test_enabled_structured_types_can_be_published(self):
+        reviewer = get_user_model().objects.create_user(
+            email="structured-reviewer@example.com", password="secure-test-password"
+        )
+        free_text = Exercise(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.FREE_TEXT,
+            instructions_sq="Përkthe.",
+            expected_answer="Guten Tag",
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=reviewer,
+            reviewed_at=timezone.now(),
+        )
+        free_text.full_clean()
+
+        matching = Exercise(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.MATCHING,
+            instructions_sq="Bashko çiftet.",
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=reviewer,
+            reviewed_at=timezone.now(),
+        )
+        matching.full_clean()
+
     def test_future_exercise_type_can_be_drafted_but_not_published(self):
         exercise = Exercise(
             lesson=self.lesson,
-            external_id="greeting-free-text-1",
-            exercise_type=Exercise.Type.FREE_TEXT,
-            instructions_sq="Përkthe fjalinë.",
-            expected_answer="Guten Tag",
+            external_id="greeting-multiple-select-1",
+            exercise_type=Exercise.Type.MULTIPLE_SELECT,
+            instructions_sq="Zgjidh përgjigjet.",
         )
         exercise.full_clean()
 

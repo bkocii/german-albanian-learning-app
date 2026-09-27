@@ -59,6 +59,12 @@
                             {% if correct_option.text_sq %}<span>{{ correct_option.text_sq }}</span>{% endif %}
                         {% elif exercise.expected_answer %}
                             <span lang="de">{{ exercise.expected_answer }}</span>
+                        {% elif exercise.exercise_type == 'matching' %}
+                            <ul class="matching-solution-list">
+                                {% for pair in exercise.matching_pairs.all %}
+                                    <li><span lang="de">{{ pair.left_text }}</span> — {{ pair.right_text }}</li>
+                                {% endfor %}
+                            </ul>
                         {% endif %}
                     </details>
                 {% endif %}
@@ -139,6 +145,23 @@
                 {% elif exercise.exercise_type == 'listening' %}
                     <label for="answer">Shkruani atë që dëgjoni në gjermanisht</label>
                     <input id="answer" name="answer" type="text" lang="de" autocomplete="off" required>
+                {% elif exercise.exercise_type == 'free_text' %}
+                    <label for="answer">Shkruani përgjigjen në gjermanisht</label>
+                    <input id="answer" name="answer" type="text" lang="de" autocomplete="off" required>
+                {% elif exercise.exercise_type == 'matching' %}
+                    <div class="matching-list" data-matching-exercise>
+                        {% for row in matching_rows %}
+                            <label class="matching-row" for="match-{{ row.pair.pk }}">
+                                <span lang="de">{{ row.pair.left_text }}</span>
+                                <select id="match-{{ row.pair.pk }}" name="match_{{ row.pair.pk }}" required>
+                                    <option value="">Zgjidhni përkthimin</option>
+                                    {% for answer in row.right_answers %}
+                                        <option value="{{ answer }}">{{ answer }}</option>
+                                    {% endfor %}
+                                </select>
+                            </label>
+                        {% endfor %}
+                    </div>
                 {% elif exercise.exercise_type == 'speaking' %}
                     <div
                         class="speaking-panel"

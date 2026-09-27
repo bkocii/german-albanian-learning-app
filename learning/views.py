@@ -17,7 +17,7 @@ from .models import ExerciseAttempt, LessonProgress
 def _published_exercises(lesson):
     return list(
         lesson.exercises.filter(review_status=Exercise.ReviewStatus.PUBLISHED)
-        .prefetch_related("options")
+        .prefetch_related("options", "accepted_answers", "matching_pairs")
         .select_related("image", "audio")
     )
 
@@ -33,6 +33,15 @@ def _word_tokens(exercise, learner):
     if len(tokens) > 1 and tokens == original:
         tokens = tokens[1:] + tokens[:1]
     return tokens
+
+
+def _matching_rows(exercise, learner):
+    pairs = list(exercise.matching_pairs.all())
+    right_answers = [pair.right_text for pair in pairs]
+    random.Random(f"matching:{learner.pk}:{exercise.pk}").shuffle(right_answers)
+    if len(right_answers) > 1 and right_answers == [pair.right_text for pair in pairs]:
+        right_answers = right_answers[1:] + right_answers[:1]
+    return [{"pair": pair, "right_answers": right_answers} for pair in pairs]
 
 
 @login_required
@@ -76,9 +85,9 @@ def lesson_start(request, level_code, unit_slug, lesson_slug):
 @login_required
 def exercise_player(request, exercise_id):
     exercise = get_object_or_404(
-        Exercise.objects.select_related("lesson__unit__level", "image", "audio").prefetch_related(
-            "options"
-        ),
+        Exercise.objects.select_related(
+            "lesson__unit__level", "image", "audio"
+        ).prefetch_related("options", "accepted_answers", "matching_pairs"),
         pk=exercise_id,
         review_status=Exercise.ReviewStatus.PUBLISHED,
         lesson__is_published=True,
@@ -107,9 +116,31 @@ def exercise_player(request, exercise_id):
             Exercise.Type.TRUE_FALSE,
             Exercise.Type.DIALOGUE_CHOICE,
         }
-        if exercise.exercise_type in choice_types and option_id:
+        if exercise.exercise_type == Exercise.Type.MATCHING:
+            pairs = list(exercise.matching_pairs.all())
+            submitted = [request.POST.get(f"match_{pair.pk}", "") for pair in pairs]
+            if not pairs or any(not value for value in submitted):
+                messages.warning(request, "Plotësoni të gjitha çiftet.")
+                return redirect("learning:exercise", exercise_id=exercise.pk)
+            is_correct = all(
+                selected == pair.right_text for pair, selected in zip(pairs, submitted)
+            )
+            answer_text = " | ".join(
+                f"{pair.left_text} — {selected}"
+                for pair, selected in zip(pairs, submitted)
+            )
+        elif exercise.exercise_type in choice_types and option_id:
             option = get_object_or_404(ExerciseOption, pk=option_id, exercise=exercise)
             is_correct = option.is_correct
+        elif exercise.exercise_type == Exercise.Type.FREE_TEXT and answer_text:
+            accepted_answers = {
+                _normalize_answer(exercise.expected_answer),
+                *(
+                    _normalize_answer(answer.text)
+                    for answer in exercise.accepted_answers.all()
+                ),
+            }
+            is_correct = _normalize_answer(answer_text) in accepted_answers
         elif exercise.exercise_type not in choice_types and answer_text:
             is_correct = _normalize_answer(answer_text) == _normalize_answer(
                 exercise.expected_answer
@@ -163,6 +194,11 @@ def exercise_player(request, exercise_id):
         "word_tokens": (
             _word_tokens(exercise, request.user)
             if exercise.exercise_type == Exercise.Type.WORD_ORDER
+            else []
+        ),
+        "matching_rows": (
+            _matching_rows(exercise, request.user)
+            if exercise.exercise_type == Exercise.Type.MATCHING
             else []
         ),
         "speech_max_recording_seconds": settings.SPEECH_MAX_RECORDING_SECONDS,

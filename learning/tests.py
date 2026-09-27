@@ -3,7 +3,16 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from courses.models import CEFRLevel, Exercise, ExerciseOption, Lesson, MediaAsset, Unit
+from courses.models import (
+    CEFRLevel,
+    Exercise,
+    ExerciseAcceptedAnswer,
+    ExerciseOption,
+    Lesson,
+    MatchingPair,
+    MediaAsset,
+    Unit,
+)
 
 from .models import ExerciseAttempt, LessonProgress
 
@@ -64,6 +73,30 @@ class LessonPlayerTests(TestCase):
 
     def setUp(self):
         self.client.force_login(self.learner)
+
+    def _create_matching_exercise(self):
+        exercise = Exercise.objects.create(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.MATCHING,
+            instructions_sq="Bashko fjalët me përkthimet.",
+            position=2,
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=self.reviewer,
+            reviewed_at=timezone.now(),
+        )
+        hello = MatchingPair.objects.create(
+            exercise=exercise,
+            left_text="Hallo",
+            right_text="Përshëndetje",
+            position=1,
+        )
+        thanks = MatchingPair.objects.create(
+            exercise=exercise,
+            left_text="Danke",
+            right_text="Faleminderit",
+            position=2,
+        )
+        return exercise, hello, thanks
 
     def test_catalog_lists_only_published_course_content(self):
         hidden = CEFRLevel.objects.create(
@@ -249,6 +282,82 @@ class LessonPlayerTests(TestCase):
             reverse("learning:exercise", args=(exercise.pk,)), {"answer": "  morgen  "}
         )
         self.assertTrue(ExerciseAttempt.objects.get(exercise=exercise).is_correct)
+
+    def test_free_text_accepts_primary_and_reviewed_answer_variants(self):
+        exercise = Exercise.objects.create(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.FREE_TEXT,
+            instructions_sq="Përkthe në gjermanisht.",
+            prompt_sq="Mirëdita",
+            expected_answer="Guten Tag",
+            position=2,
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=self.reviewer,
+            reviewed_at=timezone.now(),
+        )
+        ExerciseAcceptedAnswer.objects.create(
+            exercise=exercise, text="Guten Tag!", position=1
+        )
+        url = reverse("learning:exercise", args=(exercise.pk,))
+
+        response = self.client.get(url)
+        self.assertContains(response, "Shkruani përgjigjen në gjermanisht")
+        self.client.post(url, {"answer": "  guten tag!  "})
+
+        attempt = ExerciseAttempt.objects.get(exercise=exercise)
+        self.assertTrue(attempt.is_correct)
+        self.assertEqual(attempt.answer_text, "guten tag!")
+
+    def test_matching_renders_all_pairs_and_records_correct_submission(self):
+        exercise, hello, thanks = self._create_matching_exercise()
+        url = reverse("learning:exercise", args=(exercise.pk,))
+
+        response = self.client.get(url)
+        self.assertContains(response, "data-matching-exercise")
+        self.assertContains(response, "Hallo")
+        self.assertContains(response, "Danke")
+        self.assertContains(response, "Përshëndetje")
+        self.assertContains(response, "Faleminderit")
+
+        self.client.post(
+            url,
+            {
+                f"match_{hello.pk}": hello.right_text,
+                f"match_{thanks.pk}": thanks.right_text,
+            },
+        )
+        attempt = ExerciseAttempt.objects.get(exercise=exercise)
+        self.assertTrue(attempt.is_correct)
+        self.assertIn("Hallo — Përshëndetje", attempt.answer_text)
+
+    def test_matching_mistake_uses_collapsed_solution_reveal(self):
+        exercise, hello, thanks = self._create_matching_exercise()
+        response = self.client.post(
+            reverse("learning:exercise", args=(exercise.pk,)),
+            {
+                f"match_{hello.pk}": thanks.right_text,
+                f"match_{thanks.pk}": hello.right_text,
+            },
+            follow=True,
+        )
+
+        attempt = ExerciseAttempt.objects.get(exercise=exercise)
+        self.assertFalse(attempt.is_correct)
+        self.assertContains(response, "Shiko përgjigjen e saktë")
+        self.assertContains(response, "Hallo")
+        self.assertContains(response, "Përshëndetje")
+        self.assertNotContains(response, "<details open")
+
+    def test_matching_requires_every_pair(self):
+        exercise, hello, _ = self._create_matching_exercise()
+        response = self.client.post(
+            reverse("learning:exercise", args=(exercise.pk,)),
+            {f"match_{hello.pk}": hello.right_text},
+            follow=True,
+        )
+
+        self.assertContains(response, "Plotësoni të gjitha çiftet.")
+        self.assertFalse(ExerciseAttempt.objects.filter(exercise=exercise).exists())
 
     def test_word_order_renders_tokens_and_records_ordered_answer(self):
         exercise = Exercise.objects.create(

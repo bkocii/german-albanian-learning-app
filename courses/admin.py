@@ -64,13 +64,51 @@ class ExerciseOptionInline(admin.TabularInline):
     extra = 0
 
 
+class ExerciseAcceptedAnswerInlineFormSet(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        if any(self.errors) or self.instance.review_status == Exercise.ReviewStatus.DRAFT:
+            return
+        if self.instance.exercise_type != Exercise.Type.FREE_TEXT:
+            return
+        active_forms = [
+            form
+            for form in self.forms
+            if form.cleaned_data and not form.cleaned_data.get("DELETE", False)
+        ]
+        if not active_forms:
+            raise ValidationError(
+                "Reviewed free-text exercises require at least one accepted answer."
+            )
+
+
 class ExerciseAcceptedAnswerInline(admin.TabularInline):
     model = ExerciseAcceptedAnswer
+    formset = ExerciseAcceptedAnswerInlineFormSet
     extra = 0
+
+
+class MatchingPairInlineFormSet(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        if any(self.errors) or self.instance.review_status == Exercise.ReviewStatus.DRAFT:
+            return
+        if self.instance.exercise_type != Exercise.Type.MATCHING:
+            return
+        active_forms = [
+            form
+            for form in self.forms
+            if form.cleaned_data and not form.cleaned_data.get("DELETE", False)
+        ]
+        if len(active_forms) < 2:
+            raise ValidationError(
+                "Reviewed matching exercises require at least two matching pairs."
+            )
 
 
 class MatchingPairInline(admin.TabularInline):
     model = MatchingPair
+    formset = MatchingPairInlineFormSet
     extra = 0
 
 

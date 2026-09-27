@@ -307,6 +307,50 @@ Test the two types separately in an existing published lesson. Use unique positi
 Validation checks: publishing either type with fewer than two active options or with zero/multiple
 correct options must be rejected. A draft may still be saved while options are being prepared.
 
+## Free-text and matching interactions
+
+Test each type separately in an existing published lesson, using unique positions.
+
+### Free text with accepted variants
+
+1. In **Admin → Courses → Exercises**, create an exercise with type
+   **Free-text translation**.
+2. Enter instruction `Përkthe në gjermanisht.`, Albanian prompt `Mirëdita`, and expected answer
+   `Guten Tag`.
+3. Under **Accepted answers**, add position 1 with `Guten Tag!`.
+4. Set a reviewer, review time, and status **Published**, then save.
+5. As a learner, enter `  guten tag!  ` with lowercase letters and surrounding spaces.
+6. Confirm it is accepted, **Saktë!** appears, and automatic progression occurs.
+7. Retry or create another attempt with `Guten Abend`. Confirm **Jo e saktë.** appears and
+   **Shiko përgjigjen e saktë** remains collapsed until selected.
+8. Open the reveal and confirm it shows the primary answer `Guten Tag`.
+9. In **Admin → Learning → Exercise attempts**, confirm the exact submitted text was retained.
+
+Validation check: a reviewed or published free-text exercise requires an expected answer and at
+least one accepted-answer row. A draft may be saved while these are being prepared.
+
+### Matching pairs
+
+1. Create an exercise with type **Matching pairs** and instruction
+   `Bashko fjalët me përkthimet.`
+2. Add these matching pairs with unique positions:
+   - Position 1: `Hallo` — `Përshëndetje`
+   - Position 2: `Danke` — `Faleminderit`
+3. Set a reviewer, review time, and status **Published**, then save.
+4. As a learner, confirm each German word has a translation dropdown and that both Albanian
+   answers are available for every row.
+5. Leave one dropdown unselected and submit. The browser should prevent submission. If submitted
+   without browser validation, the page must show **Plotësoni të gjitha çiftet.** and create no
+   attempt.
+6. Deliberately swap the two answers. Confirm **Jo e saktë.** appears.
+7. Open **Shiko përgjigjen e saktë** and confirm both correct pairs appear only after opening it.
+8. Retry with both correct pairs and confirm automatic progression.
+9. In Exercise attempts, confirm the stored answer lists both submitted pair mappings.
+
+Validation check: a reviewed or published matching exercise requires at least two matching-pair
+rows. On a narrow browser window, confirm each word and dropdown stack vertically without
+horizontal scrolling.
+
 ## JSON course import preview and draft import
 
 Make a copy of `course_content/examples/a1-unit-import-example.json`. If A1 already contains a unit

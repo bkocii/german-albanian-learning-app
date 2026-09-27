@@ -36,7 +36,7 @@ Milestone 4 — First complete unit.
 - Guaranteed temporary-file deletion and per-user transcription throttling
 - Optional collapsed correct-answer reveal after mistakes
 - Animated correct feedback with automatic movement to the next exercise
-- Reserved true/false, dialogue, free-text, matching, and multiple-select exercise types
+- Reserved extensible exercise types, with multiple select still awaiting its learner engine
 - Stable external IDs for safe media and exercise import references
 - Accepted-answer and matching-pair data models
 - Versioned nested JSON format and an A1 import example
@@ -45,11 +45,14 @@ Milestone 4 — First complete unit.
 - Single-use confirmation token and transactional draft import
 - Dedicated true/false and dialogue-response learner interactions
 - Choice grading, retry feedback, collapsed answer reveal, and automatic progression for both types
-- Fifty-two automated project tests
+- Free-text grading against a primary answer and reviewed accepted variants
+- Mobile-friendly matching interaction with shuffled answers and complete-pair validation
+- Collapsed matching solution reveal after an incorrect attempt
+- Fifty-seven automated project tests
 
 ## Next task
 
-Implement free-text accepted-answer and matching-pair learner interactions.
+Implement the multiple-select learner interaction.
 
 ## Constraints
 

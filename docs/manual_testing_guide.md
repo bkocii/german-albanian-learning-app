@@ -351,6 +351,46 @@ Validation check: a reviewed or published matching exercise requires at least tw
 rows. On a narrow browser window, confirm each word and dropdown stack vertically without
 horizontal scrolling.
 
+## Multiple-select interaction
+
+Create a new exercise in an existing published lesson:
+
+- Type: **Multiple select**
+- Instruction: `Zgjidh të gjitha përshëndetjet.`
+- Unique position
+- Reviewer and review time
+- Status: **Published**
+
+Add these options:
+
+1. `Hallo` — correct
+2. `Guten Tag` — correct
+3. `Auf Wiedersehen` — incorrect
+
+Test as a learner:
+
+1. Confirm all three options appear as checkboxes and the instruction says to select every correct
+   answer.
+2. Submit without selecting anything. Confirm **Zgjidhni të paktën një përgjigje.** appears and no
+   attempt is created.
+3. Select only `Hallo`. Confirm **Jo e saktë.** appears because the correct set is incomplete.
+4. Open **Shiko përgjigjen e saktë** and confirm both `Hallo` and `Guten Tag` are shown while
+   `Auf Wiedersehen` is omitted.
+5. Retry and select all three options. Confirm the result is still incorrect because one selected
+   option is wrong.
+6. Retry and select exactly `Hallo` and `Guten Tag`. Confirm **Saktë!** and automatic progression.
+7. In **Admin → Learning → Exercise attempts**, confirm the selected option text is retained in
+   each attempt.
+
+Publication validation tests:
+
+- Two options only: rejected because at least three are required.
+- Three options with only one correct: rejected because at least two correct options are required.
+- Three options all marked correct: rejected because at least one incorrect option is required.
+- The same invalid structures in imported JSON must fail during preview and write nothing.
+
+A draft can be saved while its options are still being prepared.
+
 ## JSON course import preview and draft import
 
 Make a copy of `course_content/examples/a1-unit-import-example.json`. If A1 already contains a unit

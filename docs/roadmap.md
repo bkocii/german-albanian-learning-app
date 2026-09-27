@@ -30,7 +30,7 @@
 - [x] Add staff-only JSON validation preview and draft import
 - [x] Add true/false and dialogue-response learner interactions
 - [x] Add free-text accepted-answer and matching-pair interactions
-- [ ] Add multiple-select learner interaction
+- [x] Add multiple-select learner interaction
 - [ ] Publish A1 Unit 1: Greetings and Introductions
 - [ ] Add unit review and completion test
 - [ ] Complete mobile usability and accessibility review

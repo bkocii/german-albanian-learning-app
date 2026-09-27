@@ -52,7 +52,7 @@ contain nested vocabulary, answer options, accepted answers, matching pairs, and
 
 Required fields are `external_id`, `type`, `position`, and `instructions_sq`.
 
-Supported current types:
+Supported types:
 
 - `picture_choice`
 - `translation_choice`
@@ -60,9 +60,6 @@ Supported current types:
 - `word_order`
 - `listening`
 - `speaking`
-
-Planned types already reserved by the schema:
-
 - `true_false`
 - `dialogue_choice`
 - `free_text`
@@ -72,6 +69,9 @@ Planned types already reserved by the schema:
 Use `options` for choice exercises, `accepted_answers` for free-text variants, and
 `matching_pairs` for matching exercises. `image_ref` and `audio_ref` contain an existing media
 asset's `external_id`.
+
+A `multiple_select` exercise requires at least three options, at least two marked
+`"is_correct": true`, and at least one marked false.
 
 See `course_content/examples/a1-unit-import-example.json` for a ready-to-copy example. Staff users
 can open **Admin → Courses → Exercises → Import course JSON**, validate the file, inspect counts and

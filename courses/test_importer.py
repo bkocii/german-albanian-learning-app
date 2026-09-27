@@ -49,6 +49,28 @@ class CourseImporterServiceTests(TestCase):
         self.assertFalse(result.is_valid)
         self.assertTrue(any("duplicate exercise external_id" in error for error in result.errors))
 
+    def test_multiple_select_requires_three_options_and_an_incorrect_option(self):
+        data = example_data()
+        lesson = data["units"][0]["lessons"][0]
+        lesson["exercises"].append(
+            {
+                "external_id": "a1-u1-l1-multiple-001",
+                "type": "multiple_select",
+                "position": 4,
+                "instructions_sq": "Zgjidh të gjitha përshëndetjet.",
+                "options": [
+                    {"position": 1, "text_de": "Hallo", "is_correct": True},
+                    {"position": 2, "text_de": "Guten Tag", "is_correct": True},
+                ],
+            }
+        )
+
+        result = validate_course_import(data)
+
+        self.assertFalse(result.is_valid)
+        self.assertTrue(any("at least three options" in error for error in result.errors))
+        self.assertTrue(any("requires an incorrect option" in error for error in result.errors))
+
 
 class CourseImporterAdminTests(TestCase):
     @classmethod

@@ -36,7 +36,7 @@ Milestone 4 — First complete unit.
 - Guaranteed temporary-file deletion and per-user transcription throttling
 - Optional collapsed correct-answer reveal after mistakes
 - Animated correct feedback with automatic movement to the next exercise
-- Reserved extensible exercise types, with multiple select still awaiting its learner engine
+- Extensible exercise schema with all currently defined learner engines enabled
 - Stable external IDs for safe media and exercise import references
 - Accepted-answer and matching-pair data models
 - Versioned nested JSON format and an A1 import example
@@ -48,11 +48,13 @@ Milestone 4 — First complete unit.
 - Free-text grading against a primary answer and reviewed accepted variants
 - Mobile-friendly matching interaction with shuffled answers and complete-pair validation
 - Collapsed matching solution reveal after an incorrect attempt
-- Fifty-seven automated project tests
+- Multiple-select grading that requires the exact complete set of correct options
+- Multiple-select publication/import validation requiring meaningful correct and incorrect choices
+- Sixty-two automated project tests
 
 ## Next task
 
-Implement the multiple-select learner interaction.
+Prepare, import, review, and publish A1 Unit 1: Greetings and Introductions.
 
 ## Constraints
 

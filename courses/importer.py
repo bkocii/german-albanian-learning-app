@@ -280,8 +280,19 @@ def _validate_exercise_parts(item, exercise_type, options, accepted, pairs, path
     _check_unique(option_positions, "option position", f"{path}.options", result)
     if exercise_type in single_choice and correct_count != 1:
         result.errors.append(f"{path}.options: exactly one option must be correct.")
-    if exercise_type == Exercise.Type.MULTIPLE_SELECT and correct_count < 2:
-        result.errors.append(f"{path}.options: multiple select requires two correct options.")
+    if exercise_type == Exercise.Type.MULTIPLE_SELECT:
+        if len(options) < 3:
+            result.errors.append(
+                f"{path}.options: multiple select requires at least three options."
+            )
+        if correct_count < 2:
+            result.errors.append(
+                f"{path}.options: multiple select requires at least two correct options."
+            )
+        if options and correct_count == len(options):
+            result.errors.append(
+                f"{path}.options: multiple select requires an incorrect option."
+            )
     if exercise_type == Exercise.Type.FREE_TEXT and not accepted:
         result.errors.append(f"{path}.accepted_answers: at least one answer is required.")
     if exercise_type == Exercise.Type.MATCHING and len(pairs) < 2:

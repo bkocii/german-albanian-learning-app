@@ -5,8 +5,10 @@ from django.forms.models import BaseInlineFormSet
 from .models import (
     CEFRLevel,
     Exercise,
+    ExerciseAcceptedAnswer,
     ExerciseOption,
     Lesson,
+    MatchingPair,
     MediaAsset,
     Unit,
     VocabularyEntry,
@@ -31,6 +33,9 @@ class ExerciseOptionInlineFormSet(BaseInlineFormSet):
         choice_types = {
             Exercise.Type.PICTURE_CHOICE,
             Exercise.Type.TRANSLATION_CHOICE,
+            Exercise.Type.TRUE_FALSE,
+            Exercise.Type.DIALOGUE_CHOICE,
+            Exercise.Type.MULTIPLE_SELECT,
         }
         if self.instance.exercise_type not in choice_types:
             return
@@ -41,13 +46,29 @@ class ExerciseOptionInlineFormSet(BaseInlineFormSet):
         ]
         if len(active_forms) < 2:
             raise ValidationError("Published choice exercises require at least two options.")
-        if sum(bool(form.cleaned_data.get("is_correct")) for form in active_forms) != 1:
+        correct_count = sum(bool(form.cleaned_data.get("is_correct")) for form in active_forms)
+        if self.instance.exercise_type == Exercise.Type.MULTIPLE_SELECT:
+            if correct_count < 2:
+                raise ValidationError(
+                    "Reviewed multiple-select exercises require at least two correct options."
+                )
+        elif correct_count != 1:
             raise ValidationError("Published choice exercises require exactly one correct option.")
 
 
 class ExerciseOptionInline(admin.TabularInline):
     model = ExerciseOption
     formset = ExerciseOptionInlineFormSet
+    extra = 0
+
+
+class ExerciseAcceptedAnswerInline(admin.TabularInline):
+    model = ExerciseAcceptedAnswer
+    extra = 0
+
+
+class MatchingPairInline(admin.TabularInline):
+    model = MatchingPair
     extra = 0
 
 
@@ -83,6 +104,7 @@ class VocabularyEntryAdmin(admin.ModelAdmin):
 @admin.register(MediaAsset)
 class MediaAssetAdmin(admin.ModelAdmin):
     list_display = (
+        "external_id",
         "title",
         "kind",
         "language_code",
@@ -92,20 +114,39 @@ class MediaAssetAdmin(admin.ModelAdmin):
         "approved_by",
     )
     list_filter = ("kind", "language_code", "is_approved", "license_name")
-    search_fields = ("title", "creator", "attribution_text")
+    search_fields = ("external_id", "title", "creator", "attribution_text")
     autocomplete_fields = ("approved_by",)
 
 
 @admin.register(Exercise)
 class ExerciseAdmin(admin.ModelAdmin):
-    list_display = ("lesson", "position", "exercise_type", "review_status", "reviewed_by")
+    list_display = (
+        "external_id",
+        "lesson",
+        "position",
+        "exercise_type",
+        "review_status",
+        "reviewed_by",
+    )
     list_filter = ("review_status", "exercise_type", "lesson__unit__level")
-    search_fields = ("prompt_de", "prompt_sq", "expected_answer")
+    search_fields = ("external_id", "prompt_de", "prompt_sq", "expected_answer")
     autocomplete_fields = ("image", "audio", "reviewed_by")
-    inlines = (ExerciseOptionInline,)
+    inlines = (ExerciseOptionInline, ExerciseAcceptedAnswerInline, MatchingPairInline)
 
 
 @admin.register(ExerciseOption)
 class ExerciseOptionAdmin(admin.ModelAdmin):
     list_display = ("exercise", "position", "text_de", "text_sq", "is_correct")
     list_filter = ("is_correct", "exercise__exercise_type")
+
+
+@admin.register(ExerciseAcceptedAnswer)
+class ExerciseAcceptedAnswerAdmin(admin.ModelAdmin):
+    list_display = ("exercise", "position", "text")
+    search_fields = ("text", "exercise__external_id")
+
+
+@admin.register(MatchingPair)
+class MatchingPairAdmin(admin.ModelAdmin):
+    list_display = ("exercise", "position", "left_text", "right_text")
+    search_fields = ("left_text", "right_text", "exercise__external_id")

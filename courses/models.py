@@ -105,6 +105,7 @@ class MediaAsset(models.Model):
         GERMAN = "de", "German"
         ALBANIAN = "sq", "Albanian"
 
+    external_id = models.SlugField(max_length=120, blank=True)
     title = models.CharField(max_length=150)
     kind = models.CharField(max_length=10, choices=Kind)
     language_code = models.CharField(
@@ -132,6 +133,11 @@ class MediaAsset(models.Model):
     class Meta:
         ordering = ("title",)
         constraints = [
+            models.UniqueConstraint(
+                fields=("external_id",),
+                condition=~Q(external_id=""),
+                name="unique_nonblank_media_external_id",
+            ),
             models.CheckConstraint(
                 condition=(
                     Q(is_approved=False, approved_by__isnull=True, approved_at__isnull=True)
@@ -164,6 +170,11 @@ class Exercise(OrderedModel):
         WORD_ORDER = "word_order", "Word ordering"
         LISTENING = "listening", "Listening"
         SPEAKING = "speaking", "Speaking"
+        TRUE_FALSE = "true_false", "True or false"
+        DIALOGUE_CHOICE = "dialogue_choice", "Dialogue response"
+        FREE_TEXT = "free_text", "Free-text translation"
+        MATCHING = "matching", "Matching pairs"
+        MULTIPLE_SELECT = "multiple_select", "Multiple select"
 
     class ReviewStatus(models.TextChoices):
         DRAFT = "draft", "Draft"
@@ -171,6 +182,7 @@ class Exercise(OrderedModel):
         PUBLISHED = "published", "Published"
 
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="exercises")
+    external_id = models.SlugField(max_length=120, blank=True)
     exercise_type = models.CharField(max_length=30, choices=Type)
     instructions_sq = models.CharField(max_length=250)
     prompt_de = models.TextField(blank=True)
@@ -210,6 +222,11 @@ class Exercise(OrderedModel):
             models.UniqueConstraint(
                 fields=("lesson", "position"), name="unique_exercise_position_per_lesson"
             ),
+            models.UniqueConstraint(
+                fields=("lesson", "external_id"),
+                condition=~Q(external_id=""),
+                name="unique_nonblank_exercise_external_id_per_lesson",
+            ),
             models.CheckConstraint(
                 condition=(
                     Q(review_status="draft", reviewed_by__isnull=True, reviewed_at__isnull=True)
@@ -239,6 +256,7 @@ class Exercise(OrderedModel):
             self.Type.WORD_ORDER,
             self.Type.LISTENING,
             self.Type.SPEAKING,
+            self.Type.FREE_TEXT,
         }
         if (
             self.review_status == self.ReviewStatus.PUBLISHED
@@ -256,6 +274,20 @@ class Exercise(OrderedModel):
                 errors["audio"] = "The listening audio must be approved before publication."
             elif self.audio.language_code != MediaAsset.Language.GERMAN:
                 errors["audio"] = "Listening exercises require German-language audio."
+        future_types = {
+            self.Type.TRUE_FALSE,
+            self.Type.DIALOGUE_CHOICE,
+            self.Type.FREE_TEXT,
+            self.Type.MATCHING,
+            self.Type.MULTIPLE_SELECT,
+        }
+        if (
+            self.review_status == self.ReviewStatus.PUBLISHED
+            and self.exercise_type in future_types
+        ):
+            errors["review_status"] = (
+                "This exercise type must remain a draft until its learner engine is enabled."
+            )
         if errors:
             raise ValidationError(errors)
 
@@ -300,3 +332,46 @@ class ExerciseOption(OrderedModel):
 
     def __str__(self):
         return self.text_de or self.text_sq or f"Image option {self.position}"
+
+
+class ExerciseAcceptedAnswer(OrderedModel):
+    exercise = models.ForeignKey(
+        Exercise, on_delete=models.CASCADE, related_name="accepted_answers"
+    )
+    text = models.CharField(max_length=250)
+
+    class Meta:
+        ordering = ("exercise", "position", "id")
+        constraints = [
+            models.UniqueConstraint(
+                fields=("exercise", "text"), name="unique_accepted_answer_per_exercise"
+            ),
+            models.UniqueConstraint(
+                fields=("exercise", "position"),
+                name="unique_accepted_answer_position_per_exercise",
+            ),
+        ]
+
+    def __str__(self):
+        return self.text
+
+
+class MatchingPair(OrderedModel):
+    exercise = models.ForeignKey(Exercise, on_delete=models.CASCADE, related_name="matching_pairs")
+    left_text = models.CharField(max_length=250)
+    right_text = models.CharField(max_length=250)
+
+    class Meta:
+        ordering = ("exercise", "position", "id")
+        constraints = [
+            models.UniqueConstraint(
+                fields=("exercise", "position"), name="unique_matching_pair_position_per_exercise"
+            ),
+            models.UniqueConstraint(
+                fields=("exercise", "left_text", "right_text"),
+                name="unique_matching_pair_per_exercise",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.left_text} — {self.right_text}"

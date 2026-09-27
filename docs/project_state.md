@@ -36,11 +36,15 @@ Milestone 4 — First complete unit.
 - Guaranteed temporary-file deletion and per-user transcription throttling
 - Optional collapsed correct-answer reveal after mistakes
 - Animated correct feedback with automatic movement to the next exercise
-- Forty automated project tests
+- Reserved true/false, dialogue, free-text, matching, and multiple-select exercise types
+- Stable external IDs for safe media and exercise import references
+- Accepted-answer and matching-pair data models
+- Versioned nested JSON format and an A1 import example
+- Forty-three automated project tests
 
 ## Next task
 
-Build and publish the reviewed A1 Unit 1: Greetings and Introductions content set.
+Build the staff-only JSON validation preview and transactional draft importer.
 
 ## Constraints
 

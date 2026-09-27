@@ -8,7 +8,16 @@ from django.db import IntegrityError, transaction
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
-from .models import CEFRLevel, Exercise, ExerciseOption, Lesson, MediaAsset, Unit
+from .models import (
+    CEFRLevel,
+    Exercise,
+    ExerciseAcceptedAnswer,
+    ExerciseOption,
+    Lesson,
+    MatchingPair,
+    MediaAsset,
+    Unit,
+)
 
 
 @override_settings(MEDIA_ROOT=tempfile.gettempdir())
@@ -189,3 +198,69 @@ class CourseModelTests(TestCase):
         )
         with self.assertRaisesMessage(ValidationError, "requires an expected answer"):
             exercise.full_clean()
+
+    def test_future_exercise_type_can_be_drafted_but_not_published(self):
+        exercise = Exercise(
+            lesson=self.lesson,
+            external_id="greeting-dialogue-1",
+            exercise_type=Exercise.Type.DIALOGUE_CHOICE,
+            instructions_sq="Zgjidh përgjigjen.",
+        )
+        exercise.full_clean()
+
+        reviewer = get_user_model().objects.create_user(
+            email="future-reviewer@example.com", password="secure-test-password"
+        )
+        exercise.review_status = Exercise.ReviewStatus.PUBLISHED
+        exercise.reviewed_by = reviewer
+        exercise.reviewed_at = timezone.now()
+        with self.assertRaisesMessage(ValidationError, "must remain a draft"):
+            exercise.full_clean()
+
+    def test_external_exercise_id_must_be_unique_inside_lesson(self):
+        Exercise.objects.create(
+            lesson=self.lesson,
+            external_id="hello-choice-1",
+            exercise_type=Exercise.Type.TRANSLATION_CHOICE,
+            instructions_sq="Zgjidh.",
+            position=1,
+        )
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Exercise.objects.create(
+                lesson=self.lesson,
+                external_id="hello-choice-1",
+                exercise_type=Exercise.Type.MISSING_WORD,
+                instructions_sq="Plotëso.",
+                position=2,
+            )
+
+    def test_accepted_answers_and_matching_pairs_are_ordered(self):
+        free_text = Exercise.objects.create(
+            lesson=self.lesson,
+            external_id="free-text-1",
+            exercise_type=Exercise.Type.FREE_TEXT,
+            instructions_sq="Përkthe.",
+            position=1,
+        )
+        second_answer = ExerciseAcceptedAnswer.objects.create(
+            exercise=free_text, text="Guten Tag!", position=2
+        )
+        first_answer = ExerciseAcceptedAnswer.objects.create(
+            exercise=free_text, text="Guten Tag", position=1
+        )
+        self.assertEqual(list(free_text.accepted_answers.all()), [first_answer, second_answer])
+
+        matching = Exercise.objects.create(
+            lesson=self.lesson,
+            external_id="matching-1",
+            exercise_type=Exercise.Type.MATCHING,
+            instructions_sq="Bashko çiftet.",
+            position=2,
+        )
+        pair = MatchingPair.objects.create(
+            exercise=matching,
+            left_text="Hallo",
+            right_text="Përshëndetje",
+            position=1,
+        )
+        self.assertEqual(list(matching.matching_pairs.all()), [pair])

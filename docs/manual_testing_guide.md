@@ -250,3 +250,22 @@ Use a lesson containing at least two published exercises.
 
 With the operating-system reduced-motion setting enabled, the animation should be disabled while
 automatic progression continues to work.
+
+## Extensible exercise and import-data foundation
+
+Apply migration `courses.0003`. In **Admin → Courses → Exercises**, confirm the type selector now
+includes True or false, Dialogue response, Free-text translation, Matching pairs, and Multiple
+select.
+
+1. Create a new dialogue-response exercise as a draft and give it external ID
+   `a1-u1-dialogue-001`. Confirm it saves.
+2. Try to change it directly to **Published**, with reviewer and review time. Confirm publication is
+   rejected because its learner engine is not enabled yet.
+3. Create a free-text draft and add two accepted answers, for example `Guten Tag` and `Guten Tag!`.
+4. Create a matching draft and add `Hallo — Përshëndetje` and `Danke — Faleminderit` pairs.
+5. Try to reuse the same exercise external ID inside the same lesson. Confirm it is rejected.
+6. Open `course_content/examples/a1-unit-import-example.json` and confirm it is valid JSON and uses
+   nested vocabulary, options, accepted answers, and matching pairs.
+
+This step adds the data foundation only. These five new types must remain drafts until their learner
+interfaces are delivered in the following changes.

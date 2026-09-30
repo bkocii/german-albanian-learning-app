@@ -17,10 +17,20 @@ EXAMPLE_PATH = (
     / "examples"
     / "a1-unit-import-example.json"
 )
+A1_UNIT_PATH = (
+    Path(__file__).resolve().parent.parent
+    / "course_content"
+    / "a1"
+    / "unit-01-greetings-introductions.json"
+)
 
 
 def example_data():
     return json.loads(EXAMPLE_PATH.read_text(encoding="utf-8"))
+
+
+def a1_unit_data():
+    return json.loads(A1_UNIT_PATH.read_text(encoding="utf-8"))
 
 
 class CourseImporterServiceTests(TestCase):
@@ -39,6 +49,40 @@ class CourseImporterServiceTests(TestCase):
         self.assertFalse(Exercise.objects.exclude(review_status=Exercise.ReviewStatus.DRAFT).exists())
         self.assertEqual(ExerciseAcceptedAnswer.objects.count(), 2)
         self.assertEqual(MatchingPair.objects.count(), 2)
+
+    def test_a1_unit_content_file_is_valid_and_complete(self):
+        data = a1_unit_data()
+        result = validate_course_import(data)
+
+        self.assertTrue(result.is_valid, result.errors)
+        self.assertEqual(result.summary["units"], 1)
+        self.assertEqual(result.summary["lessons"], 4)
+        self.assertEqual(result.summary["vocabulary"], 20)
+        self.assertEqual(result.summary["exercises"], 24)
+        self.assertEqual(result.summary["options"], 29)
+        self.assertEqual(result.summary["accepted_answers"], 5)
+        self.assertEqual(result.summary["matching_pairs"], 12)
+
+        exercises = data["units"][0]["lessons"]
+        exercise_types = {
+            exercise["type"]
+            for lesson in exercises
+            for exercise in lesson["exercises"]
+        }
+        self.assertEqual(
+            exercise_types,
+            {
+                Exercise.Type.TRANSLATION_CHOICE,
+                Exercise.Type.MISSING_WORD,
+                Exercise.Type.WORD_ORDER,
+                Exercise.Type.SPEAKING,
+                Exercise.Type.TRUE_FALSE,
+                Exercise.Type.DIALOGUE_CHOICE,
+                Exercise.Type.FREE_TEXT,
+                Exercise.Type.MATCHING,
+                Exercise.Type.MULTIPLE_SELECT,
+            },
+        )
 
     def test_duplicate_external_id_is_reported_before_import(self):
         data = example_data()

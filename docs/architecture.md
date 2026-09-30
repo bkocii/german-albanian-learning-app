@@ -39,8 +39,6 @@
   accepted variants.
 - Matching exercises shuffle the right-side answers deterministically per learner, require every
   pair, and retain the submitted pair mapping in the immutable attempt.
-- Multiple-select exercises compare the complete submitted option set with the complete correct
-  set; partial selections and selections containing an incorrect option both fail.
 - Audio assets record their spoken language and require approver audit data before use.
 - Published listening exercises require approved German audio and an expected text answer.
 - Listening audio uses native browser playback and can be replayed without creating new records.
@@ -58,7 +56,8 @@
 - Bulk course content uses versioned UTF-8 JSON because relational CSV rows cannot safely represent
   nested options, accepted answers, matching pairs, and media references.
 - Imported exercises use stable external IDs, remain drafts, and cannot overwrite reviewed content.
-- Every exercise type currently defined by the schema has a learner interaction.
+- Exercise types without a completed learner engine are blocked from publication; multiple select
+  is the only currently reserved learner interaction.
 - Import preview data is stored temporarily in cache and tied to the staff user; confirmation tokens
   are single-use and expire after 15 minutes.
 - Confirmed imports run inside one database transaction, so partial course imports are not retained.

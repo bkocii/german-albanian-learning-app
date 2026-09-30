@@ -422,3 +422,68 @@ Validation tests:
 
 The file limit defaults to 1 MiB. Media binaries are not embedded in JSON; upload them separately
 and reference their external IDs.
+
+## A1 Unit 1 content review and import
+
+Use `course_content/a1/unit-01-greetings-introductions.json`. It contains:
+
+- 1 unit and 4 lessons
+- 20 vocabulary entries
+- 24 exercises
+- 29 choice options
+- 5 accepted free-text variants
+- 12 matching pairs
+
+The unit intentionally has no picture or listening exercises yet because approved image and audio
+assets must be added separately. It includes speaking exercises that use the existing
+`faster-whisper` workflow.
+
+### 1. Check for earlier test-import collisions
+
+The earlier example JSON used the same A1 unit, first lesson, and one external exercise ID. In
+**Admin → Courses → Units**, look for `Përshëndetjet dhe prezantimi`.
+
+- If it is only disposable content imported while testing the importer, delete that unit before
+  continuing. Django shows every related object that will be deleted; read that list before
+  confirming.
+- If it contains manual content you want to keep, do not delete it. Upload the full file only for
+  validation, inspect the collision errors, and decide how the existing content should be merged
+  before importing.
+- Do not change production external IDs merely to bypass a collision; they are intended to remain
+  stable.
+
+### 2. Preview and import
+
+1. Open **Admin → Courses → Exercises → Import course JSON**.
+2. Upload `course_content/a1/unit-01-greetings-introductions.json`.
+3. Select **Validate and preview**.
+4. Confirm the preview reports exactly the counts listed above and no errors.
+5. Confirm no records were created merely by previewing.
+6. Select **Import as drafts** once.
+7. Confirm all four lessons and all 24 exercises exist, remain **Draft**, and the level, unit, and
+   lessons remain unpublished.
+
+### 3. Human language review
+
+Review one lesson at a time with a fluent German–Albanian reviewer. For every vocabulary entry and
+exercise, check spelling, umlauts, punctuation, formal/informal address, natural Albanian wording,
+and whether every marked answer is unambiguous. Record corrections directly in Admin while content
+is still draft.
+
+Pay particular attention to:
+
+- `du` versus formal `Sie`
+- `Wie geht es dir?` versus `Wie geht es Ihnen?`
+- `Tschüss` versus formal `Auf Wiedersehen`
+- accepted punctuation variants in free-text exercises
+- speaking expected answers, which should be short and unambiguous for transcription
+
+### 4. Test before publication
+
+For each lesson, temporarily publish only that lesson's reviewed exercises, then publish its parent
+lesson, unit, and A1 level. Sign in as a learner and complete every exercise, deliberately testing
+at least one incorrect answer before the correct answer. Confirm attempt history, collapsed answer
+reveals, automatic progression, lesson completion, mobile layout, and speaking feedback.
+
+If a problem is found, return the affected exercise to **Draft**, correct it, repeat review, and
+test it again. Do not publish the complete unit until all four lessons pass this review.

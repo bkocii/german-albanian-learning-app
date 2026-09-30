@@ -274,6 +274,16 @@ class Exercise(OrderedModel):
                 errors["audio"] = "The listening audio must be approved before publication."
             elif self.audio.language_code != MediaAsset.Language.GERMAN:
                 errors["audio"] = "Listening exercises require German-language audio."
+        future_types = {
+            self.Type.MULTIPLE_SELECT,
+        }
+        if (
+            self.review_status == self.ReviewStatus.PUBLISHED
+            and self.exercise_type in future_types
+        ):
+            errors["review_status"] = (
+                "This exercise type must remain a draft until its learner engine is enabled."
+            )
         if errors:
             raise ValidationError(errors)
 

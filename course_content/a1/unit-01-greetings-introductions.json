@@ -1,0 +1,339 @@
+{
+  "schema_version": 1,
+  "level": {
+    "code": "A1",
+    "title_de": "Anfänger",
+    "title_sq": "Fillestar",
+    "description_sq": "Hapat e parë në gjuhën gjermane.",
+    "position": 1
+  },
+  "units": [
+    {
+      "slug": "pershendetjet-dhe-prezantimi",
+      "title_de": "Begrüßung und Vorstellung",
+      "title_sq": "Përshëndetjet dhe prezantimi",
+      "summary_sq": "Përshëndetu, prezantohu dhe zhvillo një bisedë të parë të shkurtër.",
+      "position": 1,
+      "lessons": [
+        {
+          "slug": "pershendetjet-baze",
+          "title_de": "Grundbegrüßungen",
+          "title_sq": "Përshëndetjet bazë",
+          "objective_sq": "Përdor përshëndetjet bazë sipas kohës së ditës.",
+          "position": 1,
+          "vocabulary": [
+            {"position": 1, "german": "Hallo", "albanian": "Përshëndetje", "part_of_speech": "Interjektion", "example_de": "Hallo, Arta!", "example_sq": "Përshëndetje, Arta!"},
+            {"position": 2, "german": "Guten Morgen", "albanian": "Mirëmëngjes", "part_of_speech": "Redewendung", "example_de": "Guten Morgen, Herr Weber.", "example_sq": "Mirëmëngjes, zoti Weber."},
+            {"position": 3, "german": "Guten Tag", "albanian": "Mirëdita", "part_of_speech": "Redewendung", "example_de": "Guten Tag, Frau Keller.", "example_sq": "Mirëdita, zonja Keller."},
+            {"position": 4, "german": "Guten Abend", "albanian": "Mirëmbrëma", "part_of_speech": "Redewendung", "example_de": "Guten Abend zusammen.", "example_sq": "Mirëmbrëma të gjithëve."},
+            {"position": 5, "german": "Willkommen", "albanian": "Mirë se vini", "part_of_speech": "Interjektion", "example_de": "Willkommen in Berlin!", "example_sq": "Mirë se vini në Berlin!"}
+          ],
+          "exercises": [
+            {
+              "external_id": "a1-u1-l1-translation-001",
+              "type": "translation_choice",
+              "position": 1,
+              "instructions_sq": "Zgjidh përkthimin e saktë.",
+              "prompt_de": "Guten Morgen",
+              "options": [
+                {"position": 1, "text_sq": "Mirëmëngjes", "is_correct": true},
+                {"position": 2, "text_sq": "Mirëmbrëma", "is_correct": false},
+                {"position": 3, "text_sq": "Mirupafshim", "is_correct": false}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l1-true-false-001",
+              "type": "true_false",
+              "position": 2,
+              "instructions_sq": "Vendos nëse pohimi është i saktë.",
+              "prompt_de": "Guten Abend sagt man am Abend.",
+              "prompt_sq": "‘Guten Abend’ përdoret në mbrëmje.",
+              "options": [
+                {"position": 1, "text_de": "Richtig", "text_sq": "E vërtetë", "is_correct": true},
+                {"position": 2, "text_de": "Falsch", "text_sq": "E gabuar", "is_correct": false}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l1-missing-001",
+              "type": "missing_word",
+              "position": 3,
+              "instructions_sq": "Plotëso fjalën që mungon.",
+              "prompt_de": "Guten ____!",
+              "prompt_sq": "Mirëdita!",
+              "expected_answer": "Tag"
+            },
+            {
+              "external_id": "a1-u1-l1-matching-001",
+              "type": "matching",
+              "position": 4,
+              "instructions_sq": "Bashko përshëndetjet me përkthimet.",
+              "matching_pairs": [
+                {"position": 1, "left_text": "Hallo", "right_text": "Përshëndetje"},
+                {"position": 2, "left_text": "Guten Morgen", "right_text": "Mirëmëngjes"},
+                {"position": 3, "left_text": "Guten Abend", "right_text": "Mirëmbrëma"}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l1-multiple-001",
+              "type": "multiple_select",
+              "position": 5,
+              "instructions_sq": "Zgjidh të gjitha përshëndetjet.",
+              "options": [
+                {"position": 1, "text_de": "Hallo", "is_correct": true},
+                {"position": 2, "text_de": "Guten Tag", "is_correct": true},
+                {"position": 3, "text_de": "Danke", "is_correct": false}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l1-speaking-001",
+              "type": "speaking",
+              "position": 6,
+              "instructions_sq": "Thuaje përshëndetjen në gjermanisht.",
+              "prompt_sq": "Mirëmëngjes",
+              "expected_answer": "Guten Morgen"
+            }
+          ]
+        },
+        {
+          "slug": "prezantimi",
+          "title_de": "Sich vorstellen",
+          "title_sq": "Prezantimi",
+          "objective_sq": "Thuaj emrin dhe pyet një person tjetër për emrin.",
+          "position": 2,
+          "vocabulary": [
+            {"position": 1, "german": "Ich heiße …", "albanian": "Unë quhem …", "part_of_speech": "Redewendung", "example_de": "Ich heiße Arta.", "example_sq": "Unë quhem Arta."},
+            {"position": 2, "german": "Mein Name ist …", "albanian": "Emri im është …", "part_of_speech": "Redewendung", "example_de": "Mein Name ist Besnik.", "example_sq": "Emri im është Besnik."},
+            {"position": 3, "german": "Wie heißt du?", "albanian": "Si quhesh?", "part_of_speech": "Frage", "example_de": "Hallo! Wie heißt du?", "example_sq": "Përshëndetje! Si quhesh?"},
+            {"position": 4, "german": "Wie heißen Sie?", "albanian": "Si quheni?", "part_of_speech": "Frage", "example_de": "Guten Tag. Wie heißen Sie?", "example_sq": "Mirëdita. Si quheni?"},
+            {"position": 5, "german": "Freut mich", "albanian": "Gëzohem që ju njoh", "part_of_speech": "Redewendung", "example_de": "Freut mich, Arta.", "example_sq": "Gëzohem që të njoh, Arta."}
+          ],
+          "exercises": [
+            {
+              "external_id": "a1-u1-l2-dialogue-001",
+              "type": "dialogue_choice",
+              "position": 1,
+              "instructions_sq": "Zgjidh përgjigjen e duhur.",
+              "prompt_de": "Hallo! Wie heißt du?",
+              "options": [
+                {"position": 1, "text_de": "Ich heiße Arta.", "text_sq": "Unë quhem Arta.", "is_correct": true},
+                {"position": 2, "text_de": "Guten Abend.", "text_sq": "Mirëmbrëma.", "is_correct": false},
+                {"position": 3, "text_de": "Danke schön.", "text_sq": "Faleminderit shumë.", "is_correct": false}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l2-free-text-001",
+              "type": "free_text",
+              "position": 2,
+              "instructions_sq": "Përkthe në gjermanisht.",
+              "prompt_sq": "Unë quhem Luan.",
+              "expected_answer": "Ich heiße Luan.",
+              "accepted_answers": [
+                {"position": 1, "text": "Ich heiße Luan"},
+                {"position": 2, "text": "Mein Name ist Luan."}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l2-word-order-001",
+              "type": "word_order",
+              "position": 3,
+              "instructions_sq": "Vendosi fjalët në rendin e saktë.",
+              "prompt_sq": "Emri im është Mira.",
+              "expected_answer": "Mein Name ist Mira"
+            },
+            {
+              "external_id": "a1-u1-l2-matching-001",
+              "type": "matching",
+              "position": 4,
+              "instructions_sq": "Bashko pyetjet dhe shprehjet me kuptimet.",
+              "matching_pairs": [
+                {"position": 1, "left_text": "Wie heißt du?", "right_text": "Si quhesh?"},
+                {"position": 2, "left_text": "Wie heißen Sie?", "right_text": "Si quheni?"},
+                {"position": 3, "left_text": "Freut mich", "right_text": "Gëzohem që ju njoh"}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l2-multiple-001",
+              "type": "multiple_select",
+              "position": 5,
+              "instructions_sq": "Zgjidh të gjitha mënyrat e prezantimit me emër.",
+              "options": [
+                {"position": 1, "text_de": "Ich heiße Arta.", "is_correct": true},
+                {"position": 2, "text_de": "Mein Name ist Arta.", "is_correct": true},
+                {"position": 3, "text_de": "Wie geht es dir?", "is_correct": false}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l2-speaking-001",
+              "type": "speaking",
+              "position": 6,
+              "instructions_sq": "Prezantoje veten në gjermanisht.",
+              "prompt_sq": "Unë quhem Arta.",
+              "expected_answer": "Ich heiße Arta"
+            }
+          ]
+        },
+        {
+          "slug": "si-je",
+          "title_de": "Wie geht es dir?",
+          "title_sq": "Si je?",
+          "objective_sq": "Pyet si është dikush dhe jep një përgjigje të shkurtër.",
+          "position": 3,
+          "vocabulary": [
+            {"position": 1, "german": "Wie geht es dir?", "albanian": "Si je?", "part_of_speech": "Frage", "example_de": "Hallo, wie geht es dir?", "example_sq": "Përshëndetje, si je?"},
+            {"position": 2, "german": "Wie geht es Ihnen?", "albanian": "Si jeni?", "part_of_speech": "Frage", "example_de": "Guten Tag, wie geht es Ihnen?", "example_sq": "Mirëdita, si jeni?"},
+            {"position": 3, "german": "Mir geht es gut", "albanian": "Jam mirë", "part_of_speech": "Redewendung", "example_de": "Danke, mir geht es gut.", "example_sq": "Faleminderit, jam mirë."},
+            {"position": 4, "german": "Sehr gut", "albanian": "Shumë mirë", "part_of_speech": "Redewendung", "example_de": "Heute geht es mir sehr gut.", "example_sq": "Sot jam shumë mirë."},
+            {"position": 5, "german": "Danke", "albanian": "Faleminderit", "part_of_speech": "Interjektion", "example_de": "Gut, danke!", "example_sq": "Mirë, faleminderit!"}
+          ],
+          "exercises": [
+            {
+              "external_id": "a1-u1-l3-dialogue-001",
+              "type": "dialogue_choice",
+              "position": 1,
+              "instructions_sq": "Zgjidh përgjigjen e duhur.",
+              "prompt_de": "Wie geht es dir?",
+              "options": [
+                {"position": 1, "text_de": "Mir geht es gut, danke.", "text_sq": "Jam mirë, faleminderit.", "is_correct": true},
+                {"position": 2, "text_de": "Ich heiße Luan.", "text_sq": "Unë quhem Luan.", "is_correct": false},
+                {"position": 3, "text_de": "Guten Morgen.", "text_sq": "Mirëmëngjes.", "is_correct": false}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l3-translation-001",
+              "type": "translation_choice",
+              "position": 2,
+              "instructions_sq": "Zgjidh përkthimin e saktë.",
+              "prompt_de": "Wie geht es Ihnen?",
+              "options": [
+                {"position": 1, "text_sq": "Si jeni?", "is_correct": true},
+                {"position": 2, "text_sq": "Si quheni?", "is_correct": false},
+                {"position": 3, "text_sq": "Nga jeni?", "is_correct": false}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l3-missing-001",
+              "type": "missing_word",
+              "position": 3,
+              "instructions_sq": "Plotëso fjalën që mungon.",
+              "prompt_de": "Mir geht es ____, danke.",
+              "expected_answer": "gut"
+            },
+            {
+              "external_id": "a1-u1-l3-free-text-001",
+              "type": "free_text",
+              "position": 4,
+              "instructions_sq": "Përkthe në gjermanisht.",
+              "prompt_sq": "Jam mirë, faleminderit.",
+              "expected_answer": "Mir geht es gut, danke.",
+              "accepted_answers": [
+                {"position": 1, "text": "Mir geht es gut, danke"},
+                {"position": 2, "text": "Gut, danke."}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l3-matching-001",
+              "type": "matching",
+              "position": 5,
+              "instructions_sq": "Bashko shprehjet me përkthimet.",
+              "matching_pairs": [
+                {"position": 1, "left_text": "Wie geht es dir?", "right_text": "Si je?"},
+                {"position": 2, "left_text": "Mir geht es gut", "right_text": "Jam mirë"},
+                {"position": 3, "left_text": "Danke", "right_text": "Faleminderit"}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l3-speaking-001",
+              "type": "speaking",
+              "position": 6,
+              "instructions_sq": "Thuaje përgjigjen në gjermanisht.",
+              "prompt_sq": "Jam mirë, faleminderit.",
+              "expected_answer": "Mir geht es gut danke"
+            }
+          ]
+        },
+        {
+          "slug": "lamtumira-dhe-perseritja",
+          "title_de": "Abschied und Wiederholung",
+          "title_sq": "Lamtumira dhe përsëritja",
+          "objective_sq": "Përfundo një bisedë të shkurtër dhe përsërit shprehjet kryesore.",
+          "position": 4,
+          "vocabulary": [
+            {"position": 1, "german": "Tschüss", "albanian": "Mirupafshim", "part_of_speech": "Interjektion", "example_de": "Tschüss, bis morgen!", "example_sq": "Mirupafshim, shihemi nesër!"},
+            {"position": 2, "german": "Auf Wiedersehen", "albanian": "Mirupafshim", "part_of_speech": "Redewendung", "example_de": "Auf Wiedersehen, Frau Keller.", "example_sq": "Mirupafshim, zonja Keller."},
+            {"position": 3, "german": "Bis bald", "albanian": "Shihemi së shpejti", "part_of_speech": "Redewendung", "example_de": "Bis bald, Arta!", "example_sq": "Shihemi së shpejti, Arta!"},
+            {"position": 4, "german": "Bis morgen", "albanian": "Shihemi nesër", "part_of_speech": "Redewendung", "example_de": "Tschüss, bis morgen.", "example_sq": "Mirupafshim, shihemi nesër."},
+            {"position": 5, "german": "Gute Nacht", "albanian": "Natën e mirë", "part_of_speech": "Redewendung", "example_de": "Gute Nacht, Mama.", "example_sq": "Natën e mirë, mami."}
+          ],
+          "exercises": [
+            {
+              "external_id": "a1-u1-l4-true-false-001",
+              "type": "true_false",
+              "position": 1,
+              "instructions_sq": "Vendos nëse pohimi është i saktë.",
+              "prompt_de": "‘Auf Wiedersehen’ ist eine formelle Verabschiedung.",
+              "prompt_sq": "‘Auf Wiedersehen’ është një lamtumirë formale.",
+              "options": [
+                {"position": 1, "text_de": "Richtig", "text_sq": "E vërtetë", "is_correct": true},
+                {"position": 2, "text_de": "Falsch", "text_sq": "E gabuar", "is_correct": false}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l4-dialogue-001",
+              "type": "dialogue_choice",
+              "position": 2,
+              "instructions_sq": "Zgjidh vazhdimin e duhur të dialogut.",
+              "prompt_de": "Tschüss, Arta!",
+              "options": [
+                {"position": 1, "text_de": "Tschüss, bis morgen!", "text_sq": "Mirupafshim, shihemi nesër!", "is_correct": true},
+                {"position": 2, "text_de": "Ich heiße Arta.", "text_sq": "Unë quhem Arta.", "is_correct": false},
+                {"position": 3, "text_de": "Sehr gut, danke.", "text_sq": "Shumë mirë, faleminderit.", "is_correct": false}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l4-word-order-001",
+              "type": "word_order",
+              "position": 3,
+              "instructions_sq": "Vendosi fjalët në rendin e saktë.",
+              "prompt_sq": "Mirupafshim, shihemi nesër.",
+              "expected_answer": "Tschüss bis morgen"
+            },
+            {
+              "external_id": "a1-u1-l4-matching-001",
+              "type": "matching",
+              "position": 4,
+              "instructions_sq": "Bashko lamtumirat me përkthimet.",
+              "matching_pairs": [
+                {"position": 1, "left_text": "Bis bald", "right_text": "Shihemi së shpejti"},
+                {"position": 2, "left_text": "Bis morgen", "right_text": "Shihemi nesër"},
+                {"position": 3, "left_text": "Gute Nacht", "right_text": "Natën e mirë"}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l4-multiple-001",
+              "type": "multiple_select",
+              "position": 5,
+              "instructions_sq": "Zgjidh të gjitha shprehjet e lamtumirës.",
+              "options": [
+                {"position": 1, "text_de": "Tschüss", "is_correct": true},
+                {"position": 2, "text_de": "Auf Wiedersehen", "is_correct": true},
+                {"position": 3, "text_de": "Wie heißt du?", "is_correct": false},
+                {"position": 4, "text_de": "Bis bald", "is_correct": true}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l4-free-text-001",
+              "type": "free_text",
+              "position": 6,
+              "instructions_sq": "Përkthe në gjermanisht.",
+              "prompt_sq": "Natën e mirë.",
+              "expected_answer": "Gute Nacht.",
+              "accepted_answers": [
+                {"position": 1, "text": "Gute Nacht"}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

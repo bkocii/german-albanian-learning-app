@@ -50,17 +50,9 @@ class ExerciseOptionInlineFormSet(BaseInlineFormSet):
             raise ValidationError("Published choice exercises require at least two options.")
         correct_count = sum(bool(form.cleaned_data.get("is_correct")) for form in active_forms)
         if self.instance.exercise_type == Exercise.Type.MULTIPLE_SELECT:
-            if len(active_forms) < 3:
-                raise ValidationError(
-                    "Reviewed multiple-select exercises require at least three options."
-                )
             if correct_count < 2:
                 raise ValidationError(
                     "Reviewed multiple-select exercises require at least two correct options."
-                )
-            if correct_count == len(active_forms):
-                raise ValidationError(
-                    "Reviewed multiple-select exercises require at least one incorrect option."
                 )
         elif correct_count != 1:
             raise ValidationError("Published choice exercises require exactly one correct option.")

@@ -76,3 +76,7 @@ A `multiple_select` exercise requires at least three options, at least two marke
 See `course_content/examples/a1-unit-import-example.json` for a ready-to-copy example. Staff users
 can open **Admin → Courses → Exercises → Import course JSON**, validate the file, inspect counts and
 warnings, and then confirm one transactional draft import.
+
+The first full course-content candidate is
+`course_content/a1/unit-01-greetings-introductions.json`. It intentionally imports as drafts and
+must receive human German–Albanian review before publication.

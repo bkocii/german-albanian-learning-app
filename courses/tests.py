@@ -243,20 +243,23 @@ class CourseModelTests(TestCase):
         )
         matching.full_clean()
 
-    def test_multiple_select_can_be_published(self):
+    def test_future_exercise_type_can_be_drafted_but_not_published(self):
         exercise = Exercise(
             lesson=self.lesson,
             external_id="greeting-multiple-select-1",
             exercise_type=Exercise.Type.MULTIPLE_SELECT,
             instructions_sq="Zgjidh përgjigjet.",
         )
+        exercise.full_clean()
+
         reviewer = get_user_model().objects.create_user(
-            email="multiple-reviewer@example.com", password="secure-test-password"
+            email="future-reviewer@example.com", password="secure-test-password"
         )
         exercise.review_status = Exercise.ReviewStatus.PUBLISHED
         exercise.reviewed_by = reviewer
         exercise.reviewed_at = timezone.now()
-        exercise.full_clean()
+        with self.assertRaisesMessage(ValidationError, "must remain a draft"):
+            exercise.full_clean()
 
     def test_external_exercise_id_must_be_unique_inside_lesson(self):
         Exercise.objects.create(

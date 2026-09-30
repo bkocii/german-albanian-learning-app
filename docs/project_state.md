@@ -50,11 +50,14 @@ Milestone 4 — First complete unit.
 - Collapsed matching solution reveal after an incorrect attempt
 - Multiple-select grading that requires the exact complete set of correct options
 - Multiple-select publication/import validation requiring meaningful correct and incorrect choices
-- Sixty-two automated project tests
+- Complete A1 Unit 1 draft with four lessons, 20 vocabulary entries, and 24 exercises
+- Automated validation of the production content file and its expected nested counts
+- Sixty-three automated project tests
 
 ## Next task
 
-Prepare, import, review, and publish A1 Unit 1: Greetings and Introductions.
+Human-review the A1 Unit 1 German–Albanian content, import it as drafts, test every lesson, and
+publish it only after corrections are complete.
 
 ## Constraints
 

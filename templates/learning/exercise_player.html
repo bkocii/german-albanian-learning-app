@@ -57,6 +57,15 @@
                             {% endif %}
                             {% if correct_option.text_de %}<span lang="de">{{ correct_option.text_de }}</span>{% endif %}
                             {% if correct_option.text_sq %}<span>{{ correct_option.text_sq }}</span>{% endif %}
+                        {% elif correct_options %}
+                            <ul class="multiple-select-solution-list">
+                                {% for option in correct_options %}
+                                    <li>
+                                        {% if option.text_de %}<span lang="de">{{ option.text_de }}</span>{% endif %}
+                                        {% if option.text_sq %}<span>{{ option.text_sq }}</span>{% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
                         {% elif exercise.expected_answer %}
                             <span lang="de">{{ exercise.expected_answer }}</span>
                         {% elif exercise.exercise_type == 'matching' %}
@@ -124,6 +133,17 @@
                             <label class="option-card dialogue-option">
                                 <input type="radio" name="option" value="{{ option.pk }}" required>
                                 <span lang="de">{{ option.text_de }}</span>
+                                {% if option.text_sq %}<small>{{ option.text_sq }}</small>{% endif %}
+                            </label>
+                        {% endfor %}
+                    </fieldset>
+                {% elif exercise.exercise_type == 'multiple_select' %}
+                    <fieldset class="option-list" data-multiple-select-exercise>
+                        <legend class="multiple-select-hint">Zgjidhni të gjitha përgjigjet e sakta.</legend>
+                        {% for option in exercise.options.all %}
+                            <label class="option-card">
+                                <input type="checkbox" name="option" value="{{ option.pk }}">
+                                {% if option.text_de %}<span lang="de">{{ option.text_de }}</span>{% endif %}
                                 {% if option.text_sq %}<small>{{ option.text_sq }}</small>{% endif %}
                             </label>
                         {% endfor %}

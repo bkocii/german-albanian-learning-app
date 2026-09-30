@@ -23,7 +23,7 @@ def _published_exercises(lesson):
 
 
 def _normalize_answer(value):
-    return " ".join(value.casefold().split())
+    return " ".join(value.casefold().replace("ß", "ss").split())
 
 
 def _word_tokens(exercise, learner):
@@ -116,7 +116,24 @@ def exercise_player(request, exercise_id):
             Exercise.Type.TRUE_FALSE,
             Exercise.Type.DIALOGUE_CHOICE,
         }
-        if exercise.exercise_type == Exercise.Type.MATCHING:
+        if exercise.exercise_type == Exercise.Type.MULTIPLE_SELECT:
+            submitted_ids = set(request.POST.getlist("option"))
+            if not submitted_ids:
+                messages.warning(request, "Zgjidhni të paktën një përgjigje.")
+                return redirect("learning:exercise", exercise_id=exercise.pk)
+            selected_options = list(exercise.options.filter(pk__in=submitted_ids))
+            if len(selected_options) != len(submitted_ids):
+                messages.warning(request, "Një nga zgjedhjet nuk është e vlefshme.")
+                return redirect("learning:exercise", exercise_id=exercise.pk)
+            correct_ids = {
+                str(value)
+                for value in exercise.options.filter(is_correct=True).values_list(
+                    "pk", flat=True
+                )
+            }
+            is_correct = submitted_ids == correct_ids
+            answer_text = " | ".join(str(option) for option in selected_options)
+        elif exercise.exercise_type == Exercise.Type.MATCHING:
             pairs = list(exercise.matching_pairs.all())
             submitted = [request.POST.get(f"match_{pair.pk}", "") for pair in pairs]
             if not pairs or any(not value for value in submitted):
@@ -174,19 +191,24 @@ def exercise_player(request, exercise_id):
 
     attempt = None
     correct_option = None
+    correct_options = []
     attempt_id = request.GET.get("attempt")
     if attempt_id:
         attempt = ExerciseAttempt.objects.filter(
             pk=attempt_id, learner=request.user, exercise=exercise
         ).first()
         if attempt and not attempt.is_correct:
-            correct_option = exercise.options.filter(is_correct=True).first()
+            if exercise.exercise_type == Exercise.Type.MULTIPLE_SELECT:
+                correct_options = list(exercise.options.filter(is_correct=True))
+            else:
+                correct_option = exercise.options.filter(is_correct=True).first()
 
     next_exercise = exercises[index + 1] if index + 1 < len(exercises) else None
     context = {
         "exercise": exercise,
         "attempt": attempt,
         "correct_option": correct_option,
+        "correct_options": correct_options,
         "next_exercise": next_exercise,
         "progress": progress,
         "step_number": index + 1,

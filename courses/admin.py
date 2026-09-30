@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
 from django.forms.models import BaseInlineFormSet
 from django.urls import path
@@ -15,6 +15,7 @@ from .models import (
     Unit,
     VocabularyEntry,
 )
+from .publication import publish_units, unpublish_units
 
 
 class LessonInline(admin.TabularInline):
@@ -50,9 +51,17 @@ class ExerciseOptionInlineFormSet(BaseInlineFormSet):
             raise ValidationError("Published choice exercises require at least two options.")
         correct_count = sum(bool(form.cleaned_data.get("is_correct")) for form in active_forms)
         if self.instance.exercise_type == Exercise.Type.MULTIPLE_SELECT:
+            if len(active_forms) < 3:
+                raise ValidationError(
+                    "Reviewed multiple-select exercises require at least three options."
+                )
             if correct_count < 2:
                 raise ValidationError(
                     "Reviewed multiple-select exercises require at least two correct options."
+                )
+            if correct_count == len(active_forms):
+                raise ValidationError(
+                    "Reviewed multiple-select exercises require at least one incorrect option."
                 )
         elif correct_count != 1:
             raise ValidationError("Published choice exercises require exactly one correct option.")
@@ -124,6 +133,33 @@ class UnitAdmin(admin.ModelAdmin):
     list_filter = ("level", "is_published")
     prepopulated_fields = {"slug": ("title_de",)}
     inlines = (LessonInline,)
+    actions = ("publish_complete_units", "unpublish_complete_units")
+
+    @admin.action(description="Publish selected units with all lessons and exercises")
+    def publish_complete_units(self, request, queryset):
+        try:
+            unit_count, exercise_count = publish_units(queryset, request.user)
+        except ValidationError as error:
+            self.message_user(
+                request,
+                "Publication stopped. " + " ".join(error.messages),
+                level=messages.ERROR,
+            )
+            return
+        self.message_user(
+            request,
+            f"Published {unit_count} unit(s) and {exercise_count} exercise(s).",
+            level=messages.SUCCESS,
+        )
+
+    @admin.action(description="Unpublish selected units and keep exercises reviewed")
+    def unpublish_complete_units(self, request, queryset):
+        unit_count, exercise_count = unpublish_units(queryset)
+        self.message_user(
+            request,
+            f"Unpublished {unit_count} unit(s); {exercise_count} exercise(s) remain reviewed.",
+            level=messages.SUCCESS,
+        )
 
 
 @admin.register(Lesson)

@@ -52,7 +52,11 @@ Milestone 4 — First complete unit.
 - Multiple-select publication/import validation requiring meaningful correct and incorrect choices
 - Complete A1 Unit 1 draft with four lessons, 20 vocabulary entries, and 24 exercises
 - Automated validation of the production content file and its expected nested counts
-- Sixty-three automated project tests
+- Atomic Unit admin actions to publish or unpublish an entire unit hierarchy
+- Publication validation that prevents partial publication and records the acting administrator
+- Typed answers accept standard German `ß` and keyboard-friendly `ss` as equivalent
+- Correct speaking feedback remains visible for six seconds before automatic progression
+- Sixty-eight automated project tests
 
 ## Next task
 

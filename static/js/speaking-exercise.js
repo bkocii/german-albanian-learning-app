@@ -9,6 +9,7 @@ if (speakingExercise) {
     const preview = speakingExercise.querySelector("[data-speaking-preview]");
     const feedback = speakingExercise.querySelector("[data-speaking-feedback]");
     const maxSeconds = Number(speakingExercise.dataset.maxSeconds) || 15;
+    const correctFeedbackMilliseconds = 6000;
 
     let recorder = null;
     let stream = null;
@@ -118,10 +119,15 @@ if (speakingExercise) {
                 : "Jo e saktë. Provoni përsëri nëse dëshironi ta përmirësoni përputhjen.";
             speakingExercise.querySelector("[data-speaking-next]").href = result.next_url;
             feedback.hidden = false;
-            status.textContent = "Transkriptimi përfundoi.";
+            status.textContent = result.is_match
+                ? "Transkriptimi përfundoi. Kalojmë te ushtrimi tjetër pas 6 sekondash."
+                : "Transkriptimi përfundoi.";
             if (result.is_match) {
                 feedback.classList.add("success-burst");
-                window.setTimeout(() => window.location.assign(result.next_url), 1800);
+                window.setTimeout(
+                    () => window.location.assign(result.next_url),
+                    correctFeedbackMilliseconds,
+                );
             }
         } catch (error) {
             status.textContent = error.message;

@@ -98,6 +98,27 @@ class LessonPlayerTests(TestCase):
         )
         return exercise, hello, thanks
 
+    def _create_multiple_select_exercise(self):
+        exercise = Exercise.objects.create(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.MULTIPLE_SELECT,
+            instructions_sq="Zgjidh të gjitha përshëndetjet.",
+            position=2,
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=self.reviewer,
+            reviewed_at=timezone.now(),
+        )
+        hello = ExerciseOption.objects.create(
+            exercise=exercise, text_de="Hallo", position=1, is_correct=True
+        )
+        good_day = ExerciseOption.objects.create(
+            exercise=exercise, text_de="Guten Tag", position=2, is_correct=True
+        )
+        goodbye = ExerciseOption.objects.create(
+            exercise=exercise, text_de="Auf Wiedersehen", position=3
+        )
+        return exercise, hello, good_day, goodbye
+
     def test_catalog_lists_only_published_course_content(self):
         hidden = CEFRLevel.objects.create(
             code="A2",
@@ -227,6 +248,59 @@ class LessonPlayerTests(TestCase):
         self.assertContains(response, "Shiko përgjigjen e saktë")
         self.assertContains(response, correct.text_de)
 
+    def test_multiple_select_requires_exact_correct_set(self):
+        exercise, hello, good_day, goodbye = self._create_multiple_select_exercise()
+        url = reverse("learning:exercise", args=(exercise.pk,))
+
+        response = self.client.get(url)
+        self.assertContains(response, "data-multiple-select-exercise")
+        self.assertContains(response, 'type="checkbox"', count=3)
+
+        self.client.post(url, {"option": [hello.pk, good_day.pk]})
+        correct_attempt = ExerciseAttempt.objects.get(exercise=exercise)
+        self.assertTrue(correct_attempt.is_correct)
+        self.assertIn("Hallo", correct_attempt.answer_text)
+        self.assertIn("Guten Tag", correct_attempt.answer_text)
+        self.assertNotIn("Auf Wiedersehen", correct_attempt.answer_text)
+
+        ExerciseAttempt.objects.filter(exercise=exercise).delete()
+        self.client.post(url, {"option": [hello.pk, good_day.pk, goodbye.pk]})
+        self.assertFalse(ExerciseAttempt.objects.get(exercise=exercise).is_correct)
+
+    def test_multiple_select_partial_answer_is_incorrect_and_reveal_is_collapsed(self):
+        exercise, hello, _, _ = self._create_multiple_select_exercise()
+        response = self.client.post(
+            reverse("learning:exercise", args=(exercise.pk,)),
+            {"option": [hello.pk]},
+            follow=True,
+        )
+
+        self.assertFalse(ExerciseAttempt.objects.get(exercise=exercise).is_correct)
+        self.assertContains(response, "Shiko përgjigjen e saktë")
+        self.assertContains(response, "Hallo")
+        self.assertContains(response, "Guten Tag")
+        self.assertNotContains(response, "<details open")
+
+    def test_multiple_select_requires_at_least_one_selection(self):
+        exercise, _, _, _ = self._create_multiple_select_exercise()
+        response = self.client.post(
+            reverse("learning:exercise", args=(exercise.pk,)), {}, follow=True
+        )
+
+        self.assertContains(response, "Zgjidhni të paktën një përgjigje.")
+        self.assertFalse(ExerciseAttempt.objects.filter(exercise=exercise).exists())
+
+    def test_multiple_select_rejects_option_from_another_exercise(self):
+        exercise, hello, good_day, _ = self._create_multiple_select_exercise()
+        response = self.client.post(
+            reverse("learning:exercise", args=(exercise.pk,)),
+            {"option": [hello.pk, good_day.pk, self.correct_option.pk]},
+            follow=True,
+        )
+
+        self.assertContains(response, "Një nga zgjedhjet nuk është e vlefshme.")
+        self.assertFalse(ExerciseAttempt.objects.filter(exercise=exercise).exists())
+
     def test_option_from_another_exercise_is_rejected(self):
         other_exercise = Exercise.objects.create(
             lesson=self.lesson,
@@ -307,6 +381,29 @@ class LessonPlayerTests(TestCase):
         attempt = ExerciseAttempt.objects.get(exercise=exercise)
         self.assertTrue(attempt.is_correct)
         self.assertEqual(attempt.answer_text, "guten tag!")
+
+    def test_typed_answer_accepts_ss_instead_of_eszett(self):
+        exercise = Exercise.objects.create(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.FREE_TEXT,
+            instructions_sq="Përkthe në gjermanisht.",
+            prompt_sq="Unë quhem Luan.",
+            expected_answer="Ich heiße Luan.",
+            position=2,
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=self.reviewer,
+            reviewed_at=timezone.now(),
+        )
+        ExerciseAcceptedAnswer.objects.create(
+            exercise=exercise, text="Mein Name ist Luan.", position=1
+        )
+
+        self.client.post(
+            reverse("learning:exercise", args=(exercise.pk,)),
+            {"answer": "Ich heisse Luan."},
+        )
+
+        self.assertTrue(ExerciseAttempt.objects.get(exercise=exercise).is_correct)
 
     def test_matching_renders_all_pairs_and_records_correct_submission(self):
         exercise, hello, thanks = self._create_matching_exercise()

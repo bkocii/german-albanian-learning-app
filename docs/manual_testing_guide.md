@@ -487,3 +487,48 @@ reveals, automatic progression, lesson completion, mobile layout, and speaking f
 
 If a problem is found, return the affected exercise to **Draft**, correct it, repeat review, and
 test it again. Do not publish the complete unit until all four lessons pass this review.
+
+## Publish or unpublish a complete unit at once
+
+The Unit administration list provides atomic bulk actions. Publication records the logged-in
+administrator as reviewer with the current time.
+
+### Publish everything
+
+1. Open **Admin → Courses → Units**.
+2. Select the checkbox beside **Përshëndetjet dhe prezantimi**.
+3. In **Action**, choose **Publish selected units with all lessons and exercises**.
+4. Select **Go**.
+5. Confirm the success message reports 1 unit and 24 exercises.
+6. Open the A1 level, unit, lessons, and several exercises. Confirm the hierarchy is published and
+   the exercises show the logged-in administrator and review time.
+7. Sign in as a learner and confirm all four lessons appear in the course catalog.
+
+Before changing anything, the action validates every exercise, choice option, accepted answer,
+matching pair, listening asset, and required answer. If any item is incomplete, an error identifies
+the exercise and nothing in any selected unit is published.
+
+### Unpublish everything
+
+1. Return to **Admin → Courses → Units**.
+2. Select the same unit.
+3. Choose **Unpublish selected units and keep exercises reviewed**, then select **Go**.
+4. Confirm the unit and all lessons are unpublished.
+5. Confirm its previously published exercises now have status **Reviewed**, with reviewer and time
+   preserved.
+6. As a learner, confirm the unit no longer appears.
+
+The A1 level itself remains published during unit rollback because it may later contain other
+published units. Before editing content found to be wrong, change the affected exercise to
+**Draft**, make the correction, and publish the complete unit again when ready.
+
+## German keyboard and speaking-feedback timing
+
+1. Open the free-text exercise whose expected answer is `Ich heiße Luan.`.
+2. Enter `Ich heisse Luan.` using `ss` because the keyboard has no `ß` key.
+3. Confirm the answer is accepted. `ß` and `ss` are equivalent during typed-answer grading;
+   replacing `ß` with `b`, as in `heibe`, remains incorrect.
+4. Open any multiple-select exercise and confirm it displays checkboxes rather than a text field.
+5. Complete a speaking exercise correctly. Confirm recognized, matched, missing, and unexpected
+   words remain visible for approximately six seconds before automatic progression.
+6. Confirm the visible **Vazhdo** link can still move forward immediately.

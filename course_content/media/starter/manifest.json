@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "assets": [
+    {
+      "external_id": "a1-image-person-waving",
+      "filename": "files/person-waving.webp",
+      "title": "Person waving hello",
+      "kind": "image",
+      "language_code": "",
+      "alt_text_sq": "Një person buzëqesh dhe përshëndet me dorë.",
+      "creator": "Course team with OpenAI image generation",
+      "source_url": "",
+      "license_name": "Original AI-generated course asset",
+      "license_url": "",
+      "attribution_text": "Generated specifically for the German–Albanian learning application.",
+      "acquired_on": "2026-10-01"
+    },
+    {
+      "external_id": "a1-image-person-sleeping",
+      "filename": "files/person-sleeping.webp",
+      "title": "Person sleeping at night",
+      "kind": "image",
+      "language_code": "",
+      "alt_text_sq": "Një person fle në shtrat gjatë natës.",
+      "creator": "Course team with OpenAI image generation",
+      "source_url": "",
+      "license_name": "Original AI-generated course asset",
+      "license_url": "",
+      "attribution_text": "Generated specifically for the German–Albanian learning application.",
+      "acquired_on": "2026-10-01"
+    },
+    {
+      "external_id": "a1-image-person-coffee",
+      "filename": "files/person-drinking-coffee.webp",
+      "title": "Person drinking coffee",
+      "kind": "image",
+      "language_code": "",
+      "alt_text_sq": "Një person pi kafe në tavolinë.",
+      "creator": "Course team with OpenAI image generation",
+      "source_url": "",
+      "license_name": "Original AI-generated course asset",
+      "license_url": "",
+      "attribution_text": "Generated specifically for the German–Albanian learning application.",
+      "acquired_on": "2026-10-01"
+    },
+    {
+      "external_id": "a1-image-people-greeting",
+      "filename": "files/people-greeting.webp",
+      "title": "Two people greeting",
+      "kind": "image",
+      "language_code": "",
+      "alt_text_sq": "Dy persona takohen dhe përshëndeten me dorë.",
+      "creator": "Course team with OpenAI image generation",
+      "source_url": "",
+      "license_name": "Original AI-generated course asset",
+      "license_url": "",
+      "attribution_text": "Generated specifically for the German–Albanian learning application.",
+      "acquired_on": "2026-10-01"
+    }
+  ]
+}

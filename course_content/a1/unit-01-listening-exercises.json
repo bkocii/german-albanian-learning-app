@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "level": {"code": "A1", "title_de": "Anfänger", "title_sq": "Fillestar", "position": 1},
+  "units": [
+    {
+      "slug": "pershendetjet-dhe-prezantimi",
+      "title_de": "Begrüßung und Vorstellung",
+      "title_sq": "Përshëndetjet dhe prezantimi",
+      "position": 1,
+      "lessons": [
+        {
+          "slug": "pershendetjet-baze",
+          "title_de": "Grundbegrüßungen",
+          "title_sq": "Përshëndetjet bazë",
+          "position": 1,
+          "vocabulary": [],
+          "exercises": [
+            {"external_id": "a1-u1-l1-listening-001", "type": "listening", "position": 9, "instructions_sq": "Dëgjo dhe shkruaj atë që dëgjon.", "expected_answer": "Guten Morgen", "audio_ref": "a1-audio-guten-morgen"}
+          ]
+        },
+        {
+          "slug": "prezantimi",
+          "title_de": "Sich vorstellen",
+          "title_sq": "Prezantimi",
+          "position": 2,
+          "vocabulary": [],
+          "exercises": [
+            {"external_id": "a1-u1-l2-listening-001", "type": "listening", "position": 7, "instructions_sq": "Dëgjo dhe shkruaj prezantimin.", "expected_answer": "Ich heiße Arta", "audio_ref": "a1-audio-ich-heisse-arta"}
+          ]
+        },
+        {
+          "slug": "si-je",
+          "title_de": "Wie geht es dir?",
+          "title_sq": "Si je?",
+          "position": 3,
+          "vocabulary": [],
+          "exercises": [
+            {"external_id": "a1-u1-l3-listening-001", "type": "listening", "position": 7, "instructions_sq": "Dëgjo dhe shkruaj përgjigjen.", "expected_answer": "Mir geht es gut, danke", "audio_ref": "a1-audio-mir-geht-es-gut"}
+          ]
+        }
+      ]
+    }
+  ]
+}

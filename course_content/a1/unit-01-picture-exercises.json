@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "level": {
+    "code": "A1",
+    "title_de": "Anfänger",
+    "title_sq": "Fillestar",
+    "description_sq": "Hapat e parë në gjuhën gjermane.",
+    "position": 1
+  },
+  "units": [
+    {
+      "slug": "pershendetjet-dhe-prezantimi",
+      "title_de": "Begrüßung und Vorstellung",
+      "title_sq": "Përshëndetjet dhe prezantimi",
+      "summary_sq": "Përshëndetu, prezantohu dhe zhvillo një bisedë të parë të shkurtër.",
+      "position": 1,
+      "lessons": [
+        {
+          "slug": "pershendetjet-baze",
+          "title_de": "Grundbegrüßungen",
+          "title_sq": "Përshëndetjet bazë",
+          "objective_sq": "Përdor përshëndetjet bazë sipas kohës së ditës.",
+          "position": 1,
+          "vocabulary": [],
+          "exercises": [
+            {
+              "external_id": "a1-u1-l1-picture-001",
+              "type": "picture_choice",
+              "position": 7,
+              "instructions_sq": "Zgjidh figurën ku dy persona përshëndeten.",
+              "options": [
+                {"position": 1, "image_ref": "a1-image-people-greeting", "is_correct": true},
+                {"position": 2, "image_ref": "a1-image-person-coffee", "is_correct": false},
+                {"position": 3, "image_ref": "a1-image-person-sleeping", "is_correct": false}
+              ]
+            },
+            {
+              "external_id": "a1-u1-l1-picture-002",
+              "type": "picture_choice",
+              "position": 8,
+              "instructions_sq": "Zgjidh figurën që përshtatet me ‘Gute Nacht’.",
+              "options": [
+                {"position": 1, "image_ref": "a1-image-person-sleeping", "is_correct": true},
+                {"position": 2, "image_ref": "a1-image-person-waving", "is_correct": false},
+                {"position": 3, "image_ref": "a1-image-person-coffee", "is_correct": false}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

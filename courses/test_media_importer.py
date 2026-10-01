@@ -10,6 +10,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
+from .importer import import_course_data, validate_course_import
 from .media_importer import import_media_archive, validate_media_archive
 from .models import MediaAsset
 
@@ -115,6 +116,29 @@ class MediaImporterServiceTests(TestCase):
         self.assertFalse(validation.is_valid)
         self.assertTrue(any("alt_text_sq" in error for error in validation.errors))
         self.assertTrue(any("file is missing" in error for error in validation.errors))
+
+    def test_starter_images_and_supplemental_picture_exercises_are_valid(self):
+        project_root = Path(__file__).resolve().parent.parent
+        media_archive = project_root / "course_content" / "media" / "a1-starter-images.zip"
+        base_content = json.loads(
+            (project_root / "course_content" / "a1" / "unit-01-greetings-introductions.json")
+            .read_text(encoding="utf-8")
+        )
+        picture_content = json.loads(
+            (project_root / "course_content" / "a1" / "unit-01-picture-exercises.json")
+            .read_text(encoding="utf-8")
+        )
+
+        media_validation = validate_media_archive(media_archive)
+        self.assertTrue(media_validation.is_valid, media_validation.errors)
+        self.assertEqual(media_validation.summary["images"], 4)
+        import_media_archive(media_archive)
+        import_course_data(base_content)
+
+        picture_validation = validate_course_import(picture_content)
+        self.assertTrue(picture_validation.is_valid, picture_validation.errors)
+        self.assertEqual(picture_validation.summary["exercises"], 2)
+        self.assertEqual(picture_validation.summary["options"], 6)
 
 
 class MediaImporterAdminTests(TestCase):

@@ -34,6 +34,8 @@
 - [ ] Publish A1 Unit 1: Greetings and Introductions
   - [x] Prepare the complete versioned JSON draft
   - [x] Add safe bulk image/audio ZIP import
+  - [x] Add lightweight starter images and supplemental picture exercises
+  - [ ] Record, review, and add the starter German listening audio
   - [ ] Complete human language review, import, learner testing, and publication
 - [ ] Add unit review and completion test
 - [ ] Complete mobile usability and accessibility review

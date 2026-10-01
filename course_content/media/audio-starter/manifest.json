@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "assets": [
+    {
+      "external_id": "a1-audio-guten-morgen",
+      "filename": "files/guten-morgen.m4a",
+      "title": "Guten Morgen",
+      "kind": "audio",
+      "language_code": "de",
+      "alt_text_sq": "",
+      "creator": "Google Translate",
+      "source_url": "",
+      "license_name": "Original course recording",
+      "license_url": "",
+      "attribution_text": "Human German course recording.",
+      "acquired_on": "2026-10-01"
+    },
+    {
+      "external_id": "a1-audio-ich-heisse-arta",
+      "filename": "files/ich-heisse-arta.m4a",
+      "title": "Ich heiße Arta",
+      "kind": "audio",
+      "language_code": "de",
+      "alt_text_sq": "",
+      "creator": "Replace with speaker name",
+      "source_url": "",
+      "license_name": "Original course recording",
+      "license_url": "",
+      "attribution_text": "Human German course recording.",
+      "acquired_on": "2026-10-01"
+    },
+    {
+      "external_id": "a1-audio-mir-geht-es-gut",
+      "filename": "files/mir-geht-es-gut.m4a",
+      "title": "Mir geht es gut, danke",
+      "kind": "audio",
+      "language_code": "de",
+      "alt_text_sq": "",
+      "creator": "Replace with speaker name",
+      "source_url": "",
+      "license_name": "Original course recording",
+      "license_url": "",
+      "attribution_text": "Human German course recording.",
+      "acquired_on": "2026-10-01"
+    }
+  ]
+}

@@ -80,3 +80,8 @@ warnings, and then confirm one transactional draft import.
 The first full course-content candidate is
 `course_content/a1/unit-01-greetings-introductions.json`. It intentionally imports as drafts and
 must receive human German–Albanian review before publication.
+
+After importing the base unit and the starter media ZIP, import
+`course_content/a1/unit-01-picture-exercises.json` to add two picture exercises. After recording,
+importing, and approving the three German audio assets, import
+`course_content/a1/unit-01-listening-exercises.json` to add three listening exercises.

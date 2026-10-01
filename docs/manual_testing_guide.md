@@ -584,3 +584,52 @@ The ZIP root must contain `manifest.json`, not an extra `media-import` directory
 
 Nothing should be imported after any failed preview. See `docs/media_import_format.md` for every
 field and the default file, archive, count, and extracted-size limits.
+
+## A1 starter images and audio
+
+### Import the supplied lightweight images
+
+The ready-to-use file is `course_content/media/a1-starter-images.zip`. It contains four 640×640
+WebP illustrations and is approximately 58 KB in total.
+
+1. Open **Admin → Courses → Media assets → Import media ZIP**.
+2. Upload `course_content/media/a1-starter-images.zip`.
+3. Confirm preview reports 4 assets, 4 images, 0 audio, and no errors.
+4. Import the assets and inspect all four illustrations and Albanian alternative texts.
+5. If acceptable, approve each image with your administrator and the current time.
+6. Open **Courses → Exercises → Import course JSON** and upload
+   `course_content/a1/unit-01-picture-exercises.json`.
+7. Confirm the preview reports 2 exercises and 6 options, then import them as drafts.
+8. Publish the unit again with the bulk Unit action and test both picture exercises as a learner.
+
+The supplemental exercise JSON assumes the complete A1 Unit 1 was imported first. Its first lesson
+uses positions 7 and 8; if those positions are occupied, preview stops without writing anything.
+
+### Record the starter German audio
+
+This project does not treat unreviewed machine speech as approved teaching pronunciation. Use a
+fluent German speaker and the script at
+`course_content/media/audio-starter/recording-script.md`.
+
+1. In Windows Sound Recorder, create three separate recordings.
+2. Rename/export them as:
+   - `guten-morgen.m4a`
+   - `ich-heisse-arta.m4a`
+   - `mir-geht-es-gut.m4a`
+3. Create `course_content/media/audio-starter/files/` and place the recordings there.
+4. In `course_content/media/audio-starter/manifest.json`, replace `Replace with speaker name` with
+   the real speaker credit and adjust the acquisition date if necessary.
+5. From inside `course_content/media/audio-starter`, create the ZIP:
+
+```powershell
+Compress-Archive -Path .\manifest.json, .\files -DestinationPath ..\a1-starter-audio.zip -Force
+```
+
+6. Import `a1-starter-audio.zip` through **Import media ZIP**.
+7. Listen to every imported recording and approve it only after pronunciation and quality review.
+8. Import `course_content/a1/unit-01-listening-exercises.json` through the course JSON importer.
+9. Expected preview: 3 lessons, 3 exercises, and no errors. Import as drafts, bulk-publish the unit,
+   and test playback plus correct/incorrect typed answers.
+
+Listening JSON validation intentionally fails until all referenced German audio exists and is
+approved.

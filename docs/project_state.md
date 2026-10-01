@@ -58,7 +58,9 @@ Milestone 4 — First complete unit.
 - Correct speaking feedback remains visible for six seconds before automatic progression
 - Staff-only media ZIP validation, preview, and unapproved import
 - Stable media IDs, licensing metadata, archive safety limits, and expiring preview files
-- Seventy-three automated project tests
+- Four original lightweight starter illustrations with an import-ready media ZIP
+- Supplemental picture-choice JSON plus German audio recording manifest and scripts
+- Seventy-four automated project tests
 
 ## Next task
 

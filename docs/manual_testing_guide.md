@@ -532,3 +532,55 @@ published units. Before editing content found to be wrong, change the affected e
 5. Complete a speaking exercise correctly. Confirm recognized, matched, missing, and unexpected
    words remain visible for approximately six seconds before automatic progression.
 6. Confirm the visible **Vazhdo** link can still move forward immediately.
+
+## Bulk media ZIP import
+
+Create this folder outside the project or in a temporary working folder:
+
+```text
+media-import/
+├── manifest.json
+└── files/
+    ├── greeting-wave.webp
+    └── guten-morgen.mp3
+```
+
+Copy `course_content/media/manifest-example.json` to `media-import/manifest.json`. Supply a small
+WebP image and German MP3 using the exact filenames shown, or change both the manifest and actual
+filenames so they match exactly.
+
+In PowerShell, from the folder containing `media-import`:
+
+```powershell
+Compress-Archive -Path .\media-import\* -DestinationPath .\media-import.zip -Force
+```
+
+The ZIP root must contain `manifest.json`, not an extra `media-import` directory.
+
+### Preview and import
+
+1. Open **Admin → Courses → Media assets**.
+2. Select **Import media ZIP**.
+3. Upload `media-import.zip` and select **Validate and preview**.
+4. Confirm the preview reports 2 assets, 1 image, 1 audio item, and no errors.
+5. Open Media assets in another tab and confirm previewing created nothing.
+6. Return to the preview and select **Import unapproved media**.
+7. Confirm both assets exist with their external IDs and **Is approved** unchecked.
+8. Open the image and verify its preview/file, Albanian alt text, creator, and license information.
+9. Open and listen to the audio. Confirm its language is German and its pronunciation is suitable.
+10. Only after review, check **Is approved** and set **Approved by** and **Approved at**.
+
+### Failure tests—restore the valid ZIP before each test
+
+- Remove `manifest.json`: preview reports that it is required at the ZIP root.
+- Change schema version to 2: preview rejects it.
+- Change a manifest filename without renaming the actual file: missing-file error.
+- Reuse an `external_id`: duplicate/existing-ID error.
+- Remove image `alt_text_sq`: validation error.
+- Set an image language to `de`: validation error.
+- Add `../unsafe.jpg` with a ZIP tool that permits unsafe paths: unsafe-path error.
+- Upload as a normal learner: access is denied.
+- Leave a valid preview for more than 15 minutes: confirmation requires a new upload.
+
+Nothing should be imported after any failed preview. See `docs/media_import_format.md` for every
+field and the default file, archive, count, and extracted-size limits.

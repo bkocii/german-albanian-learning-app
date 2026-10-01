@@ -4,6 +4,7 @@ from django.forms.models import BaseInlineFormSet
 from django.urls import path
 
 from .import_views import course_import
+from .media_import_views import media_import
 from .models import (
     CEFRLevel,
     Exercise,
@@ -179,6 +180,7 @@ class VocabularyEntryAdmin(admin.ModelAdmin):
 
 @admin.register(MediaAsset)
 class MediaAssetAdmin(admin.ModelAdmin):
+    change_list_template = "admin/courses/mediaasset/change_list.html"
     list_display = (
         "external_id",
         "title",
@@ -192,6 +194,16 @@ class MediaAssetAdmin(admin.ModelAdmin):
     list_filter = ("kind", "language_code", "is_approved", "license_name")
     search_fields = ("external_id", "title", "creator", "attribution_text")
     autocomplete_fields = ("approved_by",)
+
+    def get_urls(self):
+        custom_urls = [
+            path(
+                "import-zip/",
+                self.admin_site.admin_view(media_import),
+                name="courses_mediaasset_import_zip",
+            )
+        ]
+        return custom_urls + super().get_urls()
 
 
 @admin.register(Exercise)

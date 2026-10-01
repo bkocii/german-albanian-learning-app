@@ -56,7 +56,9 @@ Milestone 4 — First complete unit.
 - Publication validation that prevents partial publication and records the acting administrator
 - Typed answers accept standard German `ß` and keyboard-friendly `ss` as equivalent
 - Correct speaking feedback remains visible for six seconds before automatic progression
-- Sixty-eight automated project tests
+- Staff-only media ZIP validation, preview, and unapproved import
+- Stable media IDs, licensing metadata, archive safety limits, and expiring preview files
+- Seventy-three automated project tests
 
 ## Next task
 

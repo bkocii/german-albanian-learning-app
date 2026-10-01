@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "assets": [
+    {
+      "external_id": "a1-greeting-wave",
+      "filename": "files/greeting-wave.webp",
+      "title": "Greeting wave",
+      "kind": "image",
+      "language_code": "",
+      "alt_text_sq": "Një person duke përshëndetur me dorë.",
+      "creator": "Course team",
+      "source_url": "",
+      "license_name": "Original work",
+      "license_url": "",
+      "attribution_text": "",
+      "acquired_on": "2026-09-30"
+    },
+    {
+      "external_id": "a1-guten-morgen-audio",
+      "filename": "files/guten-morgen.m4a",
+      "title": "Guten Morgen audio",
+      "kind": "audio",
+      "language_code": "de",
+      "alt_text_sq": "",
+      "creator": "Course team",
+      "source_url": "",
+      "license_name": "Original work",
+      "license_url": "",
+      "attribution_text": "",
+      "acquired_on": "2026-09-30"
+    }
+  ]
+}

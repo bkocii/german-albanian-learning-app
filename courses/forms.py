@@ -21,3 +21,19 @@ class CourseImportUploadForm(forms.Form):
 
 class CourseImportConfirmForm(forms.Form):
     preview_token = forms.CharField(widget=forms.HiddenInput)
+
+
+class MediaImportUploadForm(forms.Form):
+    media_archive = forms.FileField(label="Media ZIP archive")
+
+    def clean_media_archive(self):
+        upload = self.cleaned_data["media_archive"]
+        if upload.size > settings.MEDIA_IMPORT_MAX_ARCHIVE_BYTES:
+            raise forms.ValidationError("The ZIP archive is larger than the allowed import limit.")
+        if not upload.name.lower().endswith(".zip"):
+            raise forms.ValidationError("Upload a .zip media archive.")
+        return upload
+
+
+class MediaImportConfirmForm(forms.Form):
+    preview_token = forms.CharField(widget=forms.HiddenInput)

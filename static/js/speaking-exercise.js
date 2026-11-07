@@ -118,6 +118,9 @@ if (speakingExercise) {
                 ? "Saktë! Të gjitha fjalët u njohën në rendin e pritur."
                 : "Jo e saktë. Provoni përsëri nëse dëshironi ta përmirësoni përputhjen.";
             speakingExercise.querySelector("[data-speaking-next]").href = result.next_url;
+            const tutorLink = speakingExercise.querySelector("[data-speaking-tutor]");
+            tutorLink.href = result.tutor_url;
+            tutorLink.hidden = false;
             feedback.hidden = false;
             status.textContent = result.is_match
                 ? "Transkriptimi përfundoi. Kalojmë te ushtrimi tjetër pas 6 sekondash."

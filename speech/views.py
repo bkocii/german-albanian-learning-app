@@ -109,6 +109,8 @@ def transcribe_exercise(request, exercise_id):
         next_url = reverse("learning:exercise", args=(published_exercises[index + 1].pk,))
     else:
         next_url = reverse("learning:catalog")
+    result_url = reverse("learning:exercise", args=(exercise.pk,))
+    result_url = f"{result_url}?attempt={attempt.pk}#lesson-tutor"
 
     return JsonResponse(
         {
@@ -116,6 +118,7 @@ def transcribe_exercise(request, exercise_id):
             "transcript": transcript,
             "expected": exercise.expected_answer,
             "next_url": next_url,
+            "tutor_url": result_url,
             **comparison,
         }
     )

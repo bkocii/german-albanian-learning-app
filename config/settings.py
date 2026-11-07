@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "courses",
     "learning",
     "speech",
+    "tutor",
 ]
 
 MIDDLEWARE = [
@@ -103,6 +104,19 @@ MEDIA_IMPORT_MAX_TOTAL_BYTES = env.int("MEDIA_IMPORT_MAX_TOTAL_BYTES", default=5
 MEDIA_IMPORT_MAX_FILES = env.int("MEDIA_IMPORT_MAX_FILES", default=100)
 MEDIA_IMPORT_PREVIEW_SECONDS = env.int("MEDIA_IMPORT_PREVIEW_SECONDS", default=900)
 MEDIA_IMPORT_PREVIEW_ROOT = BASE_DIR / "var" / "media-import-previews"
+TUTOR_ENABLED = env.bool("TUTOR_ENABLED", default=False)
+TUTOR_MODEL = env("AI_TUTOR_MODEL", default="gpt-5.4-mini")
+TUTOR_RATE_ATTEMPTS = env.int("TUTOR_RATE_ATTEMPTS", default=10)
+TUTOR_RATE_WINDOW_SECONDS = env.int("TUTOR_RATE_WINDOW_SECONDS", default=300)
+TUTOR_MAX_QUESTION_LENGTH = env.int("TUTOR_MAX_QUESTION_LENGTH", default=500)
+
+AI_TOOLKIT = {
+    "provider": "openai",
+    "api_key": env("OPENAI_API_KEY", default=""),
+    "model": TUTOR_MODEL,
+    "max_retries": 1,
+    "file_logging_enabled": False,
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {

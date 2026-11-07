@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from courses.models import CEFRLevel, Exercise, ExerciseOption, Lesson, Unit
+from tutor.models import TutorExchange
 
 from .models import ExerciseAttempt, LessonProgress
 
@@ -190,6 +191,7 @@ def exercise_player(request, exercise_id):
         return redirect(f"{result_url}?attempt={attempt.pk}")
 
     attempt = None
+    tutor_exchange = None
     correct_option = None
     correct_options = []
     attempt_id = request.GET.get("attempt")
@@ -203,10 +205,21 @@ def exercise_player(request, exercise_id):
             else:
                 correct_option = exercise.options.filter(is_correct=True).first()
 
+    tutor_exchange_id = request.GET.get("tutor")
+    if attempt and tutor_exchange_id:
+        tutor_exchange = TutorExchange.objects.filter(
+            pk=tutor_exchange_id,
+            learner=request.user,
+            exercise=exercise,
+            attempt=attempt,
+        ).first()
+
     next_exercise = exercises[index + 1] if index + 1 < len(exercises) else None
     context = {
         "exercise": exercise,
         "attempt": attempt,
+        "tutor_exchange": tutor_exchange,
+        "tutor_enabled": settings.TUTOR_ENABLED,
         "correct_option": correct_option,
         "correct_options": correct_options,
         "next_exercise": next_exercise,

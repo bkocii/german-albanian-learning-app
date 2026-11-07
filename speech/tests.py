@@ -103,7 +103,15 @@ class SpeakingTranscriptionTests(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.json()["is_match"])
-        self.assertTrue(ExerciseAttempt.objects.get().is_correct)
+        attempt = ExerciseAttempt.objects.get()
+        self.assertTrue(attempt.is_correct)
+        self.assertEqual(
+            response.json()["tutor_url"],
+            (
+                f"{reverse('learning:exercise', args=(self.exercise.pk,))}"
+                f"?attempt={attempt.pk}#lesson-tutor"
+            ),
+        )
         self.assertTrue(temporary_paths)
         self.assertFalse(temporary_paths[0].exists())
 
@@ -133,6 +141,15 @@ class SpeakingTranscriptionTests(TestCase):
         self.assertEqual(result["matched_words"], ["guten", "anna"])
         self.assertEqual(result["missing_words"], ["morgen"])
         self.assertFalse(result["is_match"])
+
+    def test_spoken_heise_matches_expected_heisse_or_sharp_s(self):
+        sharp_s = compare_recognized_words("Ich heiße Luan", "Ich heise Luan")
+        double_s = compare_recognized_words("Ich heisse Luan", "Ich heise Luan")
+
+        self.assertTrue(sharp_s["is_match"])
+        self.assertTrue(double_s["is_match"])
+        self.assertEqual(sharp_s["missing_words"], [])
+        self.assertEqual(sharp_s["unexpected_words"], [])
 
     @override_settings(SPEECH_TRANSCRIPTION_RATE_ATTEMPTS=1)
     @patch("speech.views.transcribe_german", return_value="Guten Morgen")

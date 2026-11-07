@@ -89,6 +89,71 @@
                     <a class="button secondary" href="{% url 'learning:exercise' exercise.pk %}">Provo përsëri</a>
                 {% endif %}
             </div>
+
+            <details
+                id="lesson-tutor"
+                class="tutor-panel"
+                data-tutor-panel
+                {% if tutor_exchange %}open{% endif %}
+            >
+                <summary>Pyet tutorin për një shpjegim</summary>
+                {% if tutor_enabled %}
+                    <p class="muted">
+                        Tutori merr vetëm këtë mësim, ushtrimin dhe përgjigjen tuaj. Përgjigjet jepen në shqip me shembuj të thjeshtë në gjermanisht.
+                    </p>
+                    <form method="post" action="{% url 'tutor:ask' exercise.pk %}" class="tutor-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="attempt" value="{{ attempt.pk }}">
+                        <div class="tutor-quick-actions">
+                            {% if not attempt.is_correct %}
+                                <button class="button secondary" type="submit" name="kind" value="explain_mistake">Pse ishte gabim?</button>
+                            {% endif %}
+                            <button class="button secondary" type="submit" name="kind" value="explain_answer">Shpjego përgjigjen</button>
+                            <button class="button secondary" type="submit" name="kind" value="grammar">Shpjego gramatikën</button>
+                            <button class="button secondary" type="submit" name="kind" value="example">Jep një shembull tjetër</button>
+                        </div>
+                        <label for="tutor-question">Ose bëni një pyetje për këtë mësim</label>
+                        <textarea
+                            id="tutor-question"
+                            name="question"
+                            maxlength="500"
+                            rows="3"
+                            placeholder="P.sh. Pse përdoret ‘heiße’ këtu?"
+                        ></textarea>
+                        <button class="button" type="submit" name="kind" value="custom">Dërgo pyetjen</button>
+                    </form>
+                {% else %}
+                    <p class="muted">Tutori i mësimit nuk është aktivizuar ende.</p>
+                {% endif %}
+
+                {% if tutor_exchange %}
+                    <div class="tutor-response" aria-live="polite">
+                        <p class="eyebrow">Shpjegimi i tutorit</p>
+                        <p>{{ tutor_exchange.explanation_sq }}</p>
+                        {% if tutor_exchange.german_examples %}
+                            <ul class="tutor-example-list">
+                                {% for example in tutor_exchange.german_examples %}
+                                    <li>
+                                        {% if example.german %}
+                                            <strong lang="de">{{ example.german }}</strong>
+                                            <span> — {{ example.albanian }}</span>
+                                            {% if example.why_it_helps_sq %}
+                                                <small class="muted">{{ example.why_it_helps_sq }}</small>
+                                            {% endif %}
+                                        {% else %}
+                                            <span lang="de">{{ example }}</span>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                        {% if tutor_exchange.follow_up_sq %}
+                            <p><strong>Provo:</strong> {{ tutor_exchange.follow_up_sq }}</p>
+                        {% endif %}
+                        <small class="muted">Përgjigjja është krijuar nga AI dhe kufizohet në materialin e këtij mësimi.</small>
+                    </div>
+                {% endif %}
+            </details>
         {% else %}
             <form method="post" class="exercise-form"{% if exercise.exercise_type == 'word_order' %} data-word-order-form{% endif %}>
                 {% csrf_token %}
@@ -208,7 +273,10 @@
                             <p><strong>Fjalët që mungojnë:</strong> <span data-speaking-missing></span></p>
                             <p><strong>Fjalë të tjera të njohura:</strong> <span data-speaking-unexpected></span></p>
                             <p data-speaking-result></p>
-                            <a class="button" data-speaking-next href="{% url 'learning:catalog' %}">Vazhdo</a>
+                            <div class="actions">
+                                <a class="button" data-speaking-next href="{% url 'learning:catalog' %}">Vazhdo</a>
+                                <a class="button secondary" data-speaking-tutor href="#lesson-tutor" hidden>Pyet tutorin</a>
+                            </div>
                         </div>
                     </div>
                 {% else %}

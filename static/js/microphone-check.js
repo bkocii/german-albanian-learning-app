@@ -8,12 +8,23 @@ if (microphoneCheck) {
     const preview = microphoneCheck.querySelector("[data-recording-preview]");
     const audio = microphoneCheck.querySelector("[data-recording-audio]");
     const maxSeconds = Number(microphoneCheck.dataset.maxSeconds) || 15;
+    const preferredMimeTypes = [
+        "audio/mp4",
+        "audio/webm;codecs=opus",
+        "audio/webm",
+        "audio/ogg;codecs=opus",
+    ];
 
     let recorder = null;
     let stream = null;
     let stopTimer = null;
     let audioUrl = null;
     let chunks = [];
+
+    const recorderOptions = () => {
+        const mimeType = preferredMimeTypes.find((type) => MediaRecorder.isTypeSupported(type));
+        return mimeType ? { mimeType } : undefined;
+    };
 
     const releaseStream = () => {
         if (stream) {
@@ -54,7 +65,7 @@ if (microphoneCheck) {
                 audio: { echoCancellation: true, noiseSuppression: true },
                 video: false,
             });
-            recorder = new MediaRecorder(stream);
+            recorder = new MediaRecorder(stream, recorderOptions());
             chunks = [];
 
             recorder.addEventListener("dataavailable", (event) => {
@@ -70,11 +81,24 @@ if (microphoneCheck) {
                 stopButton.disabled = true;
 
                 const recording = new Blob(chunks, { type: recorder.mimeType || "audio/webm" });
+                if (!recording.size) {
+                    status.textContent = "Regjistrimi është bosh. Kontrolloni mikrofonin dhe provoni përsëri.";
+                    return;
+                }
                 audioUrl = URL.createObjectURL(recording);
                 audio.src = audioUrl;
+                audio.load();
                 preview.hidden = false;
                 deleteButton.hidden = false;
                 status.textContent = "Regjistrimi përfundoi. Mund ta dëgjoni më poshtë.";
+            });
+
+            recorder.addEventListener("error", () => {
+                clearTimeout(stopTimer);
+                releaseStream();
+                startButton.disabled = false;
+                stopButton.disabled = true;
+                status.textContent = "Regjistrimi dështoi. Provoni përsëri.";
             });
 
             recorder.start();

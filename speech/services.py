@@ -68,7 +68,17 @@ def transcribe_german(audio_path):
 
 
 def _words(text):
-    return re.findall(r"[^\W_]+(?:['’-][^\W_]+)*", text.casefold())
+    words = re.findall(r"[^\W_]+(?:['’-][^\W_]+)*", text.casefold())
+    return [_canonical_spoken_word(word) for word in words]
+
+
+def _canonical_spoken_word(word):
+    normalized = word.replace("ß", "ss")
+    # Whisper can render the spoken form of “heiße” as “heise”. Speaking
+    # exercises assess recognized speech, not the learner's German spelling.
+    if normalized == "heise":
+        return "heisse"
+    return normalized
 
 
 def compare_recognized_words(expected, recognized):

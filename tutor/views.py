@@ -28,7 +28,7 @@ def _exercise_url(exercise, attempt, exchange=None):
 def ask(request, exercise_id):
     exercise = get_object_or_404(
         Exercise.objects.select_related("lesson__unit__level")
-        .prefetch_related("lesson__vocabulary", "options"),
+        .prefetch_related("lesson__vocabulary", "lesson__tutor_examples", "options"),
         pk=exercise_id,
         review_status=Exercise.ReviewStatus.PUBLISHED,
         lesson__is_published=True,

@@ -27,8 +27,8 @@
             <table>
                 <thead><tr><th>Content</th><th>Count</th></tr></thead>
                 <tbody>
-                    {% for label, count in validation.summary.items %}
-                        <tr><td>{{ label|capfirst }}</td><td>{{ count }}</td></tr>
+                    {% for label, count in summary_rows %}
+                        <tr><td>{{ label }}</td><td>{{ count }}</td></tr>
                     {% endfor %}
                 </tbody>
             </table>

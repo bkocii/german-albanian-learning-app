@@ -11,6 +11,7 @@ from .models import (
     ExerciseAcceptedAnswer,
     ExerciseOption,
     Lesson,
+    LessonTutorExample,
     MatchingPair,
     MediaAsset,
     Unit,
@@ -26,6 +27,11 @@ class LessonInline(admin.TabularInline):
 
 class VocabularyInline(admin.TabularInline):
     model = VocabularyEntry
+    extra = 0
+
+
+class LessonTutorExampleInline(admin.TabularInline):
+    model = LessonTutorExample
     extra = 0
 
 
@@ -168,7 +174,37 @@ class LessonAdmin(admin.ModelAdmin):
     list_display = ("title_sq", "unit", "position", "is_published")
     list_filter = ("unit__level", "unit", "is_published")
     prepopulated_fields = {"slug": ("title_de",)}
-    inlines = (VocabularyInline,)
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "unit",
+                    "slug",
+                    "title_de",
+                    "title_sq",
+                    "objective_sq",
+                    "position",
+                    "is_published",
+                )
+            },
+        ),
+        (
+            "Lesson tutor grounding",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "tutor_grammar_notes_sq",
+                    "tutor_common_mistakes_sq",
+                    "tutor_guidance_sq",
+                ),
+                "description": (
+                    "Optional reviewed Albanian guidance sent only to the lesson tutor."
+                ),
+            },
+        ),
+    )
+    inlines = (VocabularyInline, LessonTutorExampleInline)
 
 
 @admin.register(VocabularyEntry)
@@ -176,6 +212,14 @@ class VocabularyEntryAdmin(admin.ModelAdmin):
     list_display = ("german", "albanian", "lesson", "position")
     list_filter = ("lesson__unit__level", "lesson__unit", "lesson")
     search_fields = ("german", "albanian")
+
+
+@admin.register(LessonTutorExample)
+class LessonTutorExampleAdmin(admin.ModelAdmin):
+    list_display = ("german", "albanian", "lesson", "position", "is_approved")
+    list_editable = ("is_approved",)
+    list_filter = ("is_approved", "lesson__unit__level", "lesson__unit", "lesson")
+    search_fields = ("german", "albanian", "explanation_sq")
 
 
 @admin.register(MediaAsset)

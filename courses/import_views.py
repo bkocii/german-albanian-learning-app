@@ -11,6 +11,13 @@ from django.views.decorators.http import require_http_methods
 from .forms import CourseImportConfirmForm, CourseImportUploadForm
 from .importer import CourseImportError, import_course_data, validate_course_import
 
+SUMMARY_LABELS = {
+    "tutor_lessons": "Tutor lesson contexts",
+    "tutor_examples": "Tutor examples",
+    "accepted_answers": "Accepted answers",
+    "matching_pairs": "Matching pairs",
+}
+
 
 def _cache_key(token):
     return f"course-import-preview:{token}"
@@ -38,9 +45,18 @@ def course_import(request):
                 validation = validate_course_import(cached["data"])
                 validation.errors = error.errors
             else:
+                if summary["tutor_examples"] and not summary["exercises"]:
+                    success_message = (
+                        f"Updated {summary['tutor_lessons']} lesson tutor context(s) and "
+                        f"imported {summary['tutor_examples']} unapproved tutor example(s)."
+                    )
+                else:
+                    success_message = (
+                        f"Imported {summary['exercises']} draft exercises successfully."
+                    )
                 messages.success(
                     request,
-                    f"Imported {summary['exercises']} draft exercises successfully.",
+                    success_message,
                 )
                 return redirect("admin:courses_exercise_changelist")
     elif request.method == "POST":
@@ -62,6 +78,14 @@ def course_import(request):
         "title": "Import course JSON",
         "upload_form": upload_form,
         "validation": validation,
+        "summary_rows": (
+            [
+                (SUMMARY_LABELS.get(label, label.replace("_", " ").title()), count)
+                for label, count in validation.summary.items()
+            ]
+            if validation
+            else []
+        ),
         "confirm_form": confirm_form,
         "exercise_list_url": reverse("admin:courses_exercise_changelist"),
     }

@@ -67,11 +67,25 @@ def _lesson_context(exercise, attempt):
         }
         for option in exercise.options.all()
     ]
+    approved_tutor_examples = [
+        {
+            "german": example.german,
+            "albanian": example.albanian,
+            "explanation_sq": example.explanation_sq,
+        }
+        for example in lesson.tutor_examples.filter(is_approved=True)
+    ]
     return {
         "level": lesson.unit.level.code,
         "lesson_title_de": lesson.title_de,
         "lesson_title_sq": lesson.title_sq,
         "lesson_objective_sq": lesson.objective_sq,
+        "reviewed_tutor_material": {
+            "grammar_notes_sq": lesson.tutor_grammar_notes_sq,
+            "common_mistakes_sq": lesson.tutor_common_mistakes_sq,
+            "guidance_sq": lesson.tutor_guidance_sq,
+            "approved_examples": approved_tutor_examples,
+        },
         "vocabulary": vocabulary,
         "exercise": {
             "type": exercise.exercise_type,
@@ -113,6 +127,8 @@ Hard rules:
 - Every German example must include an Albanian translation.
 - Briefly state why the example helps when useful.
 - Ground examples in the lesson vocabulary examples and notes.
+- Treat reviewed tutor material as the strongest lesson-specific guidance.
+- Prefer approved tutor examples when they directly answer the request.
 - Create a small variation instead of copying an example unchanged.
 - The follow-up must be one concrete task the learner can do immediately.
 - Never write “if you want” or offer to continue later.

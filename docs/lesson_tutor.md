@@ -56,6 +56,16 @@ Only information needed for the current explanation is included:
 - the learner's answer and whether it was correct
 - the selected explanation request or custom question
 
+When available, the request also includes reviewed lesson-level tutor grounding:
+
+- Albanian grammar notes
+- common learner mistakes
+- tutor guidance and limits
+- approved German–Albanian examples
+
+These fields are optional. Lessons without them continue to use their objective, vocabulary,
+vocabulary examples, and exercise data.
+
 The learner's email, password, session, other lessons, other learners, and complete attempt history
 are not included.
 
@@ -188,6 +198,57 @@ the application does not teach `heise` as correct German spelling.
 
 To prove the off switch works, set `TUTOR_ENABLED=False`, restart Django, and repeat the flow. The page
 must say the tutor is not active and no new `TutorExchange` record should be created.
+
+## Import reviewed lesson grounding
+
+The A1 starter content includes a supplemental file:
+
+```text
+course_content/a1/unit-01-tutor-material.json
+```
+
+It is separate from the original 24-exercise JSON so an existing database can receive improved tutor
+material without duplicating exercises.
+
+1. Open **Admin → Courses → Exercises → Import course JSON**.
+2. Upload `course_content/a1/unit-01-tutor-material.json`.
+3. Select **Validate and preview**.
+4. Confirm the preview reports four tutor lessons, eight tutor examples, and zero exercises.
+5. Confirm the import.
+
+The importer reuses the existing A1 level, unit, and four lessons. It updates only the three tutor
+note fields and creates eight tutor examples. Imported examples are deliberately unapproved.
+
+Review them at **Admin → Courses → Lesson tutor examples**. Check the German, Albanian translation,
+and explanation, then enable **Is approved** only for examples that are ready for learners. The tutor
+request excludes every unapproved example.
+
+The three lesson fields can also be reviewed from **Admin → Courses → Lessons** under the collapsed
+**Lesson tutor grounding** section:
+
+- Tutor grammar notes
+- Tutor common mistakes
+- Tutor guidance
+
+Future course JSON may use the same optional structure:
+
+```json
+{
+  "tutor_context": {
+    "grammar_notes_sq": "...",
+    "common_mistakes_sq": "...",
+    "guidance_sq": "...",
+    "examples": [
+      {
+        "position": 1,
+        "german": "Ich heiße Besa.",
+        "albanian": "Unë quhem Besa.",
+        "explanation_sq": "Tregon formën ‘heiße’ pas ‘ich’."
+      }
+    ]
+  }
+}
+```
 
 ## Current boundaries and future work
 

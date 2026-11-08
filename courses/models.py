@@ -59,6 +59,9 @@ class Lesson(OrderedModel):
     title_de = models.CharField(max_length=150)
     title_sq = models.CharField(max_length=150)
     objective_sq = models.TextField(blank=True)
+    tutor_grammar_notes_sq = models.TextField(blank=True)
+    tutor_common_mistakes_sq = models.TextField(blank=True)
+    tutor_guidance_sq = models.TextField(blank=True)
     is_published = models.BooleanField(default=False)
 
     class Meta:
@@ -72,6 +75,32 @@ class Lesson(OrderedModel):
 
     def __str__(self):
         return f"{self.unit}.{self.position} — {self.title_sq}"
+
+
+class LessonTutorExample(OrderedModel):
+    lesson = models.ForeignKey(
+        Lesson, on_delete=models.CASCADE, related_name="tutor_examples"
+    )
+    german = models.CharField(max_length=250)
+    albanian = models.CharField(max_length=250)
+    explanation_sq = models.CharField(max_length=300, blank=True)
+    is_approved = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ("lesson", "position", "id")
+        constraints = [
+            models.UniqueConstraint(
+                fields=("lesson", "position"),
+                name="unique_tutor_example_position_per_lesson",
+            ),
+            models.UniqueConstraint(
+                fields=("lesson", "german", "albanian"),
+                name="unique_tutor_example_text_per_lesson",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.german} — {self.albanian}"
 
 
 class VocabularyEntry(OrderedModel):

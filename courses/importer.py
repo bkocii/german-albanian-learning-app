@@ -8,6 +8,7 @@ from .models import (
     ExerciseAcceptedAnswer,
     ExerciseOption,
     Lesson,
+    LessonTutorExample,
     MatchingPair,
     MediaAsset,
     Unit,
@@ -23,6 +24,8 @@ class ImportValidationResult:
         default_factory=lambda: {
             "units": 0,
             "lessons": 0,
+            "tutor_lessons": 0,
+            "tutor_examples": 0,
             "vocabulary": 0,
             "exercises": 0,
             "options": 0,
@@ -64,6 +67,14 @@ def _list_field(item, field_name, path, result):
         result.errors.append(f"{path}.{field_name}: must be a list.")
         return []
     return value
+
+
+def _optional_text(item, field_name, path, result):
+    value = item.get(field_name, "")
+    if not isinstance(value, str):
+        result.errors.append(f"{path}.{field_name}: must be a string.")
+        return ""
+    return value.strip()
 
 
 def _check_unique(values, label, path, result):
@@ -170,6 +181,62 @@ def validate_course_import(data):
                     result.errors.append(
                         f"{lesson_path}.position: position {lesson_position} is already in use."
                     )
+
+            tutor_context = lesson_data.get("tutor_context")
+            if tutor_context is not None and not isinstance(tutor_context, dict):
+                result.errors.append(f"{lesson_path}.tutor_context: must be an object.")
+                tutor_context = None
+            if tutor_context is not None:
+                result.summary["tutor_lessons"] += 1
+                for field_name in (
+                    "grammar_notes_sq",
+                    "common_mistakes_sq",
+                    "guidance_sq",
+                ):
+                    _optional_text(
+                        tutor_context,
+                        field_name,
+                        f"{lesson_path}.tutor_context",
+                        result,
+                    )
+                tutor_examples = _list_field(
+                    tutor_context, "examples", f"{lesson_path}.tutor_context", result
+                )
+                result.summary["tutor_examples"] += len(tutor_examples)
+                example_positions = []
+                example_values = []
+                for example_index, example in enumerate(tutor_examples, start=1):
+                    example_path = (
+                        f"{lesson_path}.tutor_context.examples[{example_index}]"
+                    )
+                    if not isinstance(example, dict):
+                        result.errors.append(f"{example_path}: must be an object.")
+                        continue
+                    position = _positive_position(example, example_path, result)
+                    german = _required_text(example, "german", example_path, result)
+                    albanian = _required_text(example, "albanian", example_path, result)
+                    _optional_text(example, "explanation_sq", example_path, result)
+                    example_positions.append(position)
+                    example_values.append((german, albanian))
+                    if existing_lesson and position:
+                        if LessonTutorExample.objects.filter(
+                            lesson=existing_lesson, position=position
+                        ).exists():
+                            result.errors.append(
+                                f"{example_path}.position: position is already in use."
+                            )
+                _check_unique(
+                    example_positions,
+                    "tutor-example position",
+                    f"{lesson_path}.tutor_context.examples",
+                    result,
+                )
+                _check_unique(
+                    example_values,
+                    "tutor example",
+                    f"{lesson_path}.tutor_context.examples",
+                    result,
+                )
 
             vocabulary = _list_field(lesson_data, "vocabulary", lesson_path, result)
             result.summary["vocabulary"] += len(vocabulary)
@@ -388,6 +455,29 @@ def import_course_data(data):
                     "position": lesson_data["position"],
                 },
             )
+            tutor_context = lesson_data.get("tutor_context")
+            if tutor_context is not None:
+                tutor_field_map = {
+                    "grammar_notes_sq": "tutor_grammar_notes_sq",
+                    "common_mistakes_sq": "tutor_common_mistakes_sq",
+                    "guidance_sq": "tutor_guidance_sq",
+                }
+                update_fields = []
+                for import_field, model_field in tutor_field_map.items():
+                    if import_field in tutor_context:
+                        setattr(lesson, model_field, tutor_context[import_field].strip())
+                        update_fields.append(model_field)
+                if update_fields:
+                    lesson.save(update_fields=update_fields)
+                for example in tutor_context.get("examples", []):
+                    LessonTutorExample.objects.create(
+                        lesson=lesson,
+                        position=example["position"],
+                        german=example["german"],
+                        albanian=example["albanian"],
+                        explanation_sq=example.get("explanation_sq", ""),
+                        is_approved=False,
+                    )
             for item in lesson_data.get("vocabulary", []):
                 VocabularyEntry.objects.get_or_create(
                     lesson=lesson,

@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "level": {
+    "code": "A1",
+    "title_de": "Anfänger",
+    "title_sq": "Fillestar",
+    "position": 1
+  },
+  "units": [
+    {
+      "slug": "pershendetjet-dhe-prezantimi",
+      "title_de": "Begrüßung und Vorstellung",
+      "title_sq": "Përshëndetjet dhe prezantimi",
+      "position": 1,
+      "lessons": [
+        {
+          "slug": "pershendetjet-baze",
+          "title_de": "Grundbegrüßungen",
+          "title_sq": "Përshëndetjet bazë",
+          "position": 1,
+          "tutor_context": {
+            "grammar_notes_sq": "Përshëndetjet ‘Guten Morgen’, ‘Guten Tag’ dhe ‘Guten Abend’ janë shprehje të gatshme. Në nivelin A1, mësohen si njësi të plota dhe zgjidhen sipas kohës së ditës.",
+            "common_mistakes_sq": "Mos ngatërro ‘Guten Morgen’ me ‘Guten Abend’. ‘Hallo’ është joformale dhe mund të përdoret në periudha të ndryshme të ditës.",
+            "guidance_sq": "Përqendrohu te kuptimi dhe koha e përdorimit. Mos shpjego lakimin e mbiemrit ‘gut’ në këtë mësim.",
+            "examples": [
+              {
+                "position": 1,
+                "german": "Guten Morgen, Anna!",
+                "albanian": "Mirëmëngjes, Anna!",
+                "explanation_sq": "Përdoret në mëngjes."
+              },
+              {
+                "position": 2,
+                "german": "Guten Abend, Herr Müller.",
+                "albanian": "Mirëmbrëma, zoti Müller.",
+                "explanation_sq": "Përdoret në mbrëmje dhe mund të jetë formale."
+              }
+            ]
+          },
+          "vocabulary": [],
+          "exercises": []
+        },
+        {
+          "slug": "prezantimi",
+          "title_de": "Sich vorstellen",
+          "title_sq": "Prezantimi",
+          "position": 2,
+          "tutor_context": {
+            "grammar_notes_sq": "Folja ‘heißen’ ndryshon sipas vetës: ‘ich heiße’, ‘du heißt’ dhe ‘Sie heißen’. ‘Sie’ shkruhet me shkronjë të madhe kur është forma formale.",
+            "common_mistakes_sq": "Mos thuaj ‘ich heißen’. Përdor ‘ich heiße’. Në tastierë, ‘heisse’ mund të përdoret si alternativë për ‘heiße’, por ‘heise’ nuk është drejtshkrim i saktë.",
+            "guidance_sq": "Dallo pyetjen joformale ‘Wie heißt du?’ nga pyetja formale ‘Wie heißen Sie?’. Mbaji shpjegimet në nivelin A1.",
+            "examples": [
+              {
+                "position": 1,
+                "german": "Ich heiße Besa.",
+                "albanian": "Unë quhem Besa.",
+                "explanation_sq": "Tregon formën ‘heiße’ pas përemrit ‘ich’."
+              },
+              {
+                "position": 2,
+                "german": "Wie heißt du?",
+                "albanian": "Si quhesh?",
+                "explanation_sq": "Pyetje joformale për emrin e një personi."
+              }
+            ]
+          },
+          "vocabulary": [],
+          "exercises": []
+        },
+        {
+          "slug": "si-je",
+          "title_de": "Wie geht es dir?",
+          "title_sq": "Si je?",
+          "position": 3,
+          "tutor_context": {
+            "grammar_notes_sq": "‘Wie geht es dir?’ është joformale, ndërsa ‘Wie geht es Ihnen?’ është formale. Përgjigjja e zakonshme është ‘Mir geht es gut’, jo ‘Ich geht es gut’.",
+            "common_mistakes_sq": "Mos përziej ‘dir’ me formën formale ‘Ihnen’. Mos përdor ‘ich’ në shprehjen ‘Mir geht es gut’.",
+            "guidance_sq": "Shpjego shprehjet si modele të gatshme A1. Mos hyr në analizë të zgjeruar të rasës dhanore pa u kërkuar.",
+            "examples": [
+              {
+                "position": 1,
+                "german": "Wie geht es dir, Arta?",
+                "albanian": "Si je, Arta?",
+                "explanation_sq": "Pyetje joformale drejtuar një personi të njohur."
+              },
+              {
+                "position": 2,
+                "german": "Mir geht es sehr gut, danke.",
+                "albanian": "Jam shumë mirë, faleminderit.",
+                "explanation_sq": "Përgjigje e plotë dhe e sjellshme."
+              }
+            ]
+          },
+          "vocabulary": [],
+          "exercises": []
+        },
+        {
+          "slug": "lamtumira-dhe-perseritja",
+          "title_de": "Abschied und Wiederholung",
+          "title_sq": "Lamtumira dhe përsëritja",
+          "position": 4,
+          "tutor_context": {
+            "grammar_notes_sq": "‘Tschüss’ është joformale, ndërsa ‘Auf Wiedersehen’ është më formale. ‘Gute Nacht’ përdoret kur dikush po largohet për të fjetur, jo si përshëndetje e zakonshme e mbrëmjes.",
+            "common_mistakes_sq": "Mos përdor ‘Gute Nacht’ në vend të ‘Guten Abend’ kur takon dikë në mbrëmje. ‘Bis morgen’ do të thotë se do të shiheni nesër.",
+            "guidance_sq": "Lidhe çdo lamtumirë me situatën e duhur dhe mbaj dallimin formal–joformal të thjeshtë.",
+            "examples": [
+              {
+                "position": 1,
+                "german": "Tschüss, bis morgen!",
+                "albanian": "Mirupafshim, shihemi nesër!",
+                "explanation_sq": "Lamtumirë joformale kur prisni të takoheni nesër."
+              },
+              {
+                "position": 2,
+                "german": "Auf Wiedersehen, Frau Keller.",
+                "albanian": "Mirupafshim, zonja Keller.",
+                "explanation_sq": "Formë më formale e lamtumirës."
+              }
+            ]
+          },
+          "vocabulary": [],
+          "exercises": []
+        }
+      ]
+    }
+  ]
+}

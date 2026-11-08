@@ -9,7 +9,14 @@ from django.test import TestCase
 from django.urls import reverse
 
 from .importer import import_course_data, validate_course_import
-from .models import CEFRLevel, Exercise, ExerciseAcceptedAnswer, MatchingPair
+from .models import (
+    CEFRLevel,
+    Exercise,
+    ExerciseAcceptedAnswer,
+    Lesson,
+    LessonTutorExample,
+    MatchingPair,
+)
 
 EXAMPLE_PATH = (
     Path(__file__).resolve().parent.parent
@@ -23,6 +30,12 @@ A1_UNIT_PATH = (
     / "a1"
     / "unit-01-greetings-introductions.json"
 )
+TUTOR_MATERIAL_PATH = (
+    Path(__file__).resolve().parent.parent
+    / "course_content"
+    / "a1"
+    / "unit-01-tutor-material.json"
+)
 
 
 def example_data():
@@ -31,6 +44,10 @@ def example_data():
 
 def a1_unit_data():
     return json.loads(A1_UNIT_PATH.read_text(encoding="utf-8"))
+
+
+def tutor_material_data():
+    return json.loads(TUTOR_MATERIAL_PATH.read_text(encoding="utf-8"))
 
 
 class CourseImporterServiceTests(TestCase):
@@ -83,6 +100,47 @@ class CourseImporterServiceTests(TestCase):
                 Exercise.Type.MULTIPLE_SELECT,
             },
         )
+
+    def test_tutor_material_validates_and_updates_existing_lessons(self):
+        import_course_data(a1_unit_data())
+
+        result = validate_course_import(tutor_material_data())
+        self.assertTrue(result.is_valid, result.errors)
+        self.assertEqual(result.summary["lessons"], 4)
+        self.assertEqual(result.summary["tutor_lessons"], 4)
+        self.assertEqual(result.summary["tutor_examples"], 8)
+
+        summary = import_course_data(tutor_material_data())
+        self.assertEqual(summary["tutor_examples"], 8)
+        self.assertEqual(LessonTutorExample.objects.count(), 8)
+        self.assertFalse(LessonTutorExample.objects.filter(is_approved=True).exists())
+
+        lesson = Lesson.objects.get(slug="prezantimi")
+        self.assertIn("ich heiße", lesson.tutor_grammar_notes_sq)
+        self.assertIn("heise", lesson.tutor_common_mistakes_sq)
+        self.assertIn("nivelin A1", lesson.tutor_guidance_sq)
+
+    def test_tutor_context_requires_object_and_valid_examples(self):
+        data = tutor_material_data()
+        lesson = data["units"][0]["lessons"][0]
+        lesson["tutor_context"] = []
+
+        invalid_context = validate_course_import(data)
+        self.assertFalse(invalid_context.is_valid)
+        self.assertTrue(
+            any(
+                "tutor_context: must be an object" in error
+                for error in invalid_context.errors
+            )
+        )
+
+        lesson["tutor_context"] = {
+            "grammar_notes_sq": "Shënim.",
+            "examples": [{"position": 1, "german": "Hallo"}],
+        }
+        invalid_example = validate_course_import(data)
+        self.assertFalse(invalid_example.is_valid)
+        self.assertTrue(any("albanian" in error for error in invalid_example.errors))
 
     def test_duplicate_external_id_is_reported_before_import(self):
         data = example_data()
@@ -167,3 +225,23 @@ class CourseImporterAdminTests(TestCase):
             {"action": "preview", "course_file": upload},
         )
         self.assertContains(response, "Upload a valid UTF-8 JSON file")
+
+    def test_tutor_material_preview_and_import_report_grounding_counts(self):
+        import_course_data(a1_unit_data())
+        self.client.force_login(self.staff)
+
+        preview = self.upload(tutor_material_data())
+        self.assertEqual(preview.status_code, 200)
+        self.assertContains(preview, "Tutor examples")
+        self.assertContains(preview, ">8<")
+        token = preview.context["confirm_form"].initial["preview_token"]
+
+        confirm = self.client.post(
+            reverse("admin:courses_exercise_import_json"),
+            {"action": "import", "preview_token": token},
+            follow=True,
+        )
+
+        self.assertContains(confirm, "Updated 4 lesson tutor context(s)")
+        self.assertContains(confirm, "8 unapproved tutor example(s)")
+        self.assertEqual(LessonTutorExample.objects.count(), 8)

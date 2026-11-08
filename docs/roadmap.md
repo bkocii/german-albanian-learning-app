@@ -43,25 +43,25 @@
 ## M4.5 — Lesson-scoped AI tutor
 
 - [x] Add optional tutor help after an exercise attempt
-- [x] Keep requests limited to the current lesson, exercise, and learner attempt
+- [x] Limit requests to the current lesson, exercise, and learner attempt
 - [x] Use structured, validated Albanian responses rather than unrestricted chat output
 - [x] Integrate OpenAI server-side through the pinned Python AI Toolkit release
-- [x] Add rate limiting, configuration gating, usage metadata, and read-only exchange review
+- [x] Add rate limiting, configuration gating, usage metadata, and exchange review
 - [x] Make the tutor available after speaking transcription
-- [x] Accept likely `heise` transcription as spoken `heiße` without teaching it as correct spelling
-- [x] Require bilingual examples and reject follow-ups the interface cannot perform
-- [x] Add reviewed lesson notes and approval-gated tutor examples to course imports
-- [x] Prepare A1 Unit 1 tutor grounding for four lessons and eight examples
+- [x] Handle likely `heise` transcription without teaching it as correct spelling
+- [x] Require bilingual examples and reject unsupported conversation promises
+- [x] Add reviewed lesson notes and approval-gated tutor examples
+- [x] Prepare four A1 tutor contexts and eight examples
+- [x] Add learner helpful/not-helpful feedback and Admin filtering
+- [x] Add an atomic deployment-wide daily tutor request ceiling
 - [ ] Complete human review and approve the A1 tutor examples
-- [ ] Manually test all five tutor request types across all four lessons
-- [ ] Add learner helpful/not-helpful feedback and staff quality reporting
-- [ ] Define a per-learner or deployment-wide tutor cost ceiling
+- [ ] Manually test all five request types across all four lessons
 - [ ] Decide on multi-turn lesson chat only after private-pilot evidence
 
 ## M5 — Private pilot
 
 - [ ] Invite a small learner group
 - [ ] Review completion, errors, difficult exercises, and tutor exchanges
-- [ ] Measure tutor helpfulness, scope refusals, latency, and approximate cost
-- [ ] Improve lesson grounding where repeated questions reveal missing explanations
+- [ ] Measure tutor ratings, scope refusals, latency, and approximate cost
+- [ ] Improve lesson grounding where low ratings reveal weak explanations
 - [ ] Decide whether to expand A1 or revise the lesson engine

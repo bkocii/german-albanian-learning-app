@@ -32,6 +32,8 @@ Django verifies published exercise and owned attempt
         ↓
 Django validates question type, length, and rate limit
         ↓
+Django atomically reserves one deployment-wide daily request
+        ↓
 TutorService builds limited lesson JSON
         ↓
 Python AI Toolkit sends a structured OpenAI request
@@ -105,10 +107,15 @@ Each successful exchange stores:
 - scope decision
 - model and toolkit request ID
 - duration, token counts, and estimated cost when available
+- optional helpful/not-helpful learner rating and the time it was last submitted
 - creation time
 
+The application also stores one aggregate daily-usage row containing the UTC date, reserved request
+count, and latest update time. It contains no learner content.
+
 Tutor exchanges are read-only in Django Admin. They can be inspected for quality, cost, abuse, and
-course-improvement opportunities. Prompt and response bodies are not written to the toolkit's log
+course-improvement opportunities. Staff can filter exchanges by learner rating without editing the
+learner's response. Prompt and response bodies are not written to the toolkit's log
 file; toolkit file logging is disabled for this application integration.
 
 ## Installation
@@ -140,6 +147,7 @@ AI_TUTOR_MODEL=gpt-5.4-mini
 TUTOR_RATE_ATTEMPTS=10
 TUTOR_RATE_WINDOW_SECONDS=300
 TUTOR_MAX_QUESTION_LENGTH=500
+TUTOR_DAILY_REQUEST_LIMIT=100
 ```
 
 Do not commit the real API key. `.env.example` contains only empty or safe example values.
@@ -154,6 +162,12 @@ Configuration meanings:
 | `TUTOR_RATE_ATTEMPTS` | Successful exchanges allowed per learner during one window. |
 | `TUTOR_RATE_WINDOW_SECONDS` | Length of the rolling rate-limit window. |
 | `TUTOR_MAX_QUESTION_LENGTH` | Maximum custom-question length accepted by Django. |
+| `TUTOR_DAILY_REQUEST_LIMIT` | Maximum application-level tutor requests reserved across all learners per UTC day. |
+
+The daily counter is reserved atomically before the provider call. A provider failure keeps its
+reservation because it may already have consumed billable tokens. Structured-output repair may also
+make an additional provider call inside one application-level request, so this ceiling is a reliable
+request safeguard rather than an exact dollar limit. Set it from measured pilot usage and cost.
 
 Restart Django after changing `.env`:
 
@@ -174,7 +188,8 @@ uv run ruff check .
 
 Tutor tests use a deterministic fake client. They require no API key, make no network request, and do
 not incur provider cost. They verify configuration gating, attempt ownership, structured output,
-out-of-scope replacement, stored usage metadata, and rate limiting.
+out-of-scope replacement, stored usage metadata, learner and daily rate limiting, and conservative
+reservation after provider failure.
 
 ## Manual test
 
@@ -189,6 +204,12 @@ out-of-scope replacement, stored usage metadata, and rate limiting.
 9. Open Django Admin → Tutor exchanges.
 10. Confirm that the request type, response, model, request ID, duration, tokens, and estimated cost
     are visible when the provider supplies them.
+11. Select **Po, i dobishëm** and confirm the page thanks the learner and keeps that choice selected.
+12. Change it to **Jo, jo i dobishëm** and confirm the latest choice is retained.
+13. In Django Admin, filter Tutor exchanges by helpful and not helpful ratings.
+14. Set `TUTOR_DAILY_REQUEST_LIMIT=1`, restart Django, and make one tutor request.
+15. Make another tutor request and confirm it is blocked before contacting the provider.
+16. Open **Admin → Tutor daily usage** and confirm today's UTC counter is 1.
 
 For a speaking exercise, finish transcription first and click **Pyet tutorin** in the speech-feedback
 panel. The application opens the same exercise with its saved speaking attempt and tutor controls.
@@ -262,6 +283,5 @@ This first version intentionally does not provide:
 - pronunciation scoring
 - background or streaming responses
 
-Possible later improvements should be driven by real learner usage. Good candidates are reviewed
-lesson notes, conversation follow-ups within the same lesson, staff quality ratings, stricter budget
-ceilings, and aggregated reports showing where learners repeatedly ask for help.
+Possible later improvements should be driven by real learner usage. Good candidates are aggregated
+rating reports, approximate-cost alerts, and conversation follow-ups within the same lesson.

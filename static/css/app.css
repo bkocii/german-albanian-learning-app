@@ -117,6 +117,10 @@ textarea { width: 100%; padding: 0.75rem; border: 1px solid #b9c2d3; border-radi
 .tutor-response p { white-space: pre-line; }
 .tutor-example-list { display: grid; gap: 0.75rem; padding-left: 1.25rem; }
 .tutor-example-list small { display: block; margin-top: 0.2rem; }
+.tutor-feedback-form { display: grid; gap: 0.65rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e4e8f0; }
+.tutor-feedback-form > span { font-weight: 700; }
+.tutor-feedback-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.tutor-feedback-actions .selected { background: #2457d6; color: #ffffff; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 @media (max-width: 34rem) {

@@ -13,6 +13,10 @@ class TutorExchange(models.Model):
         EXAMPLE = "example", "Give another example"
         CUSTOM = "custom", "Custom lesson question"
 
+    class FeedbackRating(models.TextChoices):
+        HELPFUL = "helpful", "Helpful"
+        NOT_HELPFUL = "not_helpful", "Not helpful"
+
     learner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -42,6 +46,12 @@ class TutorExchange(models.Model):
     estimated_cost_usd = models.DecimalField(
         max_digits=12, decimal_places=8, blank=True, null=True
     )
+    feedback_rating = models.CharField(
+        max_length=20,
+        choices=FeedbackRating,
+        blank=True,
+    )
+    feedback_rated_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -50,3 +60,16 @@ class TutorExchange(models.Model):
 
     def __str__(self):
         return f"{self.learner} — {self.exercise_id} — {self.kind}"
+
+
+class TutorDailyUsage(models.Model):
+    date = models.DateField(primary_key=True)
+    request_count = models.PositiveIntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ("-date",)
+        verbose_name_plural = "Tutor daily usage"
+
+    def __str__(self):
+        return f"{self.date}: {self.request_count} request(s)"

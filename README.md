@@ -23,10 +23,6 @@ The development configuration reads local values from `.env`. Copy
 Development email is printed in the server console. Registration requires opening the generated
 verification link before the learner can sign in.
 
-For a complete Windows guide covering installation, cloning, content/media imports, bulk
-publication, learner registration, and manual testing, see
-[`docs/windows_clone_setup.md`](docs/windows_clone_setup.md).
-
 ## Lesson tutor
 
 The optional AI tutor explains an exercise only after the learner has attempted it. It is disabled

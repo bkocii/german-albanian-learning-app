@@ -17,8 +17,14 @@ from courses.models import (
 )
 from learning.models import ExerciseAttempt
 
-from .models import TutorExchange
-from .services import TutorExample, TutorResponse, ask_lesson_tutor, build_tutor_prompt
+from .models import TutorDailyUsage, TutorExchange
+from .services import (
+    TutorExample,
+    TutorResponse,
+    TutorServiceError,
+    ask_lesson_tutor,
+    build_tutor_prompt,
+)
 
 
 class FakeTutorClient:
@@ -105,6 +111,18 @@ class TutorTests(TestCase):
     def setUp(self):
         self.client.force_login(self.learner)
         self.url = reverse("tutor:ask", args=(self.exercise.pk,))
+
+    def create_exchange(self, **overrides):
+        values = {
+            "learner": self.learner,
+            "exercise": self.exercise,
+            "attempt": self.attempt,
+            "kind": TutorExchange.Kind.EXPLAIN_MISTAKE,
+            "explanation_sq": "‘Heiße’ është forma për ‘ich’.",
+            "model_name": "test-model",
+        }
+        values.update(overrides)
+        return TutorExchange.objects.create(**values)
 
     def test_prompt_contains_only_supplied_lesson_attempt_and_request(self):
         prompt = build_tutor_prompt(
@@ -279,6 +297,143 @@ class TutorTests(TestCase):
                 follow_up_sq="Nëse do, mund të provojmë një fjali tjetër.",
                 within_lesson_scope=True,
             )
+
+    def test_learner_can_rate_and_change_own_exchange(self):
+        exchange = self.create_exchange()
+        url = reverse("tutor:rate", args=(exchange.pk,))
+
+        response = self.client.post(url, {"rating": "helpful"})
+
+        exchange.refresh_from_db()
+        self.assertRedirects(
+            response,
+            (
+                f"{reverse('learning:exercise', args=(self.exercise.pk,))}"
+                f"?attempt={self.attempt.pk}&tutor={exchange.pk}"
+            ),
+        )
+        self.assertEqual(exchange.feedback_rating, TutorExchange.FeedbackRating.HELPFUL)
+        self.assertIsNotNone(exchange.feedback_rated_at)
+
+        self.client.post(url, {"rating": "not_helpful"})
+        exchange.refresh_from_db()
+        self.assertEqual(
+            exchange.feedback_rating, TutorExchange.FeedbackRating.NOT_HELPFUL
+        )
+
+    def test_learner_cannot_rate_another_learners_exchange(self):
+        other_attempt = ExerciseAttempt.objects.create(
+            learner=self.other_learner,
+            exercise=self.exercise,
+            answer_text="Wrong",
+            is_correct=False,
+        )
+        exchange = self.create_exchange(
+            learner=self.other_learner,
+            attempt=other_attempt,
+        )
+
+        response = self.client.post(
+            reverse("tutor:rate", args=(exchange.pk,)),
+            {"rating": "helpful"},
+        )
+
+        self.assertEqual(response.status_code, 404)
+        exchange.refresh_from_db()
+        self.assertEqual(exchange.feedback_rating, "")
+
+    def test_invalid_feedback_rating_is_not_saved(self):
+        exchange = self.create_exchange()
+
+        response = self.client.post(
+            reverse("tutor:rate", args=(exchange.pk,)),
+            {"rating": "maybe"},
+            follow=True,
+        )
+
+        exchange.refresh_from_db()
+        self.assertContains(response, "Zgjidhni një vlerësim të vlefshëm.")
+        self.assertEqual(exchange.feedback_rating, "")
+        self.assertIsNone(exchange.feedback_rated_at)
+
+    def test_saved_feedback_is_shown_on_exchange_response(self):
+        exchange = self.create_exchange(
+            feedback_rating=TutorExchange.FeedbackRating.HELPFUL,
+            feedback_rated_at=timezone.now(),
+        )
+
+        response = self.client.get(
+            reverse("learning:exercise", args=(self.exercise.pk,)),
+            {"attempt": self.attempt.pk, "tutor": exchange.pk},
+        )
+
+        self.assertContains(response, "A ishte i dobishëm ky shpjegim?")
+        self.assertContains(response, "Vlerësimi u ruajt.")
+        self.assertContains(response, 'value="helpful"')
+        self.assertContains(response, 'aria-pressed="true"')
+
+    @override_settings(TUTOR_ENABLED=True, TUTOR_DAILY_REQUEST_LIMIT=1)
+    @patch("tutor.views.ask_lesson_tutor")
+    def test_daily_limit_blocks_before_provider_request(self, mock_ask):
+        TutorDailyUsage.objects.create(
+            date=timezone.localdate(),
+            request_count=1,
+        )
+
+        response = self.client.post(
+            self.url,
+            {"attempt": self.attempt.pk, "kind": TutorExchange.Kind.EXPLAIN_MISTAKE},
+            follow=True,
+        )
+
+        mock_ask.assert_not_called()
+        self.assertContains(response, "kufirin ditor")
+        self.assertFalse(TutorExchange.objects.exists())
+
+    @override_settings(TUTOR_ENABLED=True, TUTOR_DAILY_REQUEST_LIMIT=2)
+    @patch("tutor.views.ask_lesson_tutor")
+    def test_successful_request_reserves_daily_usage(self, mock_ask):
+        mock_ask.return_value = (
+            SimpleNamespace(
+                model="test-model",
+                request_id="request-123",
+                duration_ms=25.5,
+                token_usage=None,
+                estimated_cost_usd=None,
+            ),
+            TutorResponse(
+                explanation_sq="Shpjegim.",
+                german_examples=[],
+                follow_up_sq="",
+                within_lesson_scope=True,
+            ),
+        )
+
+        self.client.post(
+            self.url,
+            {"attempt": self.attempt.pk, "kind": TutorExchange.Kind.EXPLAIN_MISTAKE},
+        )
+
+        self.assertEqual(
+            TutorDailyUsage.objects.get(date=timezone.localdate()).request_count,
+            1,
+        )
+
+    @override_settings(TUTOR_ENABLED=True, TUTOR_DAILY_REQUEST_LIMIT=2)
+    @patch("tutor.views.ask_lesson_tutor")
+    def test_provider_failure_keeps_conservative_daily_reservation(self, mock_ask):
+        mock_ask.side_effect = TutorServiceError("provider failed")
+
+        self.client.post(
+            self.url,
+            {"attempt": self.attempt.pk, "kind": TutorExchange.Kind.EXPLAIN_MISTAKE},
+        )
+
+        self.assertEqual(
+            TutorDailyUsage.objects.get(date=timezone.localdate()).request_count,
+            1,
+        )
+        self.assertFalse(TutorExchange.objects.exists())
 
     @override_settings(
         TUTOR_ENABLED=True,

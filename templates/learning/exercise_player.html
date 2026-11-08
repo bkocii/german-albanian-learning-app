@@ -151,6 +151,33 @@
                             <p><strong>Provo:</strong> {{ tutor_exchange.follow_up_sq }}</p>
                         {% endif %}
                         <small class="muted">Përgjigjja është krijuar nga AI dhe kufizohet në materialin e këtij mësimi.</small>
+                        <form
+                            method="post"
+                            action="{% url 'tutor:rate' tutor_exchange.pk %}"
+                            class="tutor-feedback-form"
+                        >
+                            {% csrf_token %}
+                            <span>A ishte i dobishëm ky shpjegim?</span>
+                            <div class="tutor-feedback-actions">
+                                <button
+                                    class="button secondary{% if tutor_exchange.feedback_rating == 'helpful' %} selected{% endif %}"
+                                    type="submit"
+                                    name="rating"
+                                    value="helpful"
+                                    aria-pressed="{% if tutor_exchange.feedback_rating == 'helpful' %}true{% else %}false{% endif %}"
+                                >Po, i dobishëm</button>
+                                <button
+                                    class="button secondary{% if tutor_exchange.feedback_rating == 'not_helpful' %} selected{% endif %}"
+                                    type="submit"
+                                    name="rating"
+                                    value="not_helpful"
+                                    aria-pressed="{% if tutor_exchange.feedback_rating == 'not_helpful' %}true{% else %}false{% endif %}"
+                                >Jo, jo i dobishëm</button>
+                            </div>
+                            {% if tutor_exchange.feedback_rating %}
+                                <small class="muted">Vlerësimi u ruajt. Mund ta ndryshoni nëse është e nevojshme.</small>
+                            {% endif %}
+                        </form>
                     </div>
                 {% endif %}
             </details>

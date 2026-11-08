@@ -61,37 +61,28 @@ Milestone 4 — First complete unit and lesson-scoped tutor validation.
 - Four original lightweight starter illustrations with an import-ready media ZIP
 - Supplemental picture-choice JSON plus German audio recording manifest and scripts
 - Optional lesson-scoped AI tutor available only after an exercise attempt
-- Structured Albanian tutor explanations for mistakes, correct answers, grammar, examples, and
-  short lesson questions
-- Server-side OpenAI access through `python-ai-toolkit[django]==1.0.0`; API credentials never reach
-  the browser
-- Exercise, lesson, vocabulary, learner-attempt, and approved lesson-material grounding with no
-  unrestricted general chat
-- Tutor support for both typed and speaking exercises after their attempt is saved
-- Speech-only equivalence for `heiße`, `heisse`, and the possible Whisper transcript `heise`, while
-  typed spelling still rejects `heise`
-- Validated German–Albanian tutor examples and concrete follow-up tasks; unsupported promises of a
-  continuing conversation are rejected
+- Structured Albanian explanations for mistakes, correct answers, grammar, examples, and lesson questions
+- Server-side OpenAI access through `python-ai-toolkit[django]==1.0.0`
+- Tutor support for typed and speaking exercises after their attempt is saved
+- Speech-only equivalence for `heiße`, `heisse`, and possible Whisper transcript `heise`
+- Validated bilingual examples and immediately actionable follow-up tasks
+- Reviewed lesson notes and approval-gated tutor examples in the course importer
 - Staff-reviewable tutor exchanges with model, duration, token, cost, and request metadata
-- Tutor rate limits, question-length limits, lesson-scope enforcement, and a master off switch
-- Optional reviewed lesson grammar notes, common mistakes, guidance, and approved tutor examples
-- Supplemental A1 Unit 1 tutor grounding import with four lesson contexts and eight review-required
-  examples
-- Eighty-eight automated project tests
-- Complete Windows clone-to-test onboarding guide for a fresh development machine
+- Learner helpful/not-helpful ratings with ownership checks, timestamps, and Admin filtering
+- Per-learner rate limits plus an atomic deployment-wide daily request ceiling
+- Question-length limits, lesson-scope enforcement, and a master off switch
+- Ninety-five automated project tests
 
 ## Next tasks
 
-1. Human-review the A1 Unit 1 German–Albanian course content and supplemental tutor grounding.
+1. Human-review the A1 Unit 1 course content and supplemental tutor grounding.
 2. Approve only tutor examples that pass German and Albanian language review.
-3. Test the tutor across all four lessons and every supported request type, including a speaking
-   attempt and an out-of-scope question.
-4. Run a small private pilot and inspect tutor exchanges for incorrect, vague, or unhelpful answers.
-5. Add simple learner helpful/not-helpful feedback before expanding the tutor into multi-turn chat.
+3. Test all tutor request types and feedback controls across the four lessons.
+4. Run a small private pilot and use helpful/not-helpful ratings to improve weak lesson grounding.
+5. Review daily usage, latency, and approximate cost before setting the production limit.
 
-The next engineering task is tutor quality feedback and staff review reporting. Multi-turn lesson
-conversation should be considered only after pilot evidence shows that the current one-request flow
-is useful and safe.
+Multi-turn lesson conversation should be considered only after pilot evidence shows that the current
+one-request flow is useful and safe.
 
 ## Constraints
 

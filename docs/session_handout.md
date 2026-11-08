@@ -2,54 +2,52 @@
 
 Last updated: 8 November 2026
 
-## Outcome
+## Current outcome
 
-The application now has an optional AI tutor for Albanian-speaking German learners. It appears only
-after the learner has attempted the current exercise. It explains that attempt with the current
-lesson's material; it is not a general chatbot and it cannot teach unrelated topics.
+The application has an optional AI tutor for Albanian-speaking German learners. It becomes available
+only after a saved exercise attempt and receives only the current lesson, exercise, and learner
+attempt. It is not a general chatbot.
 
-The tutor also works after a speaking exercise finishes transcription. In speech comparison,
-`heiße`, the keyboard form `heisse`, and Whisper's possible transcript `heise` are treated as the
-same spoken word. Typed exercises still reject `heise`, because it is not correct German spelling.
+The tutor works after typed and speaking attempts. Speech comparison treats `heiße`, `heisse`, and
+Whisper's possible `heise` transcript as equivalent spoken words. Typed spelling still rejects
+`heise`.
 
-## What was delivered
+Each displayed response now asks **A ishte i dobishëm ky shpjegim?** The learner can choose
+**Po, i dobishëm** or **Jo, jo i dobishëm**, and can change the choice later. The rating is stored on
+the exchange with a timestamp. Submitting it does not contact OpenAI or add provider cost.
 
-| Area | Delivered behavior |
+## Delivered behavior
+
+| Area | Current behavior |
 | --- | --- |
-| Learner access | Tutor controls appear only after a saved typed or speaking attempt. |
-| Requests | Explain the mistake, correct answer, grammar, another example, or a short lesson question. |
-| Scope | Current lesson, exercise, vocabulary, and the learner's own attempt only. |
-| Responses | Validated Albanian explanation, up to two bilingual examples, and an optional concrete task. |
-| Grounding | Lesson objective, vocabulary, exercise data, reviewed notes, and approved tutor examples. |
-| Safety | Server-side API key, ownership checks, rate limits, length limits, scope refusal, and output validation. |
-| Operations | Read-only exchange records include model, request ID, latency, tokens, and estimated cost when available. |
-| Content | Four A1 lesson contexts and eight tutor examples are ready for human review. |
+| Access | Tutor appears only after the learner's own saved attempt. |
+| Requests | Mistake, answer, grammar, example, or short lesson question. |
+| Response | Validated Albanian explanation, bilingual examples, and optional concrete practice. |
+| Grounding | Exercise data, lesson vocabulary, reviewed notes, and approved examples. |
+| Feedback | Helpful/not-helpful choice, timestamp, ownership check, and changeable rating. |
+| Budget safety | Atomic deployment-wide request ceiling that resets each UTC day. |
+| Staff review | Read-only exchanges with rating filter, model, latency, tokens, and estimated cost. |
+| Safety | Server-side API key, lesson scope, rate limits, length limits, and output validation. |
 
-The integration uses `python-ai-toolkit[django]==1.0.0`. The toolkit centralizes the structured
-OpenAI request, schema parsing, validation, one repair attempt for malformed output, and usage
-metadata. Django remains responsible for authentication, permissions, lesson scope, rate limiting,
-database records, and what the learner is allowed to see.
+The integration uses `python-ai-toolkit[django]==1.0.0` for structured OpenAI requests, parsing,
+validation, repair, and usage metadata. Django owns authentication, permissions, lesson scope,
+ratings, and stored exchanges.
 
-## Files and responsibilities
+## Installation after applying the changed files
 
-- `docs/lesson_tutor.md` — architecture, data handling, configuration, and testing reference
-- `tutor/` — request validation, service, stored exchanges, views, URLs, admin, and tests
-- `templates/learning/exercise_player.html` — learner tutor controls and rendered response
-- `courses/models.py` — lesson tutor notes and approval-gated tutor examples
-- `courses/importer.py` — optional `tutor_context` import and validation
-- `course_content/a1/unit-01-tutor-material.json` — supplemental A1 grounding without duplicate exercises
-- `.env.example` and `config/settings.py` — disabled-by-default tutor configuration
-
-## Installation and activation
-
-From the project root in PowerShell:
+Run from the project root in PowerShell:
 
 ```powershell
 uv sync
 uv run python manage.py migrate
+uv run python manage.py check
+uv run python manage.py test
+uv run ruff check .
 ```
 
-Add the following to the local `.env` file:
+Expected automated result: **95 tests**.
+
+The tutor configuration remains:
 
 ```env
 TUTOR_ENABLED=True
@@ -58,114 +56,64 @@ AI_TUTOR_MODEL=gpt-5.4-mini
 TUTOR_RATE_ATTEMPTS=10
 TUTOR_RATE_WINDOW_SECONDS=300
 TUTOR_MAX_QUESTION_LENGTH=500
+TUTOR_DAILY_REQUEST_LIMIT=100
 ```
 
-Never commit the real API key. Restart Django after changing `.env`:
+Never commit the real API key.
 
-```powershell
-uv run python manage.py runserver
-```
+## Tutor-material review
 
-## Import and review the lesson material
+Import `course_content/a1/unit-01-tutor-material.json` from **Admin → Courses → Exercises → Import
+course JSON**. Preview must report four tutor lesson contexts, eight tutor examples, and zero
+exercises. Imported examples are unapproved and are excluded from AI requests until a reviewer
+approves them in **Admin → Courses → Lesson tutor examples**.
 
-The supplemental tutor file updates the four existing A1 Unit 1 lessons without importing duplicate
-exercises.
+## Manual acceptance test
 
-1. Open **Admin → Courses → Exercises → Import course JSON**.
-2. Upload `course_content/a1/unit-01-tutor-material.json`.
-3. Select **Validate and preview**.
-4. Confirm **4 tutor lesson contexts**, **8 tutor examples**, and **0 exercises**.
-5. Confirm the import.
-6. Open **Admin → Courses → Lesson tutor examples**.
-7. Review German, Albanian, and the explanation; approve only material ready for learners.
-8. Review each lesson's grammar notes, common mistakes, and guidance in the lesson admin.
+1. Submit an incorrect typed answer and request **Pse ishte gabim?**.
+2. Confirm the answer refers to the current exercise and uses Albanian.
+3. Confirm examples contain German, Albanian, and a useful explanation.
+4. Confirm any **Provo:** instruction can be performed immediately.
+5. Select **Po, i dobishëm** and confirm the thank-you message and selected button.
+6. Refresh the page and confirm the saved choice remains selected.
+7. Change it to **Jo, jo i dobishëm** and confirm the choice changes.
+8. Sign in as another learner and confirm they cannot access or rate the first learner's exchange.
+9. Complete a speaking exercise and confirm tutor access after transcription.
+10. If Whisper returns `heise` for spoken `heiße`, confirm speech matching accepts it.
+11. Type `heise` in a spelling exercise and confirm it remains incorrect.
+12. Ask an unrelated question and confirm the fixed lesson-only refusal.
+13. In **Admin → Tutor exchanges**, filter by helpful and not helpful.
+14. Confirm the exchange detail remains read-only and shows the rating timestamp.
+15. Disable `TUTOR_ENABLED`, restart Django, and confirm no new AI exchange is created.
+16. Temporarily set `TUTOR_DAILY_REQUEST_LIMIT=1` and restart Django.
+17. Make one tutor request, then confirm the second request is blocked with the daily-limit message.
+18. In **Admin → Tutor daily usage**, confirm today's UTC request count is 1.
 
-Imported examples are intentionally unapproved. Unapproved examples are never sent to the model.
+The daily count is reserved before contacting the provider. Failed provider requests keep their
+reservation because they may already have incurred cost. The counter contains no learner content.
 
-## Acceptance test
+## How to improve weak responses
 
-Run the automated checks first:
+| Observed problem | First improvement |
+| --- | --- |
+| Missing fact or weak example | Improve reviewed lesson notes or approved examples. |
+| Wrong tone, length, or unsupported promise | Improve prompt instructions and response validation. |
+| Incorrect reviewed German or Albanian | Correct the course material and repeat human review. |
+| Repeated model error with good grounding | Add a targeted validator or deterministic rule. |
+| Many not-helpful ratings in one lesson | Review that lesson's exchanges before changing the global prompt. |
 
-```powershell
-uv run python manage.py makemigrations --check
-uv run python manage.py check
-uv run python manage.py test
-uv run ruff check .
-```
-
-Expected test count at this handoff: **88 tests**.
-
-Then test manually as a verified learner:
-
-1. Submit an incorrect typed answer and confirm the tutor becomes available only afterward.
-2. Request **Pse ishte gabim?** and verify that the explanation refers to this exercise.
-3. Test the correct-answer, grammar, and example request types.
-4. Ask a short custom question about the lesson; verify a relevant Albanian answer.
-5. Ask an unrelated question; verify the fixed lesson-only refusal.
-6. Complete a speaking exercise, wait for transcription, and use **Pyet tutorin** from its feedback.
-7. Speak `Ich heiße …`; if Whisper returns `heise`, verify speech matching still accepts it.
-8. Type `heise` in a typed spelling exercise and verify it remains incorrect.
-9. Verify examples show German, Albanian, and a useful explanation instead of generic filler.
-10. Verify any follow-up is immediately actionable and does not promise a future conversation.
-11. Open **Admin → Tutor exchanges** and inspect stored request and usage metadata.
-12. Set `TUTOR_ENABLED=False`, restart, and verify no provider request or exchange is created.
-
-## Current boundaries
-
-- One validated request and response at a time; there is no continuing chat thread.
-- No tutor access before an attempt.
-- No cross-lesson retrieval, vector database, web search, autonomous tools, or curriculum changes.
-- No pronunciation score; speech recognition only compares expected and recognized words.
-- AI output can still be imperfect. Reviewed grounding, validation, and staff inspection reduce risk
-  but do not replace a private pilot and language review.
-- Provider usage can incur cost. Rate limits exist, but a deployment-wide budget ceiling has not yet
-  been implemented.
+Good answers require both: prompt instructions control response behavior, while reviewed lesson
+material controls what the tutor teaches.
 
 ## Next steps, in order
 
-### 1. Finish content review
+1. Complete German–Albanian review of the four lesson contexts and eight examples.
+2. Test all five request types and feedback controls across all four lessons.
+3. Run a small private pilot and review not-helpful exchanges by lesson and request type.
+4. Compare daily request count, recorded token usage, approximate cost, and latency.
+5. Set the production daily limit from measured pilot usage rather than guessing.
+6. Improve reviewed grounding where ratings identify a recurring weakness.
+7. Consider limited multi-turn lesson chat only if pilot evidence shows learners need it.
 
-Have a fluent German–Albanian reviewer check the four lesson contexts and eight examples. Approve
-only verified examples. This produces better tutor answers more reliably than prompt changes alone:
-the request tells the model how to answer, while reviewed lesson material gives it what to teach.
-
-### 2. Run the four-lesson tutor acceptance pass
-
-Test every request type in every lesson, including at least one incorrect answer, one speaking
-attempt, and one out-of-scope question. Record examples of vague, incorrect, or repetitive output.
-
-### 3. Add tutor quality feedback
-
-Add **Helpful** and **Not helpful** controls to each response, store the rating on the exchange, and
-provide an admin filter/report. This is the recommended next engineering task because it turns pilot
-opinions into evidence and identifies which lesson grounding needs improvement.
-
-### 4. Add budget protection
-
-Define a daily deployment-wide cost/request ceiling in addition to the existing per-learner rate
-limit. Display or log a clear reason when the ceiling pauses tutor requests.
-
-### 5. Run a small private pilot
-
-Measure helpfulness, wrong-answer rate, refusal behavior, latency, repeated questions, and cost.
-Update lesson material before changing the general prompt whenever the problem is missing or
-lesson-specific knowledge.
-
-### 6. Decide whether multi-turn chat is justified
-
-Only after pilot evidence should the interface offer a continuing lesson conversation. If added, it
-should remain inside the current lesson, have a short turn limit, preserve attempt context, and use a
-clear **End conversation** action. It should not become an unrestricted agent.
-
-## Decision rule for improving responses
-
-| Problem observed | First fix |
-| --- | --- |
-| Missing lesson fact or weak example | Improve reviewed lesson notes/examples. |
-| Wrong tone, excessive length, or unsupported promise | Improve request instructions and response validation. |
-| Incorrect German or Albanian in approved material | Correct the material and repeat human review. |
-| Repeated model error despite good grounding | Add a targeted validator or deterministic application rule. |
-| Learners need a real follow-up exchange | Evaluate limited multi-turn chat after pilot evidence. |
-
-Answer quality comes from both inputs: strong request instructions control format and behavior,
-while reviewed exercise material controls factual and pedagogical quality.
+Multi-turn chat should remain lesson-scoped, short, attempt-aware, and explicitly terminable. It
+should not become an unrestricted autonomous agent.

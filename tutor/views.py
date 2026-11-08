@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 from courses.models import Exercise
 from learning.models import ExerciseAttempt
 
+from .budget import reserve_daily_request
 from .models import TutorExchange
 from .services import TutorServiceError, ask_lesson_tutor
 
@@ -71,6 +72,13 @@ def ask(request, exercise_id):
         )
         return redirect(_exercise_url(exercise, attempt))
 
+    if not reserve_daily_request(settings.TUTOR_DAILY_REQUEST_LIMIT):
+        messages.warning(
+            request,
+            "Tutori ka arritur kufirin ditor. Provoni përsëri nesër.",
+        )
+        return redirect(_exercise_url(exercise, attempt))
+
     try:
         result, response = ask_lesson_tutor(
             exercise=exercise,
@@ -104,4 +112,25 @@ def ask(request, exercise_id):
         estimated_cost_usd=result.estimated_cost_usd,
     )
     return redirect(_exercise_url(exercise, attempt, exchange))
+
+
+@login_required
+@require_POST
+def rate(request, exchange_id):
+    exchange = get_object_or_404(
+        TutorExchange.objects.select_related("exercise", "attempt"),
+        pk=exchange_id,
+        learner=request.user,
+    )
+    rating = request.POST.get("rating", "")
+    valid_ratings = {value for value, _ in TutorExchange.FeedbackRating.choices}
+    if rating not in valid_ratings:
+        messages.warning(request, "Zgjidhni një vlerësim të vlefshëm.")
+        return redirect(_exercise_url(exchange.exercise, exchange.attempt, exchange))
+
+    exchange.feedback_rating = rating
+    exchange.feedback_rated_at = timezone.now()
+    exchange.save(update_fields=("feedback_rating", "feedback_rated_at"))
+    messages.success(request, "Faleminderit për vlerësimin.")
+    return redirect(_exercise_url(exchange.exercise, exchange.attempt, exchange))
 

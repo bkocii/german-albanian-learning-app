@@ -25,7 +25,7 @@
 
 ## M4 — First complete unit
 
-- [x] Refine incorrect-answer reveal and automatic correct-answer progression
+- [x] Refine incorrect-answer reveal and explicit correct-answer progression
 - [x] Define extensible exercise models and versioned JSON course format
 - [x] Add staff-only JSON validation preview and draft import
 - [x] Add true/false and dialogue-response learner interactions
@@ -54,6 +54,15 @@
 - [x] Prepare four A1 tutor contexts and eight examples
 - [x] Add learner helpful/not-helpful feedback and Admin filtering
 - [x] Add an atomic deployment-wide daily tutor request ceiling
+- [x] Reserve a stable, wider tutor column before and after attempts
+- [x] Activate the tutor column immediately after speaking transcription
+- [x] Preserve speaking results while requesting or rating tutor explanations
+- [x] Route incorrect speaking results back to retry instead of the next exercise
+- [x] Keep correct-answer results visible until the learner chooses to continue
+- [x] Title responses with the request type or learner's custom question
+- [x] Manually confirm tutor placement and transitions for typed and speaking exercises
+- [x] Manually confirm the 14-request ceiling, microphone flow, retry/continue behavior, preserved
+  speaking feedback, ask-again scrolling, and safe bold rendering
 - [ ] Complete human review and approve the A1 tutor examples
 - [ ] Manually test all five request types across all four lessons
 - [ ] Decide on multi-turn lesson chat only after private-pilot evidence

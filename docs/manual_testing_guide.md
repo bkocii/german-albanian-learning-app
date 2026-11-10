@@ -233,7 +233,7 @@ Safety checks:
 - Temporary audio is deleted after both successful and failed transcription.
 - More than 10 transcription requests in 5 minutes from one learner returns a temporary limit.
 
-## Answer feedback and automatic progression
+## Answer feedback, tutor opportunity, and deliberate progression
 
 Use a lesson containing at least two published exercises.
 
@@ -242,14 +242,16 @@ Use a lesson containing at least two published exercises.
 3. Open **Shiko përgjigjen e saktë** and confirm the correct text or image appears.
 4. Close the section, select **Provo përsëri**, and submit the correct answer.
 5. Confirm **Saktë!** appears with a short animation.
-6. Do not click anything; confirm the next exercise opens automatically after about 1.4 seconds.
-7. On the final exercise, confirm a correct answer automatically returns to the course catalog.
-8. Confirm **Vazhdo tani** or **Përfundo tani** still works if selected before the automatic move.
-9. Repeat with a speaking exercise: exact recognized text should automatically advance, while a
-   non-matching transcription should remain on the feedback screen.
+6. Do not click anything; confirm the result remains visible and the next exercise does not open
+   automatically.
+7. Confirm the reserved tutor panel activates without changing the exercise-column width.
+8. Select **Vazhdo** (or the final completion action) and confirm deliberate progression works.
+9. Repeat with a speaking exercise: matching recognized text should offer **Vazhdo** and tutor help;
+   a non-matching transcription should offer **Provo përsëri** and must not offer progression.
+10. Ask or rate the tutor and confirm the result and recognized-word feedback remain on screen.
 
-With the operating-system reduced-motion setting enabled, the animation should be disabled while
-automatic progression continues to work.
+With the operating-system reduced-motion setting enabled, the feedback animation should be disabled
+while explicit progression and tutor activation continue to work.
 
 ## Extensible exercise and import-data foundation
 
@@ -301,7 +303,7 @@ Test the two types separately in an existing published lesson. Use unique positi
    as selectable response cards.
 6. Submit `Gute Nacht.` and confirm the collapsed correct-answer reveal contains
    `Ich heiße Arta.`
-7. Retry with `Ich heiße Arta.` and confirm automatic progression.
+7. Retry with `Ich heiße Arta.` and confirm **Saktë!**, tutor access, and the explicit continue action.
 8. Confirm the incorrect and correct attempts are both retained in the administration site.
 
 Validation checks: publishing either type with fewer than two active options or with zero/multiple
@@ -320,7 +322,7 @@ Test each type separately in an existing published lesson, using unique position
 3. Under **Accepted answers**, add position 1 with `Guten Tag!`.
 4. Set a reviewer, review time, and status **Published**, then save.
 5. As a learner, enter `  guten tag!  ` with lowercase letters and surrounding spaces.
-6. Confirm it is accepted, **Saktë!** appears, and automatic progression occurs.
+6. Confirm it is accepted, **Saktë!** appears, and the result remains until the learner continues.
 7. Retry or create another attempt with `Guten Abend`. Confirm **Jo e saktë.** appears and
    **Shiko përgjigjen e saktë** remains collapsed until selected.
 8. Open the reveal and confirm it shows the primary answer `Guten Tag`.
@@ -344,7 +346,7 @@ least one accepted-answer row. A draft may be saved while these are being prepar
    attempt.
 6. Deliberately swap the two answers. Confirm **Jo e saktë.** appears.
 7. Open **Shiko përgjigjen e saktë** and confirm both correct pairs appear only after opening it.
-8. Retry with both correct pairs and confirm automatic progression.
+8. Retry with both correct pairs and confirm **Saktë!** plus the explicit continue action.
 9. In Exercise attempts, confirm the stored answer lists both submitted pair mappings.
 
 Validation check: a reviewed or published matching exercise requires at least two matching-pair
@@ -378,7 +380,7 @@ Test as a learner:
    `Auf Wiedersehen` is omitted.
 5. Retry and select all three options. Confirm the result is still incorrect because one selected
    option is wrong.
-6. Retry and select exactly `Hallo` and `Guten Tag`. Confirm **Saktë!** and automatic progression.
+6. Retry and select exactly `Hallo` and `Guten Tag`. Confirm **Saktë!** and deliberate progression.
 7. In **Admin → Learning → Exercise attempts**, confirm the selected option text is retained in
    each attempt.
 
@@ -483,7 +485,8 @@ Pay particular attention to:
 For each lesson, temporarily publish only that lesson's reviewed exercises, then publish its parent
 lesson, unit, and A1 level. Sign in as a learner and complete every exercise, deliberately testing
 at least one incorrect answer before the correct answer. Confirm attempt history, collapsed answer
-reveals, automatic progression, lesson completion, mobile layout, and speaking feedback.
+reveals, deliberate progression, tutor availability, lesson completion, mobile layout, and speaking
+feedback.
 
 If a problem is found, return the affected exercise to **Draft**, correct it, repeat review, and
 test it again. Do not publish the complete unit until all four lessons pass this review.
@@ -530,8 +533,10 @@ published units. Before editing content found to be wrong, change the affected e
    replacing `ß` with `b`, as in `heibe`, remains incorrect.
 4. Open any multiple-select exercise and confirm it displays checkboxes rather than a text field.
 5. Complete a speaking exercise correctly. Confirm recognized, matched, missing, and unexpected
-   words remain visible for approximately six seconds before automatic progression.
-6. Confirm the visible **Vazhdo** link can still move forward immediately.
+   words remain visible until the learner chooses another action.
+6. Confirm **Vazhdo** moves forward, while **Pyet tutorin** activates the tutor without reloading or
+   removing the speaking result.
+7. Submit an incorrect speaking result and confirm **Provo përsëri** is visible but **Vazhdo** is not.
 
 ## Bulk media ZIP import
 

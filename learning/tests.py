@@ -162,7 +162,11 @@ class LessonPlayerTests(TestCase):
             f"{reverse('learning:exercise', args=(self.exercise.pk,))}?attempt={attempt.pk}"
         )
         self.assertContains(result_page, "Saktë!")
-        self.assertContains(result_page, 'data-auto-next="/learn/"')
+        self.assertNotContains(result_page, "data-auto-next")
+        self.assertContains(
+            result_page,
+            "Mund të vazhdoni ose të kërkoni një shpjegim nga tutori.",
+        )
 
     def test_wrong_answer_hides_correct_answer_in_optional_reveal(self):
         response = self.client.post(

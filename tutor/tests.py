@@ -16,6 +16,7 @@ from courses.models import (
     VocabularyEntry,
 )
 from learning.models import ExerciseAttempt
+from learning.templatetags.tutor_formatting import tutor_rich_text
 
 from .models import TutorDailyUsage, TutorExchange
 from .services import (
@@ -123,6 +124,62 @@ class TutorTests(TestCase):
         }
         values.update(overrides)
         return TutorExchange.objects.create(**values)
+
+    def test_tutor_bold_markup_is_rendered_after_html_is_escaped(self):
+        rendered = str(tutor_rich_text("Përdor **Guten Morgen** <script>alert(1)</script>"))
+
+        self.assertEqual(
+            rendered,
+            "Përdor <strong>Guten Morgen</strong> "
+            "&lt;script&gt;alert(1)&lt;/script&gt;",
+        )
+
+    def test_unattempted_exercise_reserves_disabled_tutor_column(self):
+        response = self.client.get(
+            reverse("learning:exercise", args=(self.exercise.pk,))
+        )
+
+        self.assertContains(response, 'class="lesson-workspace has-tutor"')
+        self.assertContains(response, 'class="tutor-column"')
+        self.assertContains(response, 'aria-disabled="true"')
+        self.assertContains(response, "Tutori aktivizohet pasi të kontrolloni përgjigjen.")
+
+    def test_custom_question_titles_response_and_precedes_explanation(self):
+        exchange = self.create_exchange(
+            kind=TutorExchange.Kind.CUSTOM,
+            question="Pse përdoret heiße këtu?",
+        )
+        response = self.client.get(
+            reverse("learning:exercise", args=(self.exercise.pk,)),
+            {"attempt": self.attempt.pk, "tutor": exchange.pk},
+        )
+        content = response.content.decode()
+
+        self.assertContains(response, "Pse përdoret heiße këtu?")
+        self.assertLess(
+            content.index("Pse përdoret heiße këtu?"),
+            content.index("‘Heiße’ është forma për ‘ich’."),
+        )
+        self.assertNotContains(response, "Shpjegimi i tutorit")
+
+    def test_unattempted_speaking_exercise_has_recording_specific_tutor_state(self):
+        speaking = Exercise.objects.create(
+            lesson=self.lesson,
+            exercise_type=Exercise.Type.SPEAKING,
+            instructions_sq="Flisni.",
+            expected_answer="Guten Morgen",
+            position=2,
+            review_status=Exercise.ReviewStatus.PUBLISHED,
+            reviewed_by=self.reviewer,
+            reviewed_at=timezone.now(),
+        )
+
+        response = self.client.get(reverse("learning:exercise", args=(speaking.pk,)))
+
+        self.assertContains(
+            response,
+            "Tutori aktivizohet pasi të dërgoni regjistrimin për kontroll.",
+        )
 
     def test_prompt_contains_only_supplied_lesson_attempt_and_request(self):
         prompt = build_tutor_prompt(

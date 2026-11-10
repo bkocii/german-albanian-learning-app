@@ -17,9 +17,23 @@ The initial release supports five requests:
 The tutor becomes available only after an exercise attempt exists. This prevents it from being used
 as an answer generator before the learner tries the exercise.
 
+On desktop, the lesson reserves a wider tutor column before the attempt. It initially contains a
+disabled explanation, then changes in place to active tutor controls. Correct answers do not advance
+automatically: the learner chooses **Vazhdo** or uses the tutor. On narrower screens, the tutor stacks
+below the exercise.
+
 Speaking attempts are created asynchronously by the transcription endpoint. After transcription,
-the speaking feedback now displays **Pyet tutorin**. That link reloads the current exercise with the
-new attempt ID, which gives the tutor the same verified attempt context used by typed exercises.
+the page fetches the attempt-aware tutor panel and replaces the disabled sidebar in place. The
+recognized-word feedback remains visible, while **Pyet tutorin** opens the now-active tutor panel.
+Tutor questions and ratings update only that sidebar, so they do not erase the speaking result.
+An incorrect speaking result offers **Provo përsëri**; only a correct result offers progression.
+Once the sidebar activates successfully, the duplicate result-level tutor link is hidden.
+When an existing response is long, **Pyet përsëri** remains collapsed; opening it scrolls the
+question controls into view inside the tutor panel.
+
+Tutor explanations may use `**text**` for emphasis. The learner page renders that limited syntax as
+bold text after escaping the complete response. Other model-supplied HTML remains visible only as
+escaped text and cannot become page markup.
 
 ## Request flow
 
@@ -147,7 +161,7 @@ AI_TUTOR_MODEL=gpt-5.4-mini
 TUTOR_RATE_ATTEMPTS=10
 TUTOR_RATE_WINDOW_SECONDS=300
 TUTOR_MAX_QUESTION_LENGTH=500
-TUTOR_DAILY_REQUEST_LIMIT=100
+TUTOR_DAILY_REQUEST_LIMIT=14
 ```
 
 Do not commit the real API key. `.env.example` contains only empty or safe example values.
@@ -163,6 +177,9 @@ Configuration meanings:
 | `TUTOR_RATE_WINDOW_SECONDS` | Length of the rolling rate-limit window. |
 | `TUTOR_MAX_QUESTION_LENGTH` | Maximum custom-question length accepted by Django. |
 | `TUTOR_DAILY_REQUEST_LIMIT` | Maximum application-level tutor requests reserved across all learners per UTC day. |
+
+The committed default is 14 requests per UTC day for the initial private pilot. This is one shared
+deployment limit, not a separate allowance for every learner.
 
 The daily counter is reserved atomically before the provider call. A provider failure keeps its
 reservation because it may already have consumed billable tokens. Structured-output repair may also
@@ -212,7 +229,8 @@ reservation after provider failure.
 16. Open **Admin → Tutor daily usage** and confirm today's UTC counter is 1.
 
 For a speaking exercise, finish transcription first and click **Pyet tutorin** in the speech-feedback
-panel. The application opens the same exercise with its saved speaking attempt and tutor controls.
+panel. Confirm that the right-hand disabled state becomes active immediately, without moving below
+the answer or losing the recognized-word feedback.
 Speech comparison treats `heiße`, `heisse`, and Whisper's possible `heise` transcript as the same
 spoken word. Typed exercises still require the correct `heiße` or keyboard alternative `heisse` so
 the application does not teach `heise` as correct German spelling.

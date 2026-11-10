@@ -1,7 +1,7 @@
 [project]
 name = "german-albanian-learning-app"
 version = "0.1.0"
-description = "Add your description here"
+description = "German learning app for Albanian speakers with speech practice and a lesson tutor"
 readme = "README.md"
 authors = [
     { name = "bkocii", email = "burimkoci@hotmail.com" }

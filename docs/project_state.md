@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 8 November 2026
+Last updated: 10 November 2026
 
 ## Current milestone
 
@@ -35,7 +35,7 @@ Milestone 4 — First complete unit and lesson-scoped tutor validation.
 - Expected, recognized, matched, and missing-word feedback without pronunciation scoring
 - Guaranteed temporary-file deletion and per-user transcription throttling
 - Optional collapsed correct-answer reveal after mistakes
-- Animated correct feedback with automatic movement to the next exercise
+- Animated correct feedback with an explicit continue action so tutor help remains available
 - Extensible exercise schema with all currently defined learner engines enabled
 - Stable external IDs for safe media and exercise import references
 - Accepted-answer and matching-pair data models
@@ -44,7 +44,7 @@ Milestone 4 — First complete unit and lesson-scoped tutor validation.
 - No-write validation preview with counts, warnings, and duplicate/media checks
 - Single-use confirmation token and transactional draft import
 - Dedicated true/false and dialogue-response learner interactions
-- Choice grading, retry feedback, collapsed answer reveal, and automatic progression for both types
+- Choice grading, retry feedback, collapsed answer reveal, and deliberate progression for both types
 - Free-text grading against a primary answer and reviewed accepted variants
 - Mobile-friendly matching interaction with shuffled answers and complete-pair validation
 - Collapsed matching solution reveal after an incorrect attempt
@@ -55,7 +55,7 @@ Milestone 4 — First complete unit and lesson-scoped tutor validation.
 - Atomic Unit admin actions to publish or unpublish an entire unit hierarchy
 - Publication validation that prevents partial publication and records the acting administrator
 - Typed answers accept standard German `ß` and keyboard-friendly `ss` as equivalent
-- Correct speaking feedback remains visible for six seconds before automatic progression
+- Speaking feedback remains visible until the learner continues or asks the tutor
 - Staff-only media ZIP validation, preview, and unapproved import
 - Stable media IDs, licensing metadata, archive safety limits, and expiring preview files
 - Four original lightweight starter illustrations with an import-ready media ZIP
@@ -70,16 +70,28 @@ Milestone 4 — First complete unit and lesson-scoped tutor validation.
 - Staff-reviewable tutor exchanges with model, duration, token, cost, and request metadata
 - Learner helpful/not-helpful ratings with ownership checks, timestamps, and Admin filtering
 - Per-learner rate limits plus an atomic deployment-wide daily request ceiling
+- Stable, wider desktop tutor column with responsive stacking on narrower screens
+- Immediate speaking-tutor activation after transcription without losing transcript feedback
+- In-place speaking tutor requests and ratings that preserve recognized-word results
+- Delegated tutor form handling that remains active after sidebar replacement
+- Reliable hidden-state styling for fallback controls and automatic ask-again scrolling
+- Incorrect speaking results offer retry instead of progression to the next exercise
+- Request-specific tutor response titles and collapsed ask-again controls below explanations
 - Question-length limits, lesson-scope enforcement, and a master off switch
-- Ninety-five automated project tests
+- Ninety-nine automated project tests
+- Safe rendering of tutor `**bold**` emphasis without allowing model-supplied HTML
+- Manual confirmation of the daily limit, microphone flow, stable tutor placement, speaking-result
+  preservation, retry/continue rules, ask-again scrolling, and safe bold rendering
 
 ## Next tasks
 
 1. Human-review the A1 Unit 1 course content and supplemental tutor grounding.
 2. Approve only tutor examples that pass German and Albanian language review.
-3. Test all tutor request types and feedback controls across the four lessons.
+3. Test all five tutor request types and feedback controls across all four lessons and record weak
+   responses for grounding or prompt improvements.
 4. Run a small private pilot and use helpful/not-helpful ratings to improve weak lesson grounding.
-5. Review daily usage, latency, and approximate cost before setting the production limit.
+5. Begin the private pilot with the validated conservative ceiling of 14 requests per UTC day, then
+   review daily usage, latency, and approximate cost before changing it.
 
 Multi-turn lesson conversation should be considered only after pilot evidence shows that the current
 one-request flow is useful and safe.

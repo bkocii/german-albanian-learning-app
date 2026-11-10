@@ -6,6 +6,7 @@
 - `courses`: CEFR levels, units, lessons, vocabulary, exercises, and assets
 - `learning`: learner attempts, answers, scores, review, and progress
 - `speech`: temporary audio handling, transcription, and recognition feedback
+- `tutor`: lesson-scoped AI requests, validation, usage budgets, stored exchanges, and ratings
 
 ## Technical direction
 
@@ -13,6 +14,7 @@
 - SQLite for initial local development; PostgreSQL for production
 - Responsive Django templates with lightweight JavaScript
 - `faster-whisper` for local German transcription
+- Pinned Python AI Toolkit integration for structured server-side OpenAI requests
 - Temporary learner recordings deleted after processing
 
 ## Account lifecycle
@@ -75,3 +77,16 @@
 - Speech processing returns feedback to the learning flow without storing raw audio by default.
 - Provider-specific speech code must stay behind a small service interface.
 - Production throttling must use a shared cache when more than one application process runs.
+- Tutor access requires an authenticated learner's saved attempt for the current exercise.
+- Django builds tutor grounding from the current exercise, attempt, lesson vocabulary, reviewed
+  notes, and approved examples; the browser never receives provider credentials.
+- Tutor output must pass structured validation. Displayed output is HTML-escaped before the narrow
+  `**bold**` formatter is applied.
+- Correct answers remain on the result screen until the learner explicitly continues, preserving an
+  opportunity to ask for help. Incorrect speaking results can retry but cannot continue.
+- Tutor forms update only the reserved tutor panel so speaking transcripts and result controls are
+  not lost.
+- Tutor requests use both a per-learner rolling limit and an atomic deployment-wide UTC daily
+  reservation. Provider failures retain the reservation because cost may already have occurred.
+- Multi-process production must use a database supporting safe concurrent daily-counter updates and
+  a shared cache for consistent learner throttling.

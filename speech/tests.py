@@ -112,6 +112,10 @@ class SpeakingTranscriptionTests(TestCase):
                 f"?attempt={attempt.pk}#lesson-tutor"
             ),
         )
+        self.assertEqual(
+            response.json()["retry_url"],
+            reverse("learning:exercise", args=(self.exercise.pk,)),
+        )
         self.assertTrue(temporary_paths)
         self.assertFalse(temporary_paths[0].exists())
 

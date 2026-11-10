@@ -1,0 +1,67 @@
+{% load tutor_formatting %}
+<details id="lesson-tutor" class="tutor-panel" data-tutor-panel {% if tutor_exchange %}open{% endif %}>
+    <summary>Pyet tutorin</summary>
+
+    {% if tutor_exchange %}
+        <div class="tutor-response" aria-live="polite">
+            <p class="tutor-response-title">
+                {% if tutor_exchange.kind == "explain_mistake" %}Pse ishte gabim?
+                {% elif tutor_exchange.kind == "explain_answer" %}Shpjegimi i përgjigjes
+                {% elif tutor_exchange.kind == "grammar" %}Shpjegimi i gramatikës
+                {% elif tutor_exchange.kind == "example" %}Shembull tjetër
+                {% elif tutor_exchange.question %}{{ tutor_exchange.question }}
+                {% else %}Pyetja juaj{% endif %}
+            </p>
+            <p>{{ tutor_exchange.explanation_sq|tutor_rich_text }}</p>
+            {% if tutor_exchange.german_examples %}
+                <ul class="tutor-example-list">
+                    {% for example in tutor_exchange.german_examples %}
+                        <li>
+                            {% if example.german %}
+                                <strong lang="de">{{ example.german }}</strong>
+                                <span> — {{ example.albanian }}</span>
+                                {% if example.why_it_helps_sq %}<small class="muted">{{ example.why_it_helps_sq }}</small>{% endif %}
+                            {% else %}
+                                <span lang="de">{{ example }}</span>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if tutor_exchange.follow_up_sq %}<p><strong>Provo:</strong> {{ tutor_exchange.follow_up_sq|tutor_rich_text }}</p>{% endif %}
+            <small class="muted">Përgjigjja është krijuar nga AI dhe kufizohet në materialin e këtij mësimi.</small>
+            <form method="post" action="{% url 'tutor:rate' tutor_exchange.pk %}" class="tutor-feedback-form">
+                {% csrf_token %}
+                <span>A ishte i dobishëm ky shpjegim?</span>
+                <div class="tutor-feedback-actions">
+                    <button class="button secondary{% if tutor_exchange.feedback_rating == 'helpful' %} selected{% endif %}" type="submit" name="rating" value="helpful" aria-pressed="{% if tutor_exchange.feedback_rating == 'helpful' %}true{% else %}false{% endif %}">Po, i dobishëm</button>
+                    <button class="button secondary{% if tutor_exchange.feedback_rating == 'not_helpful' %} selected{% endif %}" type="submit" name="rating" value="not_helpful" aria-pressed="{% if tutor_exchange.feedback_rating == 'not_helpful' %}true{% else %}false{% endif %}">Jo, jo i dobishëm</button>
+                </div>
+                {% if tutor_exchange.feedback_rating %}<small class="muted">Vlerësimi u ruajt. Mund ta ndryshoni.</small>{% endif %}
+            </form>
+        </div>
+    {% endif %}
+
+    {% if tutor_enabled %}
+        {% if tutor_exchange %}<details class="tutor-more"><summary>Pyet përsëri</summary>{% endif %}
+        <div class="tutor-request-controls">
+            <p class="muted tutor-intro">Shpjegime në shqip, vetëm për këtë mësim dhe përgjigjen tuaj.</p>
+            <form method="post" action="{% url 'tutor:ask' exercise.pk %}" class="tutor-form">
+                {% csrf_token %}
+                <input type="hidden" name="attempt" value="{{ attempt.pk }}">
+                <div class="tutor-quick-actions">
+                    {% if not attempt.is_correct %}<button class="tutor-action" type="submit" name="kind" value="explain_mistake"><span class="tutor-action-icon" aria-hidden="true">?</span><span>Gabimi im</span></button>{% endif %}
+                    <button class="tutor-action" type="submit" name="kind" value="explain_answer"><span class="tutor-action-icon" aria-hidden="true">✓</span><span>Përgjigjja</span></button>
+                    <button class="tutor-action" type="submit" name="kind" value="grammar"><span class="tutor-action-icon" aria-hidden="true">Aa</span><span>Gramatika</span></button>
+                    <button class="tutor-action" type="submit" name="kind" value="example"><span class="tutor-action-icon" aria-hidden="true">+</span><span>Shembull</span></button>
+                </div>
+                <label for="tutor-question">Pyetje për këtë mësim</label>
+                <textarea id="tutor-question" name="question" maxlength="500" rows="2" placeholder="P.sh. Pse përdoret ‘heiße’ këtu?"></textarea>
+                <button class="button" type="submit" name="kind" value="custom">Dërgo pyetjen</button>
+            </form>
+        </div>
+        {% if tutor_exchange %}</details>{% endif %}
+    {% else %}
+        <p class="muted">Tutori i mësimit nuk është aktivizuar ende.</p>
+    {% endif %}
+</details>

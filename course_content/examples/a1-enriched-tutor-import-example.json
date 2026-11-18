@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "level": {
+    "code": "A1",
+    "title_de": "Anfänger",
+    "title_sq": "Fillestar",
+    "position": 1
+  },
+  "units": [
+    {
+      "slug": "tutor-demo-pershendetje-ne-situata",
+      "title_de": "Tutor-Demo: Begrüßung und Abschied",
+      "title_sq": "Shembull tutori: Përshëndetja dhe ndarja",
+      "summary_sq": "Shembull për shqyrtim: ushtrime të shkurtra me material më të pasur për tutorin.",
+      "position": 90,
+      "lessons": [
+        {
+          "slug": "pershendetje-dhe-urime-ne-situata",
+          "title_de": "Begrüßen, verabschieden und einen schönen Tag wünschen",
+          "title_sq": "Si përshëndetemi, ndahemi dhe urojmë një ditë të mirë",
+          "objective_sq": "Dallo përshëndetjen kur takon dikë nga urimi kur largohesh; përdor shprehje të thjeshta sipas situatës.",
+          "position": 1,
+          "tutor_context": {
+            "grammar_notes_sq": "KUPTIMI: Guten Morgen = Mirëmëngjes; Guten Tag = Mirëdita; Guten Abend = Mirëmbrëma. Në këto shprehje, Morgen lidhet me mëngjesin, Tag me ditën dhe Abend me mbrëmjen. Shprehjet mund të mësohen si njësi të plota, por një pyetje për fjalët e tyre mund të marrë një shpjegim të shkurtër. Guten është një formë e mbiemrit gut, që do të thotë i mirë; në këtë hap nuk nevojitet një tabelë e plotë lakimi. PËRDORIMI: Guten Tag është përshëndetje kur takon dikë. Schönen Tag noch! është një urim që i drejton dikujt kur mbyll bisedën ose largohesh gjatë ditës. Nuk janë të këmbyeshme në çdo situatë. Auf Wiedersehen! dhe Tschüss! përdoren për t'u ndarë. Danke, gleichfalls! do të thotë Faleminderit, gjithashtu!, si përgjigje ndaj një urimi.",
+            "common_mistakes_sq": "1. Mirëmbrëma nuk është përkthimi i Guten Morgen; ajo përkon me Guten Abend. 2. Pyetja shqip 'si thuhet ditën e mirë' mund të kërkojë një përshëndetje ose një urim gjatë ndarjes. Kur kuptimi nuk është i qartë, duhen dalluar këto dy situata. 3. Guten Tag nuk është përgjigjja e përshtatshme për çdo përdorim të shprehjes shqipe ditën e mirë. 4. Hallo është zakonisht më pak formale, por nuk përdoret vetëm mes miqsh; përshtatshmëria varet nga situata. 5. Kalimi midis përshëndetjeve sipas kohës së ditës nuk ka një kufi të vetëm të detyrueshëm për të gjithë.",
+            "guidance_sq": "Tema përfshin takimin, hyrjen në dyqan, përshëndetjen e një shoku, mbylljen e një bisede dhe urimin gjatë largimit. Përgjigjja duhet t'i shërbejë pyetjes së tanishme, me shqip të natyrshme dhe gjermanishte të thjeshtë. Për pyetjen e paqartë 'si thuhet ditën e mirë', një sqarim i dobishëm është: A e ke fjalën për përshëndetjen kur takon dikë, apo për urimin kur largohesh? Nëse përdoruesi thotë se po largohet, lidhja është Schönen Tag noch!, jo një kthim te gabimi i mëparshëm për Guten Morgen. Shembujt më poshtë ilustrojnë situata të ndryshme; nuk është e nevojshme të shfaqen të gjithë në çdo përgjigje. Një pyetje e thjeshtë mund të marrë një përgjigje të shkurtër. Praktika është fakultative dhe duhet të jetë e kuptueshme pa fushë të re përgjigjeje ose regjistrim zanor.",
+            "examples": [
+              {
+                "position": 1,
+                "german": "Guten Morgen, Frau Keller!",
+                "albanian": "Mirëmëngjes, zonja Keller!",
+                "explanation_sq": "Hyn në një dyqan në mëngjes dhe përshëndet zonjën Keller. Frau me mbiemrin është një mënyrë e sjellshme për t'iu drejtuar asaj."
+              },
+              {
+                "position": 2,
+                "german": "Guten Tag, Herr Weber!",
+                "albanian": "Mirëdita, zoti Weber!",
+                "explanation_sq": "Takon zotin Weber gjatë ditës. Kjo është përshëndetje në fillim të takimit, jo urim për ditën kur po largohesh."
+              },
+              {
+                "position": 3,
+                "german": "Guten Abend, Frau Keller!",
+                "albanian": "Mirëmbrëma, zonja Keller!",
+                "explanation_sq": "Takon zonjën Keller në mbrëmje. Ndryshimi ndaj Guten Morgen lidhet me kohën e takimit."
+              },
+              {
+                "position": 4,
+                "german": "Hallo, Arta!",
+                "albanian": "Përshëndetje, Arta!",
+                "explanation_sq": "Takon Artën, të cilën e njeh. Hallo është një përshëndetje e zakonshme, më pak formale, që nuk varet nga një kohë e vetme e ditës."
+              },
+              {
+                "position": 5,
+                "german": "Auf Wiedersehen! Schönen Tag noch!",
+                "albanian": "Mirupafshim! Kalofshi një ditë të mirë!",
+                "explanation_sq": "Mbyll bisedën dhe largohesh nga dyqani gjatë ditës. Së pari përshëndetesh në ndarje, pastaj i uron personit një ditë të mirë."
+              },
+              {
+                "position": 6,
+                "german": "A: Schönen Tag noch!\nB: Danke, gleichfalls!",
+                "albanian": "A: Kalofshi një ditë të mirë!\nB: Faleminderit, gjithashtu!",
+                "explanation_sq": "Dialog i shkurtër në fund të takimit. Personi B e falënderon personin A dhe ia kthen të njëjtin urim."
+              }
+            ]
+          },
+          "vocabulary": [
+            {
+              "position": 1,
+              "german": "Guten Morgen",
+              "albanian": "Mirëmëngjes",
+              "part_of_speech": "Grußformel",
+              "example_de": "Guten Morgen, Frau Keller!",
+              "example_sq": "Mirëmëngjes, zonja Keller!",
+              "notes_sq": "Përshëndetje në mëngjes. Morgen këtu do të thotë mëngjes."
+            },
+            {
+              "position": 2,
+              "german": "Guten Tag",
+              "albanian": "Mirëdita",
+              "part_of_speech": "Grußformel",
+              "example_de": "Guten Tag, Herr Weber!",
+              "example_sq": "Mirëdita, zoti Weber!",
+              "notes_sq": "Përshëndetje kur takon dikë gjatë ditës; dalloje nga urimi gjatë largimit."
+            },
+            {
+              "position": 3,
+              "german": "Guten Abend",
+              "albanian": "Mirëmbrëma",
+              "part_of_speech": "Grußformel",
+              "example_de": "Guten Abend, Frau Keller!",
+              "example_sq": "Mirëmbrëma, zonja Keller!",
+              "notes_sq": "Përshëndetje kur takon dikë në mbrëmje."
+            },
+            {
+              "position": 4,
+              "german": "Hallo",
+              "albanian": "Përshëndetje",
+              "part_of_speech": "Grußformel",
+              "example_de": "Hallo, Arta!",
+              "example_sq": "Përshëndetje, Arta!",
+              "notes_sq": "Përshëndetje e zakonshme, zakonisht më pak formale; nuk kufizohet në mëngjes ose mbrëmje."
+            },
+            {
+              "position": 5,
+              "german": "Schönen Tag noch!",
+              "albanian": "Kalofshi një ditë të mirë!",
+              "part_of_speech": "Wunschformel",
+              "example_de": "Auf Wiedersehen! Schönen Tag noch!",
+              "example_sq": "Mirupafshim! Kalofshi një ditë të mirë!",
+              "notes_sq": "Urim gjatë largimit ose në fund të bisedës gjatë ditës. Kjo i përgjigjet kuptimit 'ditën e mirë' kur po ndahesh."
+            },
+            {
+              "position": 6,
+              "german": "Auf Wiedersehen",
+              "albanian": "Mirupafshim",
+              "part_of_speech": "Abschiedsformel",
+              "example_de": "Auf Wiedersehen, Frau Keller!",
+              "example_sq": "Mirupafshim, zonja Keller!",
+              "notes_sq": "Përshëndetje gjatë ndarjes, e përshtatshme edhe në situata formale."
+            },
+            {
+              "position": 7,
+              "german": "Tschüss",
+              "albanian": "Mirupafshim",
+              "part_of_speech": "Abschiedsformel",
+              "example_de": "Tschüss, Arta!",
+              "example_sq": "Mirupafshim, Arta!",
+              "notes_sq": "Mënyrë e zakonshme, më pak formale për t'u ndarë."
+            },
+            {
+              "position": 8,
+              "german": "Danke",
+              "albanian": "Faleminderit",
+              "part_of_speech": "Höflichkeitsformel",
+              "example_de": "Danke, gleichfalls!",
+              "example_sq": "Faleminderit, gjithashtu!",
+              "notes_sq": "Përdoret për të falënderuar, për shembull pasi dikush të ka uruar një ditë të mirë."
+            },
+            {
+              "position": 9,
+              "german": "gleichfalls",
+              "albanian": "gjithashtu",
+              "part_of_speech": "Adverb",
+              "example_de": "Danke, gleichfalls!",
+              "example_sq": "Faleminderit, gjithashtu!",
+              "notes_sq": "Në këtë përgjigje ia kthen tjetrit të njëjtin urim; nuk përdoret si përgjigje ndaj çdo përshëndetjeje."
+            }
+          ],
+          "exercises": [
+            {
+              "external_id": "demo-a1-rich-greetings-translation-001",
+              "type": "translation_choice",
+              "position": 1,
+              "instructions_sq": "Zgjidh përkthimin e saktë.",
+              "prompt_de": "Guten Morgen",
+              "options": [
+                {"position": 1, "text_sq": "Mirëmëngjes", "is_correct": true},
+                {"position": 2, "text_sq": "Mirëmbrëma", "is_correct": false},
+                {"position": 3, "text_sq": "Mirupafshim", "is_correct": false}
+              ]
+            },
+            {
+              "external_id": "demo-a1-rich-greetings-dialogue-001",
+              "type": "dialogue_choice",
+              "position": 2,
+              "instructions_sq": "Zgjidh urimin që përshtatet me situatën.",
+              "prompt_sq": "Po largohesh nga një dyqan gjatë ditës. Si i uron shitësit një ditë të mirë?",
+              "options": [
+                {"position": 1, "text_de": "Schönen Tag noch!", "is_correct": true},
+                {"position": 2, "text_de": "Guten Tag!", "is_correct": false},
+                {"position": 3, "text_de": "Guten Morgen!", "is_correct": false}
+              ]
+            },
+            {
+              "external_id": "demo-a1-rich-greetings-speaking-001",
+              "type": "speaking",
+              "position": 3,
+              "instructions_sq": "Thuaj në gjermanisht: Mirëdita.",
+              "prompt_sq": "Mirëdita",
+              "expected_answer": "Guten Tag."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

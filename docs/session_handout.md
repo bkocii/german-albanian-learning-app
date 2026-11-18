@@ -1,12 +1,13 @@
 # Session handout — lesson-scoped AI tutor
 
-Last updated: 10 November 2026
+Last updated: 16 November 2026
 
 ## Current outcome
 
 The application has an optional AI tutor for Albanian-speaking German learners. It becomes available
-only after a saved exercise attempt and receives only the current lesson, exercise, and learner
-attempt. It is not a general chatbot.
+only after a saved exercise attempt and receives the current lesson, exercise, and learner attempt.
+Up to three recent replies for the same learner and exercise supply only examples/practice to avoid
+repeating. Earlier questions and explanations are excluded. It is not a general chatbot.
 
 The tutor works after typed and speaking attempts. Speech comparison treats `heiße`, `heisse`, and
 Whisper's possible `heise` transcript as equivalent spoken words. Typed spelling still rejects
@@ -32,7 +33,7 @@ the exchange with a timestamp. Submitting it does not contact OpenAI or add prov
 | Access | Tutor appears only after the learner's own saved attempt. |
 | Requests | Mistake, answer, grammar, example, or short lesson question. |
 | Response | Validated Albanian explanation, bilingual examples, and optional concrete practice. |
-| Grounding | Exercise data, lesson vocabulary, reviewed notes, and approved examples. |
+| Grounding | Exercise data/context, vocabulary, approved concepts/dialogues/FAQ/model replies and examples. |
 | Feedback | Helpful/not-helpful choice, timestamp, ownership check, and changeable rating. |
 | Budget safety | Atomic deployment-wide request ceiling that resets each UTC day. |
 | Staff review | Read-only exchanges with rating filter, model, latency, tokens, and estimated cost. |
@@ -54,14 +55,37 @@ uv run python manage.py test
 uv run ruff check .
 ```
 
-Expected automated result: **99 tests**.
+Expected automated result: **123 tests**.
 
-The tutor configuration remains:
+The 10 November 2026 handoff baseline passed `uv sync`, the migration check, Django system check,
+99 tests, Ruff, and Node syntax checks on both tutor and speaking scripts.
+
+Package 036 adds six regression tests. It separates instructions for each request type, directs
+custom answers to the new question and ambiguity, and makes practice optional and oral/mental.
+Local postprocessing omits repeated examples/tasks and common unsupported write/select/submit
+instructions. The repetition window is three in-scope replies for this learner and exercise,
+including previous attempts. It does not enable conversation history or automatically grade practice.
+Package 036 required no migration or dependency changes. Its later live comparison led to package 037.
+See [package 036](tutor-response-review-036.md) for installation, validation, and the comparison plan.
+
+Package 037 adds schema-2 structured material and exercise teaching contexts, migration `courses.0005`,
+independent approval/reset controls, and 18 regression tests. It supplies concepts, dialogues, FAQ,
+model replies and ten progressively varied demo exercises. The latest live review (106–114) showed
+that richer material improved ambiguity and word explanations. The new structured prompt still
+needs a live comparison. See [the current install/import/retest guide](tutor-material-037.md).
+
+For this user's existing enriched demo, import `greetings-upgrade-existing-demo-v2.json` after the
+migration, review/approve material and contexts, then publish the seven new exercises through the
+demo Unit action. Existing questions, attempts and replies are preserved. Related beginner German
+beyond the uploaded vocabulary is allowed. This does not enable unrestricted chat or earlier-turn
+memory. There are no new dependencies.
+
+Use the current comparison model while evaluating this change:
 
 ```env
 TUTOR_ENABLED=True
 OPENAI_API_KEY=replace-with-your-real-key
-AI_TUTOR_MODEL=gpt-5.4-mini
+AI_TUTOR_MODEL=gpt-5.4
 TUTOR_RATE_ATTEMPTS=10
 TUTOR_RATE_WINDOW_SECONDS=300
 TUTOR_MAX_QUESTION_LENGTH=500
@@ -79,6 +103,14 @@ Import `course_content/a1/unit-01-tutor-material.json` from **Admin → Courses 
 course JSON**. Preview must report four tutor lesson contexts, eight tutor examples, and zero
 exercises. Imported examples are unapproved and are excluded from AI requests until a reviewer
 approves them in **Admin → Courses → Lesson tutor examples**.
+
+The four contexts and eight examples have draft editorial revisions. For a database that already
+has the earlier examples, follow the [existing-database instructions](lesson_tutor.md#import-reviewed-lesson-grounding)
+to update the records in Admin. The [20-case request matrix](manual_testing_guide.md#a1-tutor-grounding-and-request-matrix)
+uses real A1 exercises and fits the 14-request limit across two UTC days. An offline run covered
+all 20 request paths, rating changes, and the separate refusal case with a fake provider and a
+stubbed speech transcript. Fluent reviewer approval and the live provider and browser run are
+still pending.
 
 ## Manual acceptance test
 
@@ -123,8 +155,9 @@ material controls what the tutor teaches.
 
 ## Next steps, in order
 
-1. Complete German–Albanian review of the four lesson contexts and eight examples.
-2. Test all five request types and feedback controls across all four lessons.
+1. Obtain German–Albanian reviewer sign-off on the revised lesson contexts and examples.
+2. Apply package 037 and run its focused comparison across translation, situations, grammar and
+   speaking. Rate replies and export new IDs above 114 before continuing the full request matrix.
 3. Run a small private pilot and review not-helpful exchanges by lesson and request type.
 4. Compare daily request count, recorded token usage, approximate cost, and latency.
 5. Set the production daily limit from measured pilot usage rather than guessing.
@@ -140,13 +173,12 @@ For a ready-to-copy prompt with the verified baseline and design reasons, use
 [`docs/new_session_prompt.md`](new_session_prompt.md).
 
 1. Upload the current full-project handoff ZIP, not only an earlier changed-files package.
-2. Ask the new session to read `README.md`, this handout, `docs/project_state.md`,
-   `docs/roadmap.md`, and `docs/lesson_tutor.md` before proposing changes.
+2. Ask the new session to follow the document order in the ready-to-copy prompt.
 3. Explain that packages numbered 025–033 were incremental; the full handoff ZIP is authoritative.
 4. State that the tutor UI and speaking flow were manually confirmed, including the daily limit of
    14 and microphone behavior. Do not reintroduce automatic progression after correct answers.
-5. Require preservation of the lesson-only scope, safe output formatting, explicit speaking
+5. Require preservation of the exercise focus and related-language scope, safe formatting, speaking
    retry/continue rules, and in-place panel updates.
 6. Run the verification commands and report the baseline before implementing the next task.
-7. Continue with human content review and the five-request-type matrix across all four lessons;
-   multi-turn chat remains a later pilot decision.
+7. Continue with fluent reviewer sign-off and the live five-request-type matrix across all four
+   lessons. Multi-turn chat remains a later pilot decision.

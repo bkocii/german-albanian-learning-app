@@ -60,6 +60,11 @@
 - Bulk course content uses versioned UTF-8 JSON because relational CSV rows cannot safely represent
   nested options, accepted answers, matching pairs, and media references.
 - Imported exercises use stable external IDs, remain drafts, and cannot overwrite reviewed content.
+- Import schemas 1 and 2 are supported. Version 2 validates bounded structured lesson material and
+  exercise teaching contexts, rejects unknown fields, and supports explicit teaching-only updates
+  by existing external ID. These updates do not change prompts, answers, publication, or attempts.
+- Structured lesson/exercise JSON has independent approval flags. Import sets them false; editing
+  the JSON through normal model saves resets approval. Staff can approve reviewed content in bulk.
 - Every exercise type currently defined by the schema has a learner interaction.
 - Complete units are published atomically: every exercise and related answer structure is validated
   before the level, unit, lessons, or exercises are changed.
@@ -80,6 +85,18 @@
 - Tutor access requires an authenticated learner's saved attempt for the current exercise.
 - Django builds tutor grounding from the current exercise, attempt, lesson vocabulary, reviewed
   notes, and approved examples; the browser never receives provider credentials.
+- Approved structured material supplies concepts, dialogues, FAQ and up to two model tutor answers
+  for the current request kind, superseding older generic note strings in the provider context.
+  Approved exercise context supplies teaching goals, situation, explanations, and priority material
+  keys. The exact answers, accepted variants and matching pairs remain grading authority.
+- Related beginner German beyond the uploaded vocabulary is allowed; the tutor remains anchored to
+  the exercise and language learning. This does not enable cross-lesson retrieval or chat history.
+- Up to three recent in-scope exchanges for the same learner and exercise contribute only bounded
+  German examples and practice text as repetition hints. Other learners, exercises, earlier
+  questions, and earlier explanations are excluded; this is not multi-turn conversation memory.
+- Trusted request-type instructions are separated from JSON course/learner data. Local postprocessing
+  omits duplicate examples/tasks and common practice requests for unsupported page controls before
+  saving the reply, without a further provider call.
 - Tutor output must pass structured validation. Displayed output is HTML-escaped before the narrow
   `**bold**` formatter is applied.
 - Correct answers remain on the result screen until the learner explicitly continues, preserving an

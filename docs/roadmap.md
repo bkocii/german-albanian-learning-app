@@ -52,6 +52,7 @@
 - [x] Require bilingual examples and reject unsupported conversation promises
 - [x] Add reviewed lesson notes and approval-gated tutor examples
 - [x] Prepare four A1 tutor contexts and eight examples
+- [x] Refine the draft grounding and prepare a 20-case request matrix using the A1 exercises
 - [x] Add learner helpful/not-helpful feedback and Admin filtering
 - [x] Add an atomic deployment-wide daily tutor request ceiling
 - [x] Reserve a stable, wider tutor column before and after attempts
@@ -63,8 +64,16 @@
 - [x] Manually confirm tutor placement and transitions for typed and speaking exercises
 - [x] Manually confirm the 14-request ceiling, microphone flow, retry/continue behavior, preserved
   speaking feedback, ask-again scrolling, and safe bold rendering
-- [ ] Complete human review and approve the A1 tutor examples
-- [ ] Manually test all five request types across all four lessons
+- [x] Review nine live greeting exchanges and separate the five request instructions
+- [x] Make practice optional and omit common unsupported interactions and repeated extras locally
+- [x] Add bounded repetition hints from the same learner's last three in-scope exercise exchanges
+- [x] Review the enriched-demo live replies 106–114 and identify remaining length/repetition issues
+- [x] Add strict structured material, exercise teaching contexts and approval controls
+- [x] Provide full, existing-demo upgrade, and material-refresh imports with a ten-exercise progression
+- [x] Allow related beginner language beyond the uploaded vocabulary and demonstrate response quality
+- [ ] Review language, approve package-037 material and contexts, then rate the focused live comparison
+- [ ] Obtain fluent German–Albanian sign-off and approve the reviewed A1 tutor examples
+- [ ] Run the live provider and browser [request matrix](manual_testing_guide.md#a1-tutor-grounding-and-request-matrix)
 - [ ] Decide on multi-turn lesson chat only after private-pilot evidence
 
 ## M5 — Private pilot

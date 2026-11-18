@@ -287,8 +287,8 @@ Test the two types separately in an existing published lesson. Use unique positi
 5. As a learner, open the lesson and confirm two large option cards appear.
 6. Select **Falsch** and submit. Confirm **Jo e saktë.** appears and the correct answer remains
    collapsed until **Shiko përgjigjen e saktë** is opened.
-7. Select **Provo përsëri**, choose **Richtig**, and submit. Confirm **Saktë!** appears and the
-   player advances automatically.
+7. Select **Provo përsëri**, choose **Richtig**, and submit. Confirm **Saktë!** stays visible until
+   you choose **Vazhdo**.
 8. In **Admin → Learning → Exercise attempts**, confirm both attempts and their selected options
    were recorded.
 
@@ -415,7 +415,7 @@ position to an unused value such as 99. This avoids deliberately colliding with 
 Validation tests:
 
 - Remove a required `external_id`: preview shows its exact JSON path and writes nothing.
-- Change `schema_version` to 2: preview rejects it.
+- Change `schema_version` to 3: preview rejects it. Versions 1 and 2 are now supported.
 - Give two exercises the same position: preview reports the duplicate.
 - Add `"image_ref": "missing-image"`: preview reports the missing media asset.
 - Upload malformed JSON: the form reports that valid UTF-8 JSON is required.
@@ -490,6 +490,101 @@ feedback.
 
 If a problem is found, return the affected exercise to **Draft**, correct it, repeat review, and
 test it again. Do not publish the complete unit until all four lessons pass this review.
+
+## A1 tutor grounding and request matrix
+
+For the current structured-material implementation, first use
+[package 037: installation, imports, approvals, progression and focused comparison](tutor-material-037.md).
+The package-036 section below records the earlier comparison, not the current upgrade route.
+
+### Package 036: compare the first greeting exercise again
+
+The 16 November baseline contains nine live exchanges (80–88) on the translation-choice exercise
+for `Guten Morgen`, with correct `Mirëmëngjes` and incorrect `Mirëmbrëma` attempts. Keep those
+records for comparison; package 036 affects new replies only. Apply the changed files and restart
+Django. No course reimport, migration, or quota reset is needed for this package.
+
+1. Stay on the correct result and request **Përgjigjja**, **Gramatika**, and **Shembull**.
+   Check that the first explains meaning, the second teaches the expression as a whole at A1
+   without implying it lacks grammar, and the third focuses on useful usage rather than another
+   full correction. A correct answer must not be treated as an error.
+2. Ask `si thuhet miredita`. Check that the reply answers this question first, rather than
+   returning to `Guten Morgen`. Ask `si thuhet diten e mire`; check that ambiguous intent is
+   clarified instead of an unsupported translation being confidently assumed. A clarification
+   should not add examples or practice.
+3. Submit the wrong `Mirëmbrëma` attempt and request **Gabimi im**. Check that the tutor contrasts
+   this actual mistake with `Mirëmëngjes`. Request **Shembull** again and check for useful variety.
+   Its prompt considers only the last three in-scope replies, including earlier attempts on this
+   exercise; it does not guarantee novelty beyond that window.
+4. Any **Provo** line must be doable orally or mentally now, without typing, selecting, submitting,
+   recording, or automatic checking. No **Provo** line is a valid outcome. It should not repeat
+   the translation of `Guten Tag` regardless of what was requested or include its own solution.
+5. Rate the new replies and export them with their exercise/attempt context. Compare new exchange
+   IDs with 80–88; old responses stay unchanged. Check actual teaching quality as well as the
+   deterministic repetition/interaction filters.
+6. After this comparison, test one speaking exercise and one grammar-focused exercise (for example,
+   `ich heiße` versus `du heißt`) before resuming the full matrix below. Confirm speaking feedback
+   still remains visible while requesting and rating replies.
+
+This targeted comparison requires up to seven provider requests before further testing. Existing
+usage still counts toward the shared 14-request UTC daily ceiling and the rolling learner limit;
+check usage and split the work across days as needed. Ratings make no provider request.
+
+### Prepare a test deployment
+
+1. Use a local or staging database with the four A1 Unit 1 lessons. Review the three tutor fields
+   and both German–Albanian examples for each lesson in
+   [the supplemental JSON](../course_content/a1/unit-01-tutor-material.json). Have a fluent
+   German–Albanian reviewer sign off before using the material with learners.
+2. Follow the [tutor grounding import instructions](lesson_tutor.md#import-reviewed-lesson-grounding)
+   for a fresh import or an existing database. Confirm each lesson has exactly two examples for
+   this package and approve each only after review. Fresh imports should show four tutor contexts,
+   eight examples, and zero exercises in the preview.
+3. Enable the tutor with a test provider key on the server. Publish the reviewed exercises used
+   below on the test deployment and sign in as a verified test learner. Locate the exercises by
+   external ID in Admin. Their positions are 3, 2, 6, and 6 respectively.
+4. With a fresh UTC quota, run the first two lessons on one UTC day and the last two on the next.
+   This uses 10 of the 14 daily reservations per day before retries. Check **Tutor daily usage**
+   before each batch because the ceiling is shared. If the learner hits the rolling limit of 10
+   successful exchanges in 300 seconds, wait for the window to clear before requesting again.
+
+### Make the exercise attempts
+
+| Lesson | Exercise ID | First, submit a wrong attempt | Then, submit a correct attempt |
+| --- | --- | --- | --- |
+| 1. Përshëndetjet bazë | `a1-u1-l1-missing-001` | Type `Abend` | Type `Tag` |
+| 2. Prezantimi | `a1-u1-l2-free-text-001` | Type `Ich heise Luan.` | Type `Ich heisse Luan.` |
+| 3. Si je? | `a1-u1-l3-speaking-001` | Say `Ich heiße Luan.` and confirm the result is incorrect | Say `Mir geht es gut, danke.` and confirm the result is correct |
+| 4. Lamtumira dhe përsëritja | `a1-u1-l4-free-text-001` | Type `Guten Abend.` | Type `Gute Nacht.` |
+
+On the wrong result, open **Pyet tutorin** and select **Gabimi im**. On the correct result, stay
+on the exercise and run the other four requests. Open **Pyet përsëri** between requests. The
+custom column gives the exact question to send with **Dërgo pyetjen**. Each cell states what the
+answer should demonstrate.
+
+| Lesson | Gabimi im | Përgjigjja | Gramatika | Shembull | Custom question and expected answer |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Contrasts the submitted `Abend` with `Tag` for `Mirëdita` | Completes `Guten Tag` and explains its daytime use | Treats `Guten Tag` as a fixed A1 expression | Gives a fresh greeting with an Albanian translation and a fitting time of day | **A mund të them “Hallo” në mëngjes?** Yes. `Hallo` is less formal and works at different times of day. |
+| 2 | Corrects typed `heise` to `heiße` | Explains `Ich heiße Luan.` and recognizes the accepted keyboard spelling `heisse` | Uses `heiße` with `ich` and `heißt` with `du` | Gives a new self-introduction and an Albanian translation | **Si e pyes dikë për emrin me mirësjellje?** `Wie heißen Sie?` means `Si quheni?`, with capital `Sie`. |
+| 3 | Explains that the recognized self-introduction gives a name instead of saying how the learner feels | Explains that `Mir geht es gut, danke.` means `Jam mirë, faleminderit.` | Explains `mir` in the fixed phrase and keeps `es` | Gives a fresh well-being question or answer with an Albanian translation | **A mund të përgjigjem “Mir geht es gut” edhe kur më pyesin “Wie geht es Ihnen?”** Yes. The answer works for both `dir` and `Ihnen`. |
+| 4 | Distinguishes the submitted evening greeting from the night-time wish | Explains that `Gute Nacht` means `Natën e mirë` | Teaches `Gute Nacht` and `Guten Abend` as fixed expressions tied to their situations | Gives a fresh farewell with an Albanian translation and a fitting situation | **Çfarë dallimi ka mes “bis morgen” dhe “bis bald”?** `Shihemi nesër` gives a day. `Shihemi së shpejti` leaves it open. |
+
+### Record the results
+
+- For every case, record UTC date, lesson, request type, exchange ID, pass or fail, and the exact
+  wording that needs correction. Check that each response has the appropriate title, is in clear
+  Albanian, and uses the correct attempt and lesson facts. Any example should be bilingual and
+  different from the exercise, and any **Provo** task should be immediately actionable.
+- Rate at least one exchange per lesson. Change one rating, refresh, and verify the latest rating
+  in Admin. Check that rating adds no daily request. On the speaking row, verify the transcript
+  stays visible during requests and ratings, the wrong result offers **Provo përsëri** without
+  **Vazhdo**, and the correct result waits for **Vazhdo** or the lesson completion action.
+- If the UTC quota permits, after the rolling window has cleared, ask **Sa është moti sot në
+  Berlin?** and check for the fixed lesson-only refusal. Log it separately from the 20 in-scope
+  cases. It reserves one request.
+- Record duration, token counts, and estimated cost when shown in **Tutor exchanges**. Assign
+  factual or example problems to lesson grounding first. Record problems with tone, length, or
+  interaction promises separately so they can inform prompt or validation work.
 
 ## Publish or unpublish a complete unit at once
 

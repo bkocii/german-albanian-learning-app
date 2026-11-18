@@ -5,7 +5,7 @@ contain nested vocabulary, answer options, accepted answers, matching pairs, and
 
 ## Safety rules
 
-- `schema_version` must currently be `1`.
+- `schema_version` accepts `1` (legacy) or `2` (structured tutor materials).
 - Every imported exercise requires a stable `external_id` using lowercase letters, numbers, and
   hyphens. It is unique inside its lesson and makes duplicate detection reliable.
 - Import creates exercises as **drafts**, even if the input asks for another status.
@@ -14,6 +14,13 @@ contain nested vocabulary, answer options, accepted answers, matching pairs, and
   `external_id`; it does not contain base64 files.
 - Re-importing an existing `external_id` will be reported during preview rather than silently
   overwriting reviewed content.
+- Version 2 rejects unknown fields and adds lesson `tutor_material`, exercise `tutor_context`, and
+  explicit `exercise_tutor_updates` that change teaching context only. Imported structured content
+  is unapproved; it does not enter provider requests until reviewed and approved in Admin.
+
+For the full field contract, fresh/upgrade/refresh examples, limits, approval steps, and exercise
+progression, see [structured tutor material — package 037](tutor-material-037.md). Existing version-1
+files remain supported. New structured fields require version 2, and version 3 is unsupported.
 
 ## Structure
 

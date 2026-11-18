@@ -1,0 +1,555 @@
+{
+  "schema_version": 2,
+  "level": {
+    "code": "A1",
+    "title_de": "Anfänger",
+    "title_sq": "Fillestar",
+    "position": 1
+  },
+  "units": [
+    {
+      "slug": "tutor-demo-pershendetje-ne-situata",
+      "title_de": "Tutor-Demo: Begrüßung und Abschied",
+      "title_sq": "Shembull tutori: Përshëndetja dhe ndarja",
+      "summary_sq": "Shembull për shqyrtim: ushtrime të shkurtra me material më të pasur për tutorin.",
+      "position": 90,
+      "lessons": [
+        {
+          "slug": "pershendetje-dhe-urime-ne-situata",
+          "title_de": "Begrüßen, verabschieden und einen schönen Tag wünschen",
+          "title_sq": "Si përshëndetemi, ndahemi dhe urojmë një ditë të mirë",
+          "objective_sq": "Dallo përshëndetjen kur takon dikë nga urimi kur largohesh; përdor shprehje të thjeshta sipas situatës.",
+          "position": 1,
+          "vocabulary": [
+            {
+              "position": 10,
+              "german": "Gute Nacht",
+              "albanian": "Natën e mirë",
+              "part_of_speech": "Wunschformel",
+              "example_de": "Gute Nacht, Arta!",
+              "example_sq": "Natën e mirë, Arta!",
+              "notes_sq": "Zakonisht para gjumit; forma është Gute Nacht, jo Guten Nacht."
+            }
+          ],
+          "exercises": [
+            {
+              "external_id": "demo-a1-rich-greetings-pattern-001",
+              "type": "missing_word",
+              "position": 4,
+              "instructions_sq": "Plotëso përshëndetjen që do të thotë Mirëdita.",
+              "prompt_de": "Guten ____!",
+              "prompt_sq": "Mirëdita",
+              "expected_answer": "Tag",
+              "tutor_context": {
+                "objective_sq": "Lidh fjalën Tag me kuptimin ditë.",
+                "situation_sq": "Duhet të plotësosh një përshëndetje gjatë ditës.",
+                "answer_reason_sq": "Tag plotëson Guten Tag; Abend do ta kthente në përshëndetje mbrëmjeje.",
+                "grammar_focus_sq": "Modeli i këtyre tri shprehjeve është Guten Morgen, Guten Tag, Guten Abend; krahasimi nuk vlen për Gute Nacht.",
+                "material_keys": [
+                  "daily-greetings",
+                  "small-grammar"
+                ],
+                "common_mistakes": [
+                  {
+                    "answer": "Abend",
+                    "explanation_sq": "Guten Abend është Mirëmbrëma; kërkohet Mirëdita."
+                  }
+                ]
+              }
+            },
+            {
+              "external_id": "demo-a1-rich-greetings-arrival-001",
+              "type": "dialogue_choice",
+              "position": 5,
+              "instructions_sq": "Zgjidh përshëndetjen për fillimin e takimit.",
+              "prompt_sq": "Hyn në dyqan gjatë ditës. Si e përshëndet shitësen?",
+              "options": [
+                {
+                  "position": 1,
+                  "text_de": "Guten Tag!",
+                  "is_correct": true
+                },
+                {
+                  "position": 2,
+                  "text_de": "Schönen Tag noch!",
+                  "is_correct": false
+                },
+                {
+                  "position": 3,
+                  "text_de": "Auf Wiedersehen!",
+                  "is_correct": false
+                }
+              ],
+              "tutor_context": {
+                "objective_sq": "Zgjidh përshëndetjen në fillim të takimit.",
+                "situation_sq": "Po hyn në dyqan, jo duke dalë prej tij.",
+                "answer_reason_sq": "Guten Tag hap takimin; alternativat e tjera lidhen me largimin.",
+                "grammar_focus_sq": "Shpjego dallimin e funksionit, jo një rregull të ri lakimi.",
+                "material_keys": [
+                  "greeting-or-wish",
+                  "shop-arrival"
+                ],
+                "common_mistakes": []
+              }
+            },
+            {
+              "external_id": "demo-a1-rich-greetings-reply-001",
+              "type": "dialogue_choice",
+              "position": 6,
+              "instructions_sq": "Zgjidh përgjigjen që ia kthen tjetrit urimin.",
+              "prompt_de": "Schönen Tag noch!",
+              "prompt_sq": "Një person të uron një ditë të mirë kur po ndaheni.",
+              "options": [
+                {
+                  "position": 1,
+                  "text_de": "Danke, gleichfalls!",
+                  "is_correct": true
+                },
+                {
+                  "position": 2,
+                  "text_de": "Guten Morgen!",
+                  "is_correct": false
+                },
+                {
+                  "position": 3,
+                  "text_de": "Gute Nacht!",
+                  "is_correct": false
+                }
+              ],
+              "tutor_context": {
+                "objective_sq": "Përgjigju ndaj një urimi duke ia kthyer atë tjetrit.",
+                "situation_sq": "Biseda po mbyllet gjatë ditës.",
+                "answer_reason_sq": "Danke falënderon dhe gleichfalls ia kthen të njëjtin urim.",
+                "grammar_focus_sq": "Shpjego funksionin e gleichfalls brenda kësaj përgjigjeje.",
+                "material_keys": [
+                  "reply-to-wish",
+                  "shop-leaving",
+                  "returning-wish"
+                ],
+                "common_mistakes": []
+              }
+            },
+            {
+              "external_id": "demo-a1-rich-greetings-farewells-001",
+              "type": "multiple_select",
+              "position": 7,
+              "instructions_sq": "Zgjidh të dyja shprehjet që përdoren për t’u ndarë.",
+              "options": [
+                {
+                  "position": 1,
+                  "text_de": "Auf Wiedersehen!",
+                  "is_correct": true
+                },
+                {
+                  "position": 2,
+                  "text_de": "Tschüss!",
+                  "is_correct": true
+                },
+                {
+                  "position": 3,
+                  "text_de": "Guten Morgen!",
+                  "is_correct": false
+                },
+                {
+                  "position": 4,
+                  "text_de": "Guten Tag!",
+                  "is_correct": false
+                }
+              ],
+              "tutor_context": {
+                "objective_sq": "Dallo dy forma ndarjeje nga përshëndetjet e takimit.",
+                "situation_sq": "Duhet të zgjedhësh të gjitha përgjigjet e sakta.",
+                "answer_reason_sq": "Duhet si Auf Wiedersehen ashtu edhe Tschüss; zgjedhja e vetëm njërës është e paplotë.",
+                "grammar_focus_sq": "Shpjego funksionin dhe dallimin e zakonshëm të formalitetit, pa shpallur se njëra përdoret vetëm në një grup.",
+                "material_keys": [
+                  "greeting-or-wish",
+                  "polite-address"
+                ],
+                "common_mistakes": []
+              }
+            },
+            {
+              "external_id": "demo-a1-rich-greetings-wish-text-001",
+              "type": "free_text",
+              "position": 8,
+              "instructions_sq": "Përkthe urimin në gjermanisht.",
+              "prompt_sq": "Kalofshi një ditë të mirë! (kur po largoheni)",
+              "expected_answer": "Schönen Tag noch!",
+              "accepted_answers": [
+                {
+                  "position": 1,
+                  "text": "Schönen Tag noch!"
+                },
+                {
+                  "position": 2,
+                  "text": "Schönen Tag noch"
+                },
+                {
+                  "position": 3,
+                  "text": "Einen schönen Tag noch!"
+                },
+                {
+                  "position": 4,
+                  "text": "Einen schönen Tag noch"
+                }
+              ],
+              "tutor_context": {
+                "objective_sq": "Prodho një urim të përshtatshëm gjatë largimit.",
+                "situation_sq": "Po mbyll një takim gjatë ditës.",
+                "answer_reason_sq": "Schönen Tag noch! dhe varianti Einen schönen Tag noch! janë të pranueshme në këtë ushtrim.",
+                "grammar_focus_sq": "Shpjego shprehjen e urimit dhe dallimin nga Guten Tag.",
+                "material_keys": [
+                  "greeting-or-wish",
+                  "shop-leaving",
+                  "leaving-day"
+                ],
+                "common_mistakes": [
+                  {
+                    "answer": "Guten Tag!",
+                    "explanation_sq": "Kjo është përshëndetje në takim; kërkohet urim gjatë largimit."
+                  }
+                ]
+              }
+            },
+            {
+              "external_id": "demo-a1-rich-greetings-order-001",
+              "type": "word_order",
+              "position": 9,
+              "instructions_sq": "Rendit fjalët për të thënë: Mirëdita, zonja Keller!",
+              "prompt_sq": "Mirëdita, zonja Keller!",
+              "expected_answer": "Guten Tag, Frau Keller!",
+              "tutor_context": {
+                "objective_sq": "Vendos përshëndetjen dhe formën e adresimit në rendin e duhur.",
+                "situation_sq": "Po i drejtohesh zonjës Keller.",
+                "answer_reason_sq": "Shprehja Guten Tag vjen para Frau Keller.",
+                "grammar_focus_sq": "Frau me mbiemrin është adresim i sjellshëm; trego ndërtimin e kësaj përshëndetjeje.",
+                "material_keys": [
+                  "polite-address",
+                  "shop-arrival"
+                ],
+                "common_mistakes": []
+              }
+            },
+            {
+              "external_id": "demo-a1-rich-greetings-wish-speaking-001",
+              "type": "speaking",
+              "position": 10,
+              "instructions_sq": "Thuaj në gjermanisht: Kalofshi një ditë të mirë! (kur largoheni)",
+              "prompt_sq": "Kalofshi një ditë të mirë!",
+              "expected_answer": "Schönen Tag noch!",
+              "tutor_context": {
+                "objective_sq": "Shpreh me gojë urimin gjatë largimit.",
+                "situation_sq": "Po largohesh nga dyqani gjatë ditës.",
+                "answer_reason_sq": "Shprehja e kërkuar për këtë regjistrim është Schönen Tag noch!",
+                "grammar_focus_sq": "Shpjego përdorimin dhe fjalët e shprehjes; sistemi krahason transkriptimin, pa dhënë notë për shqiptimin.",
+                "material_keys": [
+                  "greeting-or-wish",
+                  "shop-leaving"
+                ],
+                "common_mistakes": []
+              }
+            }
+          ],
+          "tutor_material": {
+            "overview_sq": "Kjo njësi mëson përdorimin e përshëndetjeve dhe urimeve në situata të përditshme. Nxënësi dallon takimin nga largimi, kupton fjalët kryesore të shprehjes dhe zgjedh një përgjigje të përshtatshme. Shpjegimi duhet të sjellë kuptim ose përdorim të ri, pa e kthyer çdo përgjigje te një gabim i vjetër.",
+            "topics_sq": [
+              "Përshëndetjet sipas kohës së ditës",
+              "Takimi dhe largimi nga dyqani",
+              "Adresimi me Herr dhe Frau",
+              "Urimi për ditën dhe përgjigjja ndaj tij",
+              "Fjalët dhe format brenda shprehjeve të përditshme",
+              "Sqarimi i një pyetjeje të paqartë në shqip"
+            ],
+            "concepts": [
+              {
+                "key": "daily-greetings",
+                "title_sq": "Pjesa e ditës dhe kuptimi i fjalëve",
+                "explanation_sq": "Guten Morgen përdoret në mëngjes, Guten Tag gjatë ditës dhe Guten Abend në mbrëmje. Në këto shprehje, Morgen do të thotë mëngjes, Tag ditë dhe Abend mbrëmje. Këto nuk janë orare me një kufi të vetëm të detyrueshëm. Një shpjegim i fjalës së dytë mund të ndihmojë më shumë se përsëritja e gjithë përkthimit.",
+                "examples": [
+                  {
+                    "german": "Guten Morgen, Frau Keller!",
+                    "albanian": "Mirëmëngjes, zonja Keller!"
+                  },
+                  {
+                    "german": "Guten Abend, Herr Weber!",
+                    "albanian": "Mirëmbrëma, zoti Weber!"
+                  }
+                ]
+              },
+              {
+                "key": "greeting-or-wish",
+                "title_sq": "Përshëndetje apo urim gjatë largimit?",
+                "explanation_sq": "Guten Tag është përshëndetje kur takon dikë gjatë ditës. Schönen Tag noch! është urim që përdoret zakonisht kur mbyll një bisedë ose largohesh gjatë ditës. Pyetja shqip si thuhet ditën e mirë mund të ketë këto dy kuptime. Situata përcakton përkthimin; një sqarim i shkurtër ose paraqitja e të dy kuptimeve është më e dobishme se një përgjigje e vetme e sigurt.",
+                "examples": [
+                  {
+                    "german": "Guten Tag!",
+                    "albanian": "Mirëdita!"
+                  },
+                  {
+                    "german": "Schönen Tag noch!",
+                    "albanian": "Kalofshi një ditë të mirë!"
+                  }
+                ]
+              },
+              {
+                "key": "polite-address",
+                "title_sq": "Herr, Frau dhe emri",
+                "explanation_sq": "Herr me mbiemrin do të thotë zoti; Frau me mbiemrin do të thotë zonja. Këto forma ndihmojnë në një përshëndetje të sjellshme. Me një person të njohur mund të përdorësh Hallo dhe emrin. Hallo nuk kufizohet vetëm mes miqsh; përshtatshmëria varet nga situata.",
+                "examples": [
+                  {
+                    "german": "Guten Tag, Frau Keller!",
+                    "albanian": "Mirëdita, zonja Keller!"
+                  },
+                  {
+                    "german": "Hallo, Arta!",
+                    "albanian": "Përshëndetje, Arta!"
+                  }
+                ]
+              },
+              {
+                "key": "reply-to-wish",
+                "title_sq": "Si ia kthen urimin tjetrit?",
+                "explanation_sq": "Pas Schönen Tag noch! mund të përgjigjesh Danke, gleichfalls! Kjo do të thotë Faleminderit, gjithashtu!, pra ia kthen të njëjtin urim tjetrit. Nuk është përgjigjja e zakonshme ndaj çdo Guten Tag. Në një përshëndetje mund ta përshëndesësh personin me të njëjtën shprehje.",
+                "examples": [
+                  {
+                    "german": "Danke, gleichfalls!",
+                    "albanian": "Faleminderit, gjithashtu!"
+                  }
+                ]
+              },
+              {
+                "key": "small-grammar",
+                "title_sq": "Kuptimi dhe forma e guten",
+                "explanation_sq": "Guten është një formë e mbiemrit gut, që do të thotë i mirë. Në përshëndetjet Guten Morgen, Guten Tag dhe Guten Abend forma e gatshme është guten. Mbaresa e mbiemrit lidhet me ndërtimin gramatikor të shprehjes. Për krahasim, thuhet Gute Nacht, jo Guten Nacht. Ky është një krahasim i vogël i formave; nuk do të thotë se çdo pjesë e ditës mund të vihet pas Guten. Një pyetje për këto forma mund të marrë një shpjegim të shkurtër pa një tabelë të plotë lakimi.",
+                "examples": [
+                  {
+                    "german": "Guten Abend!",
+                    "albanian": "Mirëmbrëma!"
+                  },
+                  {
+                    "german": "Gute Nacht!",
+                    "albanian": "Natën e mirë!"
+                  }
+                ]
+              },
+              {
+                "key": "guten-ending",
+                "title_sq": "Pse mbaresa -en? (kur kërkohet shpjegim më i thellë)",
+                "explanation_sq": "Në një shpjegim më të thellë, Guten Morgen mund të lidhet me urimin e plotë Ich wünsche dir einen guten Morgen (Të uroj një mëngjes të mirë). Grupi einen guten Morgen është në rasën kallëzore; Morgen është emër mashkullor, ndaj mbiemri merr mbaresën -en në këtë ndërtim. Shprehja e shkurtër e ruan këtë formë. Te Gute Nacht, Nacht është emër femëror dhe forma përkatëse është gute. Ky shpjegim është i dobishëm kur nxënësi pyet posaçërisht pse guten ose pse -en; një pyetje e thjeshtë për përkthim nuk kërkon gjithë këtë shpjegim.",
+                "examples": [
+                  {
+                    "german": "Ich wünsche dir einen guten Morgen.",
+                    "albanian": "Të uroj një mëngjes të mirë."
+                  }
+                ]
+              }
+            ],
+            "dialogues": [
+              {
+                "key": "shop-arrival",
+                "situation_sq": "Dy persona përshëndeten në dyqan gjatë ditës.",
+                "turns": [
+                  {
+                    "speaker": "Klienti",
+                    "german": "Guten Tag, Frau Keller!",
+                    "albanian": "Mirëdita, zonja Keller!"
+                  },
+                  {
+                    "speaker": "Shitësja",
+                    "german": "Guten Tag, Herr Weber!",
+                    "albanian": "Mirëdita, zoti Weber!"
+                  }
+                ]
+              },
+              {
+                "key": "shop-leaving",
+                "situation_sq": "Klienti largohet nga dyqani dhe i uron shitëses një ditë të mirë.",
+                "turns": [
+                  {
+                    "speaker": "Klienti",
+                    "german": "Auf Wiedersehen! Schönen Tag noch!",
+                    "albanian": "Mirupafshim! Kalofshi një ditë të mirë!"
+                  },
+                  {
+                    "speaker": "Shitësja",
+                    "german": "Danke, gleichfalls!",
+                    "albanian": "Faleminderit, gjithashtu!"
+                  }
+                ]
+              },
+              {
+                "key": "friends-meeting",
+                "situation_sq": "Arta dhe Luani njihen dhe takohen në mëngjes.",
+                "turns": [
+                  {
+                    "speaker": "Luani",
+                    "german": "Hallo, Arta! Guten Morgen!",
+                    "albanian": "Përshëndetje, Arta! Mirëmëngjes!"
+                  },
+                  {
+                    "speaker": "Arta",
+                    "german": "Guten Morgen, Luan!",
+                    "albanian": "Mirëmëngjes, Luan!"
+                  }
+                ]
+              }
+            ],
+            "faq": [
+              {
+                "key": "ambiguous-day",
+                "question_sq": "si thuhet diten e mire",
+                "answer_sq": "Varet nga situata: kur takon dikë, Guten Tag do të thotë Mirëdita. Kur largohesh dhe i uron ditë të mirë, mund të thuash Schönen Tag noch! A e ke fjalën për takimin apo për largimin?"
+              },
+              {
+                "key": "leaving-day",
+                "question_sq": "Kur dal nga dyqani, si i them dikujt ditën e mirë?",
+                "answer_sq": "Mund të thuash Schönen Tag noch! Kjo është një dëshirë për vazhdimin e ditës, në fund të takimit. Nuk ka nevojë të shpjegohet përsëri gabimi Morgen kundrejt Abend."
+              },
+              {
+                "key": "hallo-morning",
+                "question_sq": "A mund të them Hallo në mëngjes?",
+                "answer_sq": "Po. Hallo nuk lidhet me një kohë të vetme të ditës; Guten Morgen e shpreh posaçërisht përshëndetjen e mëngjesit."
+              },
+              {
+                "key": "word-guten",
+                "question_sq": "Çfarë do të thotë guten te Guten Morgen?",
+                "answer_sq": "Guten është formë e mbiemrit gut, që do të thotë i mirë. Morgen këtu do të thotë mëngjes. Shprehja e plotë përdoret si Mirëmëngjes."
+              },
+              {
+                "key": "night-form",
+                "question_sq": "A thuhet Guten Nacht?",
+                "answer_sq": "Forma e saktë është Gute Nacht. Ajo përdoret për t’i uruar natën e mirë dikujt, zakonisht para gjumit; Guten Abend është përshëndetje kur takon dikë në mbrëmje."
+              },
+              {
+                "key": "returning-wish",
+                "question_sq": "Si i përgjigjem Schönen Tag noch?",
+                "answer_sq": "Danke, gleichfalls! do të thotë Faleminderit, gjithashtu! Kështu ia kthen të njëjtin urim tjetrit."
+              },
+              {
+                "key": "why-en",
+                "question_sq": "Pse Guten Morgen dhe jo Gut Morgen? Pse ka mbaresën -en?",
+                "answer_sq": "Gut është forma bazë e mbiemrit. Në Guten Morgen ai përdoret me mbaresën -en. Shprehjen mund ta kuptosh përmes urimit të plotë Ich wünsche dir einen guten Morgen: Morgen është emër mashkullor dhe einen guten Morgen është në kallëzore. Për përdorim të përditshëm mjafton të mbash mend formën Guten Morgen; pyetja jote për mbaresën ka këtë shpjegim gramatikor."
+              }
+            ],
+            "response_examples": [
+              {
+                "kind": "explain_mistake",
+                "question_sq": "",
+                "explanation_sq": "Zgjodhe Mirëmbrëma, por Guten Morgen do të thotë Mirëmëngjes. Morgen këtu tregon mëngjesin; Mirëmbrëma përkon me Guten Abend. Për ta dalluar, shiko fjalën e dytë të shprehjes.",
+                "german_examples": [],
+                "follow_up_sq": ""
+              },
+              {
+                "kind": "explain_answer",
+                "question_sq": "",
+                "explanation_sq": "Saktë: Guten Morgen do të thotë Mirëmëngjes. Përdoret kur përshëndet dikë në mëngjes.",
+                "german_examples": [],
+                "follow_up_sq": ""
+              },
+              {
+                "kind": "grammar",
+                "question_sq": "",
+                "explanation_sq": "Guten është formë e gut, që do të thotë i mirë; Morgen këtu do të thotë mëngjes. Të njëjtën formë guten e gjen te Guten Tag dhe Guten Abend. Mëso kuptimin e fjalëve bashkë me shprehjen e plotë.",
+                "german_examples": [
+                  {
+                    "german": "Guten Tag, Frau Keller!",
+                    "albanian": "Mirëdita, zonja Keller!",
+                    "why_it_helps_sq": "E njëjta formë guten në një përshëndetje tjetër."
+                  }
+                ],
+                "follow_up_sq": ""
+              },
+              {
+                "kind": "example",
+                "question_sq": "",
+                "explanation_sq": "Ja një takim i shkurtër në mëngjes:",
+                "german_examples": [
+                  {
+                    "german": "A: Guten Morgen, Frau Keller!\nB: Guten Morgen, Herr Weber!",
+                    "albanian": "A: Mirëmëngjes, zonja Keller!\nB: Mirëmëngjes, zoti Weber!",
+                    "why_it_helps_sq": "Të dy personat ia kthejnë përshëndetjen njëri-tjetrit."
+                  }
+                ],
+                "follow_up_sq": ""
+              },
+              {
+                "kind": "custom",
+                "question_sq": "si thuhet diten e mire",
+                "explanation_sq": "Varet nga situata: Guten Tag është Mirëdita kur takon dikë. Kur largohesh dhe i uron dikujt një ditë të mirë, mund të thuash Schönen Tag noch! Cilin kuptim ke parasysh?",
+                "german_examples": [],
+                "follow_up_sq": ""
+              },
+              {
+                "kind": "custom",
+                "question_sq": "si thuhet miredita",
+                "explanation_sq": "Mirëdita në gjermanisht është Guten Tag. Përdoret si përshëndetje gjatë ditës.",
+                "german_examples": [],
+                "follow_up_sq": ""
+              }
+            ]
+          },
+          "exercise_tutor_updates": [
+            {
+              "external_id": "demo-a1-rich-greetings-translation-001",
+              "tutor_context": {
+                "objective_sq": "Lidh përshëndetjen me kuptimin dhe pjesën e ditës.",
+                "situation_sq": "Po përshëndet dikë në mëngjes.",
+                "answer_reason_sq": "Mirëmëngjes është i saktë sepse Morgen këtu tregon mëngjesin.",
+                "grammar_focus_sq": "Shpjego kuptimin e guten dhe Morgen dhe krahasoje shkurt me Guten Tag; mos përsërit vetëm korrigjimin.",
+                "material_keys": [
+                  "daily-greetings",
+                  "small-grammar",
+                  "friends-meeting"
+                ],
+                "common_mistakes": [
+                  {
+                    "answer": "Mirëmbrëma",
+                    "explanation_sq": "Kjo është Guten Abend; ngatërrimi është mëngjes kundrejt mbrëmjes."
+                  },
+                  {
+                    "answer": "Mirupafshim",
+                    "explanation_sq": "Ky është përshëndetim gjatë ndarjes; Guten Morgen përdoret në takim."
+                  }
+                ]
+              }
+            },
+            {
+              "external_id": "demo-a1-rich-greetings-dialogue-001",
+              "tutor_context": {
+                "objective_sq": "Dallo përshëndetjen nga urimi në fund të takimit.",
+                "situation_sq": "Po largohesh nga një dyqan gjatë ditës dhe dëshiron t’i urosh shitësit një ditë të mirë.",
+                "answer_reason_sq": "Schönen Tag noch! përshtatet me urimin gjatë largimit.",
+                "grammar_focus_sq": "Dallo funksionin e urimit nga përshëndetja Guten Tag; shpjego shprehjen e plotë.",
+                "material_keys": [
+                  "greeting-or-wish",
+                  "shop-leaving",
+                  "leaving-day"
+                ],
+                "common_mistakes": [
+                  {
+                    "answer": "Guten Tag!",
+                    "explanation_sq": "Është përshëndetje kur takon dikë, ndërsa situata kërkon një urim gjatë largimit."
+                  }
+                ]
+              }
+            },
+            {
+              "external_id": "demo-a1-rich-greetings-speaking-001",
+              "tutor_context": {
+                "objective_sq": "Shpreh përshëndetjen e ditës me të folur.",
+                "situation_sq": "Takon dikë gjatë ditës.",
+                "answer_reason_sq": "Guten Tag përkon me Mirëdita.",
+                "grammar_focus_sq": "Shpjego kuptimin e Tag; vlerësimi i ushtrimit kontrollon tekstin e njohur, jo cilësinë e shqiptimit.",
+                "material_keys": [
+                  "daily-greetings",
+                  "shop-arrival"
+                ],
+                "common_mistakes": []
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

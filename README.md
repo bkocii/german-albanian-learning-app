@@ -72,6 +72,15 @@ narrow `**bold**` formatter is applied, so provider-supplied HTML cannot render.
 See [`docs/lesson_tutor.md`](docs/lesson_tutor.md) for the request flow, scope, validation, data
 handling, and detailed testing instructions.
 
+Tutor requests have distinct instructions for mistakes, correct answers, grammar, examples, and
+custom questions. Optional practice is oral or mental; it does not require a separate answer box.
+Examples and tasks from up to three recent replies for the same learner and exercise help avoid
+repetition. Custom questions are answered first, with clarification when their wording is ambiguous.
+Related beginner German beyond the uploaded vocabulary is allowed. Version-2 course imports can
+supply approved structured concepts, dialogues, FAQ, model tutor replies and exercise-specific
+teaching contexts. See [package 037](docs/tutor-material-037.md) for the current demo upgrade and
+reusable authoring format. New JSON requires explicit review/approval and migration `courses.0005`.
+
 ## Content administration
 
 - Course JSON format: [`docs/course_import_format.md`](docs/course_import_format.md)
@@ -88,9 +97,11 @@ uv run python manage.py makemigrations --check
 uv run python manage.py check
 uv run python manage.py test
 uv run ruff check .
+node --check static/js/speaking-exercise.js
+node --check static/js/tutor-panel.js
 ```
 
-The current expected result is **99 automated tests**.
+The current expected result is **123 automated tests**.
 
 ## Project handoff
 
@@ -100,5 +111,6 @@ The current expected result is **99 automated tests**.
 - Ready-to-copy next-chat prompt: [`docs/new_session_prompt.md`](docs/new_session_prompt.md)
 - Architecture and dependency rules: [`docs/architecture.md`](docs/architecture.md)
 
-The next development session should start with `docs/session_handout.md`, then confirm the current
-state with the verification commands above before making changes.
+After reading the handoff documents, run the verification commands above before making changes.
+For the next tutor review, obtain fluent German–Albanian sign-off on the draft grounding and run
+the [A1 tutor request matrix](docs/manual_testing_guide.md#a1-tutor-grounding-and-request-matrix).

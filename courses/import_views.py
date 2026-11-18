@@ -16,6 +16,8 @@ SUMMARY_LABELS = {
     "tutor_examples": "Tutor examples",
     "accepted_answers": "Accepted answers",
     "matching_pairs": "Matching pairs",
+    "tutor_materials": "Structured lesson materials",
+    "exercise_tutor_contexts": "Exercise tutor contexts (new or updated)",
 }
 
 
@@ -45,7 +47,14 @@ def course_import(request):
                 validation = validate_course_import(cached["data"])
                 validation.errors = error.errors
             else:
-                if summary["tutor_examples"] and not summary["exercises"]:
+                if summary["tutor_materials"] or summary["exercise_tutor_contexts"]:
+                    success_message = (
+                        f"Imported {summary['exercises']} draft exercises; "
+                        f"loaded {summary['tutor_materials']} structured lesson material(s) and "
+                        f"{summary['exercise_tutor_contexts']} exercise tutor context(s). "
+                        "New structured material and exercise contexts require approval in Admin."
+                    )
+                elif summary["tutor_examples"] and not summary["exercises"]:
                     success_message = (
                         f"Updated {summary['tutor_lessons']} lesson tutor context(s) and "
                         f"imported {summary['tutor_examples']} unapproved tutor example(s)."

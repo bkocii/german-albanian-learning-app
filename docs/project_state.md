@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 10 November 2026
+Last updated: 16 November 2026
 
 ## Current milestone
 
@@ -78,17 +78,54 @@ Milestone 4 — First complete unit and lesson-scoped tutor validation.
 - Incorrect speaking results offer retry instead of progression to the next exercise
 - Request-specific tutor response titles and collapsed ask-again controls below explanations
 - Question-length limits, lesson-scope enforcement, and a master off switch
-- Ninety-nine automated project tests
+- One hundred and twenty-three automated project tests
 - Safe rendering of tutor `**bold**` emphasis without allowing model-supplied HTML
 - Manual confirmation of the daily limit, microphone flow, stable tutor placement, speaking-result
   preservation, retry/continue rules, ask-again scrolling, and safe bold rendering
+- Request-specific tutor guidance for correction, meaning, grammar, examples, and custom questions
+- Optional oral/mental practice with omission of common unsupported write/select/submit requests
+- Repetition hints from up to three in-scope exchanges for the same learner and exercise
+- Local omission of repeated German examples and practice without additional provider calls
+- Custom-question guidance to answer directly and clarify ambiguous wording before guessing
+- Strict schema-2 structured lesson material with concepts, dialogues, FAQ and model tutor replies
+- Exercise-specific teaching contexts and explicit teaching-only updates that preserve grading/history
+- Separate structured-content approval, reset on JSON edits/import and staff bulk approval actions
+- Ten-exercise greetings pack with full, existing-demo upgrade, and repeatable material-refresh JSON
+- Related beginner-language scope beyond a closed word list and concise request-specific teaching
+- Bilingual dialogue line breaks and separate German/Albanian display
 
 ## Next tasks
 
-1. Human-review the A1 Unit 1 course content and supplemental tutor grounding.
-2. Approve only tutor examples that pass German and Albanian language review.
-3. Test all five tutor request types and feedback controls across all four lessons and record weak
-   responses for grounding or prompt improvements.
+The latest nine GPT-5.4 replies (106–114) used the enriched demo: ambiguity handling and word-level
+explanations improved, while repetition and unnecessary length remained. Package 037 adds reusable
+structured material, exercise teaching contexts, response examples and broader related-language
+guidance. It passes 123 tests, including 18 new tests for import, approvals, data preservation and
+all ten exercise flows. The new live teaching quality and dialogue appearance remain to be reviewed.
+Use [the package-037 upgrade guide](tutor-material-037.md) for this user's existing demo lesson.
+
+The four A1 Unit 1 tutor contexts and eight examples received a draft editorial pass on
+10 November 2026. The revisions cover greetings by time of day, written spelling and speech
+recognition, polite forms, and farewells. The
+[request matrix](manual_testing_guide.md#a1-tutor-grounding-and-request-matrix) covers all five
+request types for each lesson. All 20 request paths passed an offline Django check with a fake
+provider and a stubbed speech transcript. Live answer quality, browser interaction, and human
+approval across the full matrix are pending.
+
+On 16 November, nine live exchanges for the same greeting exercise were reviewed, covering correct
+and incorrect attempts and all five request types. Translations were basically correct, but the
+responses repeated the same examples and practice, blurred request types, and overused the saved
+mistake in a custom question. Package 036 adjusts prompts and optional-practice handling. Its six
+new regression tests cover history isolation, repetition, unsupported practice, prompt/data
+separation, and saved/rendered output. Later comparisons used mini and full GPT-5.4, followed by the
+enriched demo in exchanges 106–114. Automated checks do not establish German–Albanian teaching
+quality; use the package-037 focused comparison and learner ratings for the next review.
+
+1. Obtain fluent German–Albanian sign-off on the A1 Unit 1 course content and revised tutor grounding.
+2. Approve only tutor examples that pass review.
+3. Apply package 037, import the existing-demo upgrade, review/approve its material and contexts,
+   and run the focused comparison on several exercise types. Export new exchanges and rate them.
+   Continue the live
+   provider matrix and feedback checks, recording weak responses for grounding or prompt changes.
 4. Run a small private pilot and use helpful/not-helpful ratings to improve weak lesson grounding.
 5. Begin the private pilot with the validated conservative ceiling of 14 requests per UTC day, then
    review daily usage, latency, and approximate cost before changing it.
@@ -103,6 +140,7 @@ one-request flow is useful and safe.
 - Do not run live, unreviewed AI exercise generation.
 - Treat one active authenticated browser session as one active device for the MVP.
 - Treat `faster-whisper` output as recognition feedback, not pronunciation scoring.
-- Keep tutor help limited to the current lesson and require an exercise attempt first.
+- Anchor tutor help in the current lesson/exercise, allow related beginner German, and require an
+  exercise attempt first.
 - Use reviewed lesson material as grounding; imported tutor examples remain unapproved by default.
 - Keep the tutor optional and server-side, with no browser access to provider credentials.

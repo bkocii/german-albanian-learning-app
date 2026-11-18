@@ -2,7 +2,8 @@
 
 ## Purpose
 
-The tutor gives an Albanian-speaking learner additional help with the exercise they just attempted.
+The tutor gives an Albanian-speaking learner help with the exercise they just attempted and related
+beginner German. The uploaded vocabulary guides it rather than acting as a closed whitelist.
 It is not a general chatbot and it is not an autonomous agent. The application sends one controlled
 request and receives one validated explanation.
 
@@ -12,7 +13,7 @@ The initial release supports five requests:
 - explain the correct answer
 - explain the grammar needed for the exercise
 - give another example from the same lesson
-- answer a short custom question about the current lesson
+- answer a short custom question about the lesson or related beginner German
 
 The tutor becomes available only after an exercise attempt exists. This prevents it from being used
 as an answer generator before the learner tries the exercise.
@@ -71,6 +72,12 @@ Only information needed for the current explanation is included:
 - current exercise type, instructions, prompts, expected answer, and options
 - the learner's answer and whether it was correct
 - the selected explanation request or custom question
+- approved structured concepts, situations/dialogues, FAQ and up to two model replies matching the
+  request kind; approved exercise-specific objective, situation, answer reason and grammar focus
+- accepted-answer variants and matching pairs, alongside the exact saved answer and grading outcome
+- German examples and practice from at most three recent in-scope exchanges for this learner and
+  exercise, including previous attempts, as repetition hints only (at most six 250-character
+  German strings and three 300-character tasks)
 
 When available, the request also includes reviewed lesson-level tutor grounding:
 
@@ -79,14 +86,20 @@ When available, the request also includes reviewed lesson-level tutor grounding:
 - tutor guidance and limits
 - approved German–Albanian examples
 
-These fields are optional. Lessons without them continue to use their objective, vocabulary,
-vocabulary examples, and exercise data.
+These fields are optional. Lessons without structured material continue to use their legacy notes,
+objective, vocabulary and exercise data. Approved structured material supersedes the three generic
+legacy lesson-note strings in the provider context, while keeping those strings in the database.
+New structured JSON and exercise context are independently excluded until approved. Edits/imports
+reset approval. See [package 037](tutor-material-037.md) for the schema, limits, review controls and
+teaching-only updates to existing exercise IDs.
 
-The learner's email, password, session, other lessons, other learners, and complete attempt history
-are not included.
+The learner's email, password, session, other exercises, other learners, earlier custom questions,
+earlier explanations, and complete attempt history are not included. The repetition hints are not
+conversation memory and do not let a new question refer back to an earlier explanation.
 
 Course and learner text is serialized into labelled JSON and explicitly treated as data rather than
-instructions. This reduces prompt-injection risk from content fields. It cannot provide a perfect
+instructions. The selected request-type instruction is outside these JSON blocks. This reduces
+prompt-injection risk from content fields. It cannot provide a perfect
 security guarantee, so application permissions and output validation remain mandatory.
 
 ## Response validation
@@ -95,17 +108,48 @@ The toolkit must return a `TutorResponse` containing:
 
 - `explanation_sq`: a non-empty Albanian explanation, limited to 1,600 characters
 - `german_examples`: at most two examples, each with German, Albanian, and an optional explanation
-- `follow_up_sq`: an optional concrete practice task that can be done immediately
-- `within_lesson_scope`: whether the question belongs to this lesson
+- `follow_up_sq`: optional oral or mental self-practice, or an empty string when it adds no value
+- `within_lesson_scope`: whether the request concerns the exercise or related German learning
 
 If the model marks a request as outside scope, the application discards its generated explanation
 and displays a fixed Albanian lesson-only refusal. This is safer than displaying an unrestricted
 out-of-scope answer.
 
 The response model also rejects follow-ups such as “Nëse do, mund të provojmë…” because the current
-page cannot continue a conversation automatically. A follow-up must instead be an actionable task,
-for example: “Plotëso: Ich ___ Arta.” Invalid structured output is sent through the toolkit's repair
-path once.
+page cannot continue a conversation automatically. Practice must be an oral or mental task, for
+example: “Thuaj me zë një përshëndetje që përdoret në mëngjes.” It must not disclose its solution
+or promise recording, grading, or an answer control. Practice defaults to empty; rote
+`Thuaje/Thuaji me mendje` lists are omitted locally. Empty practice is valid and hides the **Provo**
+line. Invalid structured output is sent through the toolkit's repair path once.
+
+After validation, local postprocessing removes German examples already present in the three recent
+replies, duplicate examples within the new reply, and repeated practice. Comparison ignores case,
+punctuation, and whitespace. It also omits tasks containing common Albanian write/select/fill/submit/
+click/record wording. This is a conservative text filter, not complete semantic validation: paraphrases
+and name-only variations still need live review. Omission preserves the main explanation and does
+not add a provider call. Existing stored exchanges are not rewritten.
+
+## Response behavior and live reviews
+
+Package 037 builds on the first comparison below. The later enriched-demo replies 106–114 showed
+improved ambiguity and word explanations. Structured model replies now demonstrate concise teaching;
+exercise contexts focus each help kind, and related vocabulary/brief grammar expansion is allowed.
+The supplied pack has recognition, situational, pattern, written and spoken tasks. Its data flow is
+covered by automated tests; new live provider quality and dialogue formatting need review.
+
+The 16 November review covered nine exchanges on one greeting exercise. Package 036 adds the
+following request guidance; language quality still requires live review:
+
+| Request | Intended behavior |
+| --- | --- |
+| Mistake | Contrast the actual wrong answer with the correct answer and explain the confusion. |
+| Answer | Explain the meaning and why it fits; acknowledge a correct attempt without inventing an error. |
+| Grammar | Explain one relevant pattern or learning the fixed phrase as a whole, rather than only repeating the translation. |
+| Example | Demonstrate useful usage with little introduction; avoid repetition and name-only variation where possible. |
+| Custom | Answer the new question first; use the original mistake only if relevant and clarify ambiguous wording instead of guessing. |
+
+Approved material remains teaching authority. Recent practice is only an avoidance list. No new
+vocabulary should be invented for novelty, and zero examples or no practice is preferable to filler.
 
 The toolkit adds the response schema to the prompt, parses returned JSON, validates it with Pydantic,
 and may make one repair request if the first result is malformed. A repair request is another paid
@@ -206,7 +250,9 @@ uv run ruff check .
 Tutor tests use a deterministic fake client. They require no API key, make no network request, and do
 not incur provider cost. They verify configuration gating, attempt ownership, structured output,
 out-of-scope replacement, stored usage metadata, learner and daily rate limiting, and conservative
-reservation after provider failure.
+reservation after provider failure. Regression tests also exercise bounded history isolation,
+duplicate/unsupported practice omission, trusted instruction separation, and saving/rendering the
+postprocessed result. Fake-provider tests do not establish live response quality.
 
 ## Manual test
 
@@ -261,6 +307,16 @@ note fields and creates eight tutor examples. Imported examples are deliberately
 Review them at **Admin → Courses → Lesson tutor examples**. Check the German, Albanian translation,
 and explanation, then enable **Is approved** only for examples that are ready for learners. The tutor
 request excludes every unapproved example.
+
+If an earlier copy was imported, the importer rejects occupied example positions. In a test
+database, open each existing lesson and copy the three revised note fields from the matching JSON
+lesson. Under **Lesson tutor examples**, update each row at positions 1 and 2 from the corresponding
+JSON entry. Save changed examples with **Is approved** unchecked pending review. The notes take
+effect when saved, so have the reviewer sign off on the wording before copying them to a live
+deployment. Leave the existing exercises and attempt history in place.
+
+Use the [four-lesson request matrix](manual_testing_guide.md#a1-tutor-grounding-and-request-matrix)
+to evaluate the live provider answers after sign-off.
 
 The three lesson fields can also be reviewed from **Admin → Courses → Lessons** under the collapsed
 **Lesson tutor grounding** section:

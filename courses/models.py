@@ -3,6 +3,13 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 
+from .tutor_material import (
+    reset_changed_approval,
+    validate_exercise_tutor_context,
+    validate_lesson_tutor_material,
+    validate_material_references,
+)
+
 
 class OrderedModel(models.Model):
     position = models.PositiveSmallIntegerField(default=1)
@@ -62,6 +69,13 @@ class Lesson(OrderedModel):
     tutor_grammar_notes_sq = models.TextField(blank=True)
     tutor_common_mistakes_sq = models.TextField(blank=True)
     tutor_guidance_sq = models.TextField(blank=True)
+    tutor_material = models.JSONField(
+        default=dict,
+        blank=True,
+        validators=[validate_lesson_tutor_material],
+        help_text="Structured concepts, dialogues, FAQ, and model tutor answers from schema v2.",
+    )
+    tutor_material_approved = models.BooleanField(default=False)
     is_published = models.BooleanField(default=False)
 
     class Meta:
@@ -76,11 +90,13 @@ class Lesson(OrderedModel):
     def __str__(self):
         return f"{self.unit}.{self.position} — {self.title_sq}"
 
+    def save(self, *args, **kwargs):
+        reset_changed_approval(self, "tutor_material", "tutor_material_approved", kwargs)
+        return super().save(*args, **kwargs)
+
 
 class LessonTutorExample(OrderedModel):
-    lesson = models.ForeignKey(
-        Lesson, on_delete=models.CASCADE, related_name="tutor_examples"
-    )
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, related_name="tutor_examples")
     german = models.CharField(max_length=250)
     albanian = models.CharField(max_length=250)
     explanation_sq = models.CharField(max_length=300, blank=True)
@@ -173,7 +189,7 @@ class MediaAsset(models.Model):
                     | Q(is_approved=True, approved_by__isnull=False, approved_at__isnull=False)
                 ),
                 name="media_asset_approval_state_is_complete",
-            )
+            ),
         ]
 
     def clean(self):
@@ -217,6 +233,13 @@ class Exercise(OrderedModel):
     prompt_de = models.TextField(blank=True)
     prompt_sq = models.TextField(blank=True)
     expected_answer = models.TextField(blank=True)
+    tutor_context = models.JSONField(
+        default=dict,
+        blank=True,
+        validators=[validate_exercise_tutor_context],
+        help_text="Teaching objective, situation, answer reason, grammar focus, and mistakes.",
+    )
+    tutor_context_approved = models.BooleanField(default=False)
     image = models.ForeignKey(
         MediaAsset,
         blank=True,
@@ -271,6 +294,12 @@ class Exercise(OrderedModel):
 
     def clean(self):
         errors = {}
+        if self.tutor_context and self.lesson_id:
+            try:
+                validate_exercise_tutor_context(self.tutor_context)
+                validate_material_references(self.tutor_context, self.lesson.tutor_material)
+            except ValidationError as error:
+                errors["tutor_context"] = error.messages
         if self.image and self.image.kind != MediaAsset.Kind.IMAGE:
             errors["image"] = "The selected asset must be an image."
         if self.audio and self.audio.kind != MediaAsset.Kind.AUDIO:
@@ -308,6 +337,10 @@ class Exercise(OrderedModel):
 
     def __str__(self):
         return f"{self.lesson} / {self.position}: {self.get_exercise_type_display()}"
+
+    def save(self, *args, **kwargs):
+        reset_changed_approval(self, "tutor_context", "tutor_context_approved", kwargs)
+        return super().save(*args, **kwargs)
 
 
 class ExerciseOption(OrderedModel):

@@ -18,8 +18,8 @@
                     {% for example in tutor_exchange.german_examples %}
                         <li>
                             {% if example.german %}
-                                <strong lang="de">{{ example.german }}</strong>
-                                <span> — {{ example.albanian }}</span>
+                                <strong class="tutor-example-german" lang="de">{{ example.german }}</strong>
+                                <span class="tutor-example-translation">{{ example.albanian }}</span>
                                 {% if example.why_it_helps_sq %}<small class="muted">{{ example.why_it_helps_sq }}</small>{% endif %}
                             {% else %}
                                 <span lang="de">{{ example }}</span>
@@ -29,7 +29,7 @@
                 </ul>
             {% endif %}
             {% if tutor_exchange.follow_up_sq %}<p><strong>Provo:</strong> {{ tutor_exchange.follow_up_sq|tutor_rich_text }}</p>{% endif %}
-            <small class="muted">Përgjigjja është krijuar nga AI dhe kufizohet në materialin e këtij mësimi.</small>
+            <small class="muted">Përgjigjja është krijuar nga AI për ushtrimin dhe pyetje të lidhura me gjermanishten.</small>
             <form method="post" action="{% url 'tutor:rate' tutor_exchange.pk %}" class="tutor-feedback-form">
                 {% csrf_token %}
                 <span>A ishte i dobishëm ky shpjegim?</span>
@@ -45,7 +45,7 @@
     {% if tutor_enabled %}
         {% if tutor_exchange %}<details class="tutor-more"><summary>Pyet përsëri</summary>{% endif %}
         <div class="tutor-request-controls">
-            <p class="muted tutor-intro">Shpjegime në shqip, vetëm për këtë mësim dhe përgjigjen tuaj.</p>
+            <p class="muted tutor-intro">Shpjegime në shqip për ushtrimin dhe gjermanishten që po mësoni.</p>
             <form method="post" action="{% url 'tutor:ask' exercise.pk %}" class="tutor-form">
                 {% csrf_token %}
                 <input type="hidden" name="attempt" value="{{ attempt.pk }}">
@@ -55,7 +55,7 @@
                     <button class="tutor-action" type="submit" name="kind" value="grammar"><span class="tutor-action-icon" aria-hidden="true">Aa</span><span>Gramatika</span></button>
                     <button class="tutor-action" type="submit" name="kind" value="example"><span class="tutor-action-icon" aria-hidden="true">+</span><span>Shembull</span></button>
                 </div>
-                <label for="tutor-question">Pyetje për këtë mësim</label>
+                <label for="tutor-question">Pyetje për ushtrimin ose temën</label>
                 <textarea id="tutor-question" name="question" maxlength="500" rows="2" placeholder="P.sh. Pse përdoret ‘heiße’ këtu?"></textarea>
                 <button class="button" type="submit" name="kind" value="custom">Dërgo pyetjen</button>
             </form>

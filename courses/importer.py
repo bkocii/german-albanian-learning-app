@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 
+from django.core.exceptions import ValidationError
 from django.db import transaction
 
 from .models import (
@@ -14,6 +15,11 @@ from .models import (
     Unit,
     VocabularyEntry,
 )
+from .tutor_material import (
+    validate_exercise_tutor_context,
+    validate_lesson_tutor_material,
+    validate_material_references,
+)
 
 
 @dataclass
@@ -26,6 +32,8 @@ class ImportValidationResult:
             "lessons": 0,
             "tutor_lessons": 0,
             "tutor_examples": 0,
+            "tutor_materials": 0,
+            "exercise_tutor_contexts": 0,
             "vocabulary": 0,
             "exercises": 0,
             "options": 0,
@@ -83,19 +91,49 @@ def _check_unique(values, label, path, result):
         result.errors.append(f"{path}: duplicate {label} values are not allowed.")
 
 
+def _known_fields(item, allowed, path, result, version):
+    if version == 2:
+        for name in item.keys() - set(allowed.split()):
+            result.errors.append(f"{path}.{name}: unknown field for schema version 2.")
+
+
+def _structured(value, validator, path, result, version):
+    if version != 2:
+        result.errors.append(f"{path}: requires schema_version 2.")
+        return False
+    try:
+        validator(value)
+    except ValidationError as error:
+        result.errors.extend(f"{path}: {message}" for message in error.messages)
+        return False
+    return True
+
+
+def _references(context, material, path, result):
+    try:
+        validate_material_references(context, material)
+    except ValidationError as error:
+        result.errors.extend(f"{path}: {message}" for message in error.messages)
+
+
 def validate_course_import(data):
     result = ImportValidationResult()
     if not isinstance(data, dict):
         result.errors.append("The JSON root must be an object.")
         return result
-    if data.get("schema_version") != 1:
-        result.errors.append("schema_version must be 1.")
+    version = data.get("schema_version")
+    if type(version) is not int or version not in (1, 2):
+        result.errors.append("schema_version must be 1 or 2.")
+    _known_fields(data, "schema_version level units", "root", result, version)
 
     level_data = data.get("level")
     if not isinstance(level_data, dict):
         result.errors.append("level: an object is required.")
         return result
     code = _required_text(level_data, "code", "level", result)
+    _known_fields(
+        level_data, "code title_de title_sq description_sq position", "level", result, version
+    )
     _required_text(level_data, "title_de", "level", result)
     _required_text(level_data, "title_sq", "level", result)
     level_position = _positive_position(level_data, "level", result)
@@ -129,6 +167,13 @@ def validate_course_import(data):
             result.errors.append(f"{unit_path}: must be an object.")
             continue
         result.summary["units"] += 1
+        _known_fields(
+            unit_data,
+            "slug title_de title_sq summary_sq position lessons",
+            unit_path,
+            result,
+            version,
+        )
         unit_slug = _required_text(unit_data, "slug", unit_path, result)
         _required_text(unit_data, "title_de", unit_path, result)
         _required_text(unit_data, "title_sq", unit_path, result)
@@ -138,9 +183,10 @@ def validate_course_import(data):
             existing_unit = Unit.objects.filter(level=existing_level, slug=unit_slug).first()
             if existing_unit:
                 result.warnings.append(f"{unit_path}: existing unit will be reused.")
-            elif unit_position and Unit.objects.filter(
-                level=existing_level, position=unit_position
-            ).exists():
+            elif (
+                unit_position
+                and Unit.objects.filter(level=existing_level, position=unit_position).exists()
+            ):
                 result.errors.append(
                     f"{unit_path}.position: position {unit_position} is already in use."
                 )
@@ -164,6 +210,14 @@ def validate_course_import(data):
                 result.errors.append(f"{lesson_path}: must be an object.")
                 continue
             result.summary["lessons"] += 1
+            _known_fields(
+                lesson_data,
+                "slug title_de title_sq objective_sq position tutor_context tutor_material "
+                "vocabulary exercises exercise_tutor_updates",
+                lesson_path,
+                result,
+                version,
+            )
             lesson_slug = _required_text(lesson_data, "slug", lesson_path, result)
             _required_text(lesson_data, "title_de", lesson_path, result)
             _required_text(lesson_data, "title_sq", lesson_path, result)
@@ -175,18 +229,75 @@ def validate_course_import(data):
                 ).first()
                 if existing_lesson:
                     result.warnings.append(f"{lesson_path}: existing lesson will be reused.")
-                elif lesson_position and Lesson.objects.filter(
-                    unit=existing_unit, position=lesson_position
-                ).exists():
+                elif (
+                    lesson_position
+                    and Lesson.objects.filter(unit=existing_unit, position=lesson_position).exists()
+                ):
                     result.errors.append(
                         f"{lesson_path}.position: position {lesson_position} is already in use."
                     )
+
+            material = lesson_data.get(
+                "tutor_material", existing_lesson.tutor_material if existing_lesson else {}
+            )
+            material_valid = True
+            if "tutor_material" in lesson_data:
+                result.summary["tutor_materials"] += 1
+                material_valid = _structured(
+                    material,
+                    validate_lesson_tutor_material,
+                    f"{lesson_path}.tutor_material",
+                    result,
+                    version,
+                )
+            updates = _list_field(lesson_data, "exercise_tutor_updates", lesson_path, result)
+            if "exercise_tutor_updates" in lesson_data and version != 2:
+                result.errors.append(
+                    f"{lesson_path}.exercise_tutor_updates: requires schema_version 2."
+                )
+            _check_unique(
+                [item.get("external_id") for item in updates if isinstance(item, dict)],
+                "exercise tutor update",
+                lesson_path,
+                result,
+            )
+            for index, update in enumerate(updates, start=1):
+                update_path = f"{lesson_path}.exercise_tutor_updates[{index}]"
+                if not isinstance(update, dict):
+                    result.errors.append(f"{update_path}: must be an object.")
+                    continue
+                _known_fields(update, "external_id tutor_context", update_path, result, 2)
+                external_id = _required_text(update, "external_id", update_path, result)
+                if (
+                    not existing_lesson
+                    or not existing_lesson.exercises.filter(external_id=external_id).exists()
+                ):
+                    result.errors.append(
+                        f"{update_path}.external_id: exercise does not exist here."
+                    )
+                context_valid = _structured(
+                    update.get("tutor_context"),
+                    validate_exercise_tutor_context,
+                    f"{update_path}.tutor_context",
+                    result,
+                    version,
+                )
+                result.summary["exercise_tutor_contexts"] += 1
+                if context_valid and material_valid:
+                    _references(update["tutor_context"], material, update_path, result)
 
             tutor_context = lesson_data.get("tutor_context")
             if tutor_context is not None and not isinstance(tutor_context, dict):
                 result.errors.append(f"{lesson_path}.tutor_context: must be an object.")
                 tutor_context = None
             if tutor_context is not None:
+                _known_fields(
+                    tutor_context,
+                    "grammar_notes_sq common_mistakes_sq guidance_sq examples",
+                    f"{lesson_path}.tutor_context",
+                    result,
+                    version,
+                )
                 result.summary["tutor_lessons"] += 1
                 for field_name in (
                     "grammar_notes_sq",
@@ -206,13 +317,18 @@ def validate_course_import(data):
                 example_positions = []
                 example_values = []
                 for example_index, example in enumerate(tutor_examples, start=1):
-                    example_path = (
-                        f"{lesson_path}.tutor_context.examples[{example_index}]"
-                    )
+                    example_path = f"{lesson_path}.tutor_context.examples[{example_index}]"
                     if not isinstance(example, dict):
                         result.errors.append(f"{example_path}: must be an object.")
                         continue
                     position = _positive_position(example, example_path, result)
+                    _known_fields(
+                        example,
+                        "position german albanian explanation_sq",
+                        example_path,
+                        result,
+                        version,
+                    )
                     german = _required_text(example, "german", example_path, result)
                     albanian = _required_text(example, "albanian", example_path, result)
                     _optional_text(example, "explanation_sq", example_path, result)
@@ -246,6 +362,13 @@ def validate_course_import(data):
                     result.errors.append(f"{vocab_path}: must be an object.")
                     continue
                 _positive_position(item, vocab_path, result)
+                _known_fields(
+                    item,
+                    "position german albanian part_of_speech example_de example_sq notes_sq",
+                    vocab_path,
+                    result,
+                    version,
+                )
                 _required_text(item, "german", vocab_path, result)
                 _required_text(item, "albanian", vocab_path, result)
 
@@ -268,6 +391,26 @@ def validate_course_import(data):
                     result.errors.append(f"{exercise_path}: must be an object.")
                     continue
                 result.summary["exercises"] += 1
+                _known_fields(
+                    item,
+                    "external_id type position instructions_sq prompt_de prompt_sq "
+                    "expected_answer image_ref audio_ref options accepted_answers matching_pairs "
+                    "tutor_context",
+                    exercise_path,
+                    result,
+                    version,
+                )
+                if "tutor_context" in item:
+                    result.summary["exercise_tutor_contexts"] += 1
+                    valid_context = _structured(
+                        item["tutor_context"],
+                        validate_exercise_tutor_context,
+                        f"{exercise_path}.tutor_context",
+                        result,
+                        version,
+                    )
+                    if valid_context and material_valid:
+                        _references(item["tutor_context"], material, exercise_path, result)
                 external_id = _required_text(item, "external_id", exercise_path, result)
                 exercise_type = _required_text(item, "type", exercise_path, result)
                 exercise_position = _positive_position(item, exercise_path, result)
@@ -281,9 +424,12 @@ def validate_course_import(data):
                         result.errors.append(
                             f"{exercise_path}.external_id: already exists in this lesson."
                         )
-                    if exercise_position and Exercise.objects.filter(
-                        lesson=existing_lesson, position=exercise_position
-                    ).exists():
+                    if (
+                        exercise_position
+                        and Exercise.objects.filter(
+                            lesson=existing_lesson, position=exercise_position
+                        ).exists()
+                    ):
                         result.errors.append(
                             f"{exercise_path}.position: position is already in use."
                         )
@@ -294,6 +440,14 @@ def validate_course_import(data):
                 result.summary["options"] += len(options)
                 result.summary["accepted_answers"] += len(accepted)
                 result.summary["matching_pairs"] += len(pairs)
+                for collection, allowed in (
+                    (options, "position text_de text_sq image_ref is_correct"),
+                    (accepted, "position text"),
+                    (pairs, "position left_text right_text"),
+                ):
+                    for child in collection:
+                        if isinstance(child, dict):
+                            _known_fields(child, allowed, exercise_path, result, version)
                 _validate_exercise_parts(
                     item,
                     exercise_type,
@@ -357,9 +511,7 @@ def _validate_exercise_parts(item, exercise_type, options, accepted, pairs, path
                 f"{path}.options: multiple select requires at least two correct options."
             )
         if options and correct_count == len(options):
-            result.errors.append(
-                f"{path}.options: multiple select requires an incorrect option."
-            )
+            result.errors.append(f"{path}.options: multiple select requires an incorrect option.")
     if exercise_type == Exercise.Type.FREE_TEXT and not accepted:
         result.errors.append(f"{path}.accepted_answers: at least one answer is required.")
     if exercise_type == Exercise.Type.MATCHING and len(pairs) < 2:
@@ -455,6 +607,15 @@ def import_course_data(data):
                     "position": lesson_data["position"],
                 },
             )
+            if "tutor_material" in lesson_data:
+                lesson.tutor_material = lesson_data["tutor_material"]
+                lesson.tutor_material_approved = False
+                lesson.save(update_fields=("tutor_material", "tutor_material_approved"))
+            for update in lesson_data.get("exercise_tutor_updates", []):
+                target = lesson.exercises.get(external_id=update["external_id"])
+                target.tutor_context = update["tutor_context"]
+                target.tutor_context_approved = False
+                target.save(update_fields=("tutor_context", "tutor_context_approved"))
             tutor_context = lesson_data.get("tutor_context")
             if tutor_context is not None:
                 tutor_field_map = {
@@ -500,6 +661,7 @@ def import_course_data(data):
                     prompt_de=item.get("prompt_de", ""),
                     prompt_sq=item.get("prompt_sq", ""),
                     expected_answer=item.get("expected_answer", ""),
+                    tutor_context=item.get("tutor_context", {}),
                     image=_asset(item.get("image_ref")),
                     audio=_asset(item.get("audio_ref")),
                     position=item["position"],

@@ -1,5 +1,6 @@
 from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.forms.models import BaseInlineFormSet
 from django.urls import path
 
@@ -18,11 +19,47 @@ from .models import (
     VocabularyEntry,
 )
 from .publication import publish_units, unpublish_units
+from .tutor_material import (
+    validate_exercise_tutor_context,
+    validate_lesson_tutor_material,
+    validate_material_references,
+)
+
+
+def _approve_tutor_json(model_admin, request, queryset, *, exercise=False):
+    field = "tutor_context" if exercise else "tutor_material"
+    approval = f"{field}_approved"
+    validator = validate_exercise_tutor_context if exercise else validate_lesson_tutor_material
+    with transaction.atomic():
+        selected = list(queryset.select_for_update())
+        approved_ids = []
+        for item in selected:
+            value = getattr(item, field)
+            if not value:
+                continue
+            try:
+                validator(value)
+                if exercise:
+                    validate_material_references(value, item.lesson.tutor_material)
+            except ValidationError as error:
+                model_admin.message_user(
+                    request,
+                    f"Approval stopped: {item}: {' '.join(error.messages)}",
+                    level=messages.ERROR,
+                )
+                return
+            approved_ids.append(item.pk)
+        queryset.filter(pk__in=approved_ids).update(**{approval: True})
+    model_admin.message_user(
+        request, f"Approved {len(approved_ids)} reviewed tutor content record(s)."
+    )
 
 
 class LessonInline(admin.TabularInline):
     model = Lesson
     extra = 0
+    fields = ("slug", "title_de", "title_sq", "position", "is_published")
+    show_change_link = True
 
 
 class VocabularyInline(admin.TabularInline):
@@ -171,9 +208,10 @@ class UnitAdmin(admin.ModelAdmin):
 
 @admin.register(Lesson)
 class LessonAdmin(admin.ModelAdmin):
-    list_display = ("title_sq", "unit", "position", "is_published")
+    list_display = ("title_sq", "unit", "position", "is_published", "tutor_material_approved")
     list_filter = ("unit__level", "unit", "is_published")
     prepopulated_fields = {"slug": ("title_de",)}
+    actions = ("approve_reviewed_material",)
     fieldsets = (
         (
             None,
@@ -197,14 +235,21 @@ class LessonAdmin(admin.ModelAdmin):
                     "tutor_grammar_notes_sq",
                     "tutor_common_mistakes_sq",
                     "tutor_guidance_sq",
+                    "tutor_material",
+                    "tutor_material_approved",
                 ),
                 "description": (
-                    "Optional reviewed Albanian guidance sent only to the lesson tutor."
+                    "Legacy notes and structured teaching material. Structured JSON is excluded "
+                    "until approved. Editing JSON resets approval; save it before approving again."
                 ),
             },
         ),
     )
     inlines = (VocabularyInline, LessonTutorExampleInline)
+
+    @admin.action(description="Approve reviewed structured tutor material")
+    def approve_reviewed_material(self, request, queryset):
+        _approve_tutor_json(self, request, queryset)
 
 
 @admin.register(VocabularyEntry)
@@ -260,11 +305,54 @@ class ExerciseAdmin(admin.ModelAdmin):
         "exercise_type",
         "review_status",
         "reviewed_by",
+        "tutor_context_approved",
     )
     list_filter = ("review_status", "exercise_type", "lesson__unit__level")
     search_fields = ("external_id", "prompt_de", "prompt_sq", "expected_answer")
     autocomplete_fields = ("image", "audio", "reviewed_by")
     inlines = (ExerciseOptionInline, ExerciseAcceptedAnswerInline, MatchingPairInline)
+    actions = ("approve_reviewed_contexts",)
+
+    @admin.action(description="Approve reviewed exercise tutor contexts")
+    def approve_reviewed_contexts(self, request, queryset):
+        _approve_tutor_json(self, request, queryset, exercise=True)
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "lesson",
+                    "external_id",
+                    "exercise_type",
+                    "position",
+                    "instructions_sq",
+                    "prompt_de",
+                    "prompt_sq",
+                    "expected_answer",
+                    "image",
+                    "audio",
+                    "review_status",
+                    "reviewed_by",
+                    "reviewed_at",
+                )
+            },
+        ),
+        (
+            "Exercise tutor teaching context",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "tutor_context",
+                    "tutor_context_approved",
+                ),
+                "description": (
+                    "Review the imported objective, situation, and explanations, then approve. "
+                    "Editing JSON resets approval; save the revision before approving it again."
+                ),
+            },
+        ),
+    )
 
     def get_urls(self):
         custom_urls = [
